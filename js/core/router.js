@@ -1,429 +1,302 @@
-/* ============================================================
-   NEXUS ROBOTICS ACADEMY v6.0
-   ARQUIVO: js/core/router.js
-   DESCRIÇÃO: Router SPA — navegação entre módulos com
-              lazy loading, histórico e guardas de rota
-   ============================================================ */
+/**
+ * ============================================================
+ * IDENZA ROBOTICS ACADEMY — ROUTER SPA
+ * ============================================================
+ * 
+ * Roteador simples para Single Page Application.
+ * Gerencia navegação entre módulos sem recarregar a página.
+ * 
+ * Features:
+ * - Navegação baseada em hash (#)
+ * - Histórico do navegador (pushState)
+ * - Guardas de rota (auth, permissões)
+ * - Parâmetros de rota
+ * - Transições animadas entre módulos
+ * 
+ * @namespace IdenzaRouter
+ * @version 6.0.0
+ * @license Proprietária — Idenza Robotics Intelligence S.A.
+ * ============================================================
+ */
 
-class NexusRouter {
-  constructor(app) {
-    this.app = app;
-    this.routes = new Map();
-    this.currentRoute = null;
-    this.previousRoute = null;
-    this.guards = [];
-    this.loadingTemplate = `
-      <div class="route-loading">
-        <div class="spinner spinner-lg"></div>
-        <p class="text-muted">Carregando módulo...</p>
-      </div>`;
-    this.errorTemplate = (msg) => `
-      <div class="empty-state">
-        <i class="fas fa-exclamation-triangle text-warning"></i>
-        <h4>Erro ao carregar</h4>
-        <p>${msg || 'Módulo não encontrado.'}</p>
-        <button class="btn btn-secondary" onclick="window.nexusRouter.navigate('dashboard')">
-          <i class="fas fa-home"></i> Voltar ao Dashboard
-        </button>
-      </div>`;
-  }
+const IdenzaRouter = {
+    // ============================================================
+    // CONFIGURAÇÃO
+    // ============================================================
+    _routes: {},
+    _guards: {},
+    _currentRoute: null,
+    _previousRoute: null,
+    _transitioning: false,
 
-  /**
-   * Inicializa o router
-   */
-  init() {
-    this._registerDefaultRoutes();
-    this._listenPopState();
-    this._handleInitialRoute();
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    init() {
+        // Escuta mudanças de hash
+        window.addEventListener('hashchange', () => {
+            this._handleRouteChange();
+        });
 
-    // Disponibiliza globalmente
-    window.nexusRouter = this;
-  }
+        // Escuta popstate (navegação do browser)
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.route) {
+                this.navigate(e.state.route, false);
+            }
+        });
 
-  /**
-   * Registra rotas padrão
-   */
-  _registerDefaultRoutes() {
-    // Dashboard (rota inicial)
-    this.register('dashboard', {
-      title: 'Dashboard — ROS-IoT Sentinel',
-      icon: 'fa-tachometer-alt',
-      module: 'dashboard',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/dashboard.html'),
-      onActivate: () => this._initDashboard(),
-    });
+        // Carrega rota inicial
+        this._handleRouteChange();
 
-    // Academy
-    this.register('academy', {
-      title: 'Academy — Cursos e Trilhas',
-      icon: 'fa-graduation-cap',
-      module: 'academy',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/academy.html'),
-      onActivate: () => this._initAcademy(),
-    });
-
-    // Portfolio
-    this.register('portfolio', {
-      title: 'Portfólio — Projetos',
-      icon: 'fa-briefcase',
-      module: 'portfolio',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/portfolio.html'),
-      onActivate: () => this._initPortfolio(),
-    });
-
-    // Arduino Guide
-    this.register('arduino', {
-      title: 'Guia Arduino — Conexão & Projetos',
-      icon: 'fa-plug',
-      module: 'arduino',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/arduino-guide.html'),
-    });
-
-    // ROS Guide
-    this.register('ros-guide', {
-      title: 'Guia ROS 2 — Do Zero ao Avançado',
-      icon: 'fa-cogs',
-      module: 'ros-guide',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/ros-guide.html'),
-    });
-
-    // IoT Guide
-    this.register('iot-guide', {
-      title: 'Guia IoT — Sensores & Conectividade',
-      icon: 'fa-microchip',
-      module: 'iot-guide',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/iot-guide.html'),
-    });
-
-    // AI Guide
-    this.register('ai-guide', {
-      title: 'Guia IA — Visão & Linguagem Natural',
-      icon: 'fa-brain',
-      module: 'ai-guide',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/ai-guide.html'),
-    });
-
-    // Diagnostics
-    this.register('diagnostics', {
-      title: 'Diagnóstico — Análise de Falhas',
-      icon: 'fa-stethoscope',
-      module: 'diagnostics',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/diagnostics.html'),
-      onActivate: () => this._initDiagnostics(),
-    });
-
-    // Simulator
-    this.register('simulator', {
-      title: 'Simulador de Falhas',
-      icon: 'fa-flask',
-      module: 'simulator',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/simulator.html'),
-    });
-
-    // Settings
-    this.register('settings', {
-      title: 'Configurações',
-      icon: 'fa-cog',
-      module: 'settings',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/settings.html'),
-    });
-
-    // About
-    this.register('about', {
-      title: 'Sobre a Nexus Robotics',
-      icon: 'fa-building',
-      module: 'about',
-      container: '#module-content',
-      lazyLoad: () => this._loadModuleHTML('modules/about.html'),
-    });
-  }
-
-  /**
-   * Registra uma nova rota
-   */
-  register(path, config) {
-    this.routes.set(path, {
-      path,
-      title: config.title || path,
-      icon: config.icon || 'fa-circle',
-      module: config.module || path,
-      container: config.container || '#module-content',
-      lazyLoad: config.lazyLoad || null,
-      onActivate: config.onActivate || null,
-      onDeactivate: config.onDeactivate || null,
-      guard: config.guard || null,
-      data: config.data || {},
-    });
-  }
-
-  /**
-   * Navega para uma rota
-   */
-  async navigate(path, params = {}) {
-    const route = this.routes.get(path);
-    if (!route) {
-      console.error(`Rota não encontrada: ${path}`);
-      this.navigate('dashboard');
-      return;
-    }
-
-    // Guarda de rota
-    if (route.guard && !route.guard()) {
-      this.app.showToast('Acesso negado a este módulo', 'warning', 'fa-lock');
-      return;
-    }
-
-    // Guardas globais
-    for (const guard of this.guards) {
-      if (!guard(route)) return;
-    }
-
-    // Desativa rota anterior
-    if (this.currentRoute?.onDeactivate) {
-      this.currentRoute.onDeactivate();
-    }
-
-    // Salva histórico
-    this.previousRoute = this.currentRoute;
-
-    // Mostra loading
-    const container = document.querySelector(route.container);
-    if (container) {
-      container.innerHTML = this.loadingTemplate;
-    }
-
-    // Carrega módulo (lazy)
-    try {
-      if (route.lazyLoad) {
-        const html = await route.lazyLoad();
-        if (container) {
-          container.innerHTML = html;
+        if (window.IdenzaApp && IdenzaApp.config.debug) {
+            console.log('[IdenzaRouter] Roteador inicializado');
         }
-      }
-    } catch (error) {
-      console.error(`Erro ao carregar módulo ${path}:`, error);
-      if (container) {
-        container.innerHTML = this.errorTemplate(error.message);
-      }
-    }
+    },
 
-    // Atualiza estado
-    this.currentRoute = route;
-    document.title = `${route.title} | Nexus Robotics Academy v6.0`;
+    // ============================================================
+    // REGISTRAR ROTAS
+    // ============================================================
+    register(routes) {
+        Object.entries(routes).forEach(([path, config]) => {
+            this._routes[path] = {
+                module: config.module || path,
+                title: config.title || path,
+                guard: config.guard || null,
+                params: config.params || {},
+                animate: config.animate !== false,
+                onEnter: config.onEnter || null,
+                onLeave: config.onLeave || null,
+            };
+        });
 
-    // Atualiza URL
-    const url = new URL(window.location);
-    url.hash = `#/${path}`;
-    if (params && Object.keys(params).length > 0) {
-      url.search = new URLSearchParams(params).toString();
-    }
-    window.history.pushState({ route: path, params }, route.title, url);
+        if (window.IdenzaApp && IdenzaApp.config.debug) {
+            console.log('[IdenzaRouter] Rotas registradas:', Object.keys(this._routes));
+        }
+    },
 
-    // Ativa callbacks
-    if (route.onActivate) {
-      setTimeout(() => route.onActivate(), 100);
-    }
+    // ============================================================
+    // REGISTRAR GUARDAS
+    // ============================================================
+    registerGuard(name, guardFn) {
+        this._guards[name] = guardFn;
+    },
 
-    // Atualiza navegação ativa
-    this._updateActiveNav(path);
+    // ============================================================
+    // NAVEGAR
+    // ============================================================
+    navigate(route, addToHistory = true) {
+        if (this._transitioning) {
+            if (window.IdenzaApp && IdenzaApp.config.debug) {
+                console.warn('[IdenzaRouter] Navegação bloqueada: transição em andamento');
+            }
+            return;
+        }
 
-    // Dispara evento
-    this.app.eventBus.emit('route:changed', {
-      path,
-      route,
-      previous: this.previousRoute?.path,
-    });
+        // Resolve a rota
+        const resolvedRoute = this._resolveRoute(route);
 
-    // Scroll para o topo
-    document.querySelector('#module-content')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  }
+        if (!resolvedRoute) {
+            console.warn(`[IdenzaRouter] Rota não encontrada: ${route}`);
+            // Fallback para dashboard
+            this.navigate('dashboard');
+            return;
+        }
 
-  /**
-   * Escuta mudanças no histórico do navegador
-   */
-  _listenPopState() {
-    window.addEventListener('popstate', (event) => {
-      if (event.state?.route) {
-        this.navigate(event.state.route, event.state.params || {});
-      }
-    });
-  }
+        // Verifica guarda
+        if (resolvedRoute.guard) {
+            const guardFn = this._guards[resolvedRoute.guard];
+            if (guardFn && !guardFn(resolvedRoute)) {
+                console.warn(`[IdenzaRouter] Acesso negado pela guarda "${resolvedRoute.guard}"`);
+                IdenzaEvents.emit('idenza:accessDenied', { route: resolvedRoute });
+                return;
+            }
+        }
 
-  /**
-   * Trata a rota inicial (hash ou padrão)
-   */
-  _handleInitialRoute() {
-    const hash = window.location.hash;
-    if (hash.startsWith('#/')) {
-      const routeName = hash.slice(2).split('?')[0];
-      if (this.routes.has(routeName)) {
-        this.navigate(routeName);
-        return;
-      }
-    }
-    // Rota padrão
-    this.navigate('dashboard');
-  }
+        // Executa onLeave da rota atual
+        if (this._currentRoute && this._currentRoute.onLeave) {
+            this._currentRoute.onLeave(this._currentRoute);
+        }
 
-  /**
-   * Atualiza link ativo na navegação
-   */
-  _updateActiveNav(path) {
-    document.querySelectorAll('.nav-link, .sidebar-item').forEach(link => {
-      link.classList.remove('active');
-    });
+        // Atualiza histórico
+        this._previousRoute = this._currentRoute;
+        this._currentRoute = resolvedRoute;
 
-    // Sidebar
-    const sidebarLink = document.querySelector(`.sidebar-item[data-route="${path}"]`);
-    sidebarLink?.classList.add('active');
+        // Adiciona ao histórico do navegador
+        if (addToHistory) {
+            const url = `#${route}`;
+            history.pushState({ route }, resolvedRoute.title, url);
+        }
 
-    // Navbar
-    const navLink = document.querySelector(`.nav-link[data-route="${path}"]`);
-    navLink?.classList.add('active');
+        // Atualiza título da página
+        document.title = `${resolvedRoute.title} | Idenza Robotics Academy`;
 
-    // Tabs (se houver)
-    const tabBtn = document.querySelector(`.tab-btn[data-route="${path}"]`);
-    tabBtn?.classList.add('active');
-  }
+        // Executa transição
+        this._transitionTo(resolvedRoute);
 
-  /**
-   * Adiciona guarda global
-   */
-  addGuard(guardFn) {
-    this.guards.push(guardFn);
-  }
+        // Emite evento
+        IdenzaEvents.navigationChanged(resolvedRoute.module);
+    },
 
-  /**
-   * Carrega HTML de módulo (simulação para desenvolvimento)
-   */
-  async _loadModuleHTML(modulePath) {
-    // Tenta carregar via fetch
-    try {
-      const response = await fetch(modulePath);
-      if (response.ok) {
-        return await response.text();
-      }
-    } catch (e) {
-      console.warn(`Fetch falhou para ${modulePath}, usando conteúdo embutido.`);
-    }
+    // ============================================================
+    // VOLTAR
+    // ============================================================
+    back() {
+        if (this._previousRoute) {
+            this.navigate(this._previousRoute.module, false);
+        } else {
+            history.back();
+        }
+    },
 
-    // Fallback: conteúdo embutido
-    return this._getEmbeddedContent(modulePath);
-  }
+    // ============================================================
+    // ROTA ATUAL
+    // ============================================================
+    getCurrentRoute() {
+        return this._currentRoute;
+    },
 
-  /**
-   * Conteúdo embutido para desenvolvimento (fallback)
-   */
-  _getEmbeddedContent(modulePath) {
-    const embedded = {
-      'modules/dashboard.html': `
-        <div class="dashboard-grid">
-          <div class="card dashboard-full">
-            <div class="card-header">
-              <i class="fas fa-heartbeat"></i>
-              <h3>System State Summary</h3>
-              <span class="badge badge-warning">SIMULAÇÃO</span>
-            </div>
-            <p class="text-muted">Dashboard carregado com sucesso via Router SPA.</p>
-            <p class="text-tiny">Módulo: dashboard | Rota: #/dashboard</p>
-          </div>
-        </div>`,
-      'modules/academy.html': `
-        <div class="dashboard-grid">
-          <div class="card dashboard-full">
-            <div class="card-header">
-              <i class="fas fa-graduation-cap"></i>
-              <h3>Robotics Academy</h3>
-              <span class="badge badge-success">5 TRILHAS</span>
-            </div>
-            <p class="text-muted">Academy carregada com sucesso via Router SPA.</p>
-            <p class="text-tiny">Módulo: academy | Rota: #/academy</p>
-          </div>
-        </div>`,
-      'modules/portfolio.html': `
-        <div class="dashboard-grid">
-          <div class="card dashboard-full">
-            <div class="card-header">
-              <i class="fas fa-briefcase"></i>
-              <h3>Portfólio de Projetos</h3>
-              <span class="badge badge-info">200+ PROJETOS</span>
-            </div>
-            <p class="text-muted">Portfólio carregado com sucesso via Router SPA.</p>
-            <p class="text-tiny">Módulo: portfolio | Rota: #/portfolio</p>
-          </div>
-        </div>`,
-    };
+    getPreviousRoute() {
+        return this._previousRoute;
+    },
 
-    return embedded[modulePath] || `
-      <div class="empty-state">
-        <i class="fas fa-cube"></i>
-        <h4>Módulo: ${modulePath}</h4>
-        <p>Conteúdo será carregado aqui. Conecte ao backend para dados reais.</p>
-      </div>`;
-  }
+    // ============================================================
+    // MÉTODOS PRIVADOS
+    // ============================================================
+    _handleRouteChange() {
+        const hash = window.location.hash.replace('#', '') || 'dashboard';
+        this.navigate(hash, false);
+    },
 
-  /**
-   * Inicializadores de módulos
-   */
-  _initDashboard() {
-    if (typeof NEXUS_PRODUCTS_CATALOG !== 'undefined') {
-      console.log('Dashboard: catálogo de produtos disponível');
-    }
-  }
+    _resolveRoute(route) {
+        // Rota exata
+        if (this._routes[route]) {
+            return { ...this._routes[route], path: route };
+        }
 
-  _initAcademy() {
-    if (typeof NEXUS_COURSES_CURRICULUM !== 'undefined') {
-      console.log('Academy:', NEXUS_COURSES_CURRICULUM.getTotalLessons(), 'aulas disponíveis');
-    }
-  }
+        // Rota com parâmetros (ex: academy/trilha-ros)
+        const parts = route.split('/');
+        const baseRoute = parts[0];
 
-  _initPortfolio() {
-    if (typeof NEXUS_PROJECTS_DATABASE !== 'undefined') {
-      console.log('Portfólio:', NEXUS_PROJECTS_DATABASE.getTotalCount().total, 'projetos disponíveis');
-    }
-  }
+        if (this._routes[baseRoute]) {
+            const resolved = { ...this._routes[baseRoute], path: route };
+            // Extrai parâmetros
+            if (parts.length > 1) {
+                resolved.params = {
+                    ...resolved.params,
+                    subPath: parts.slice(1).join('/'),
+                    segments: parts.slice(1),
+                };
+            }
+            return resolved;
+        }
 
-  _initDiagnostics() {
-    console.log('Diagnóstico: sistema de análise de falhas ativo');
-  }
+        return null;
+    },
 
-  /**
-   * Retorna informações da rota atual
-   */
-  getCurrentRoute() {
-    return this.currentRoute;
-  }
+    _transitionTo(route) {
+        this._transitioning = true;
 
-  /**
-   * Lista todas as rotas registradas
-   */
-  listRoutes() {
-    return Array.from(this.routes.entries()).map(([path, config]) => ({
-      path,
-      title: config.title,
-      icon: config.icon,
-      module: config.module,
-    }));
-  }
+        // Animação de saída do módulo atual
+        const container = document.getElementById('moduleContainer');
+        if (container && route.animate) {
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(10px)';
+        }
+
+        // Carrega novo módulo
+        setTimeout(() => {
+            if (window.IdenzaApp && typeof IdenzaApp.loadModule === 'function') {
+                IdenzaApp.loadModule(route.module);
+            }
+
+            // Executa onEnter
+            if (route.onEnter) {
+                route.onEnter(route);
+            }
+
+            // Restaura animação
+            if (container && route.animate) {
+                setTimeout(() => {
+                    container.style.opacity = '1';
+                    container.style.transform = 'translateY(0)';
+                }, 50);
+            }
+
+            this._transitioning = false;
+        }, route.animate ? 200 : 0);
+    },
+};
+
+// ============================================================
+// ROTAS PADRÃO DA IDENZA ROBOTICS ACADEMY
+// ============================================================
+const IDENZA_ROUTES = {
+    'dashboard': {
+        module: 'dashboard',
+        title: 'Dashboard',
+    },
+    'academy': {
+        module: 'academy',
+        title: 'Academy',
+    },
+    'academy/:courseId': {
+        module: 'academy',
+        title: 'Curso',
+    },
+    'academy/:courseId/:lessonId': {
+        module: 'academy',
+        title: 'Aula',
+    },
+    'portfolio': {
+        module: 'portfolio',
+        title: 'Portfólio',
+    },
+    'portfolio/:projectId': {
+        module: 'portfolio',
+        title: 'Projeto',
+    },
+    'products': {
+        module: 'products',
+        title: 'Catálogo de Produtos',
+    },
+    'guides': {
+        module: 'guides',
+        title: 'Guias',
+    },
+    'diagnostics': {
+        module: 'diagnostics',
+        title: 'Diagnóstico',
+    },
+    'simulator': {
+        module: 'simulator',
+        title: 'Simulador',
+    },
+    'marketplace': {
+        module: 'marketplace',
+        title: 'Loja Idenza',
+    },
+    'settings': {
+        module: 'settings',
+        title: 'Configurações',
+    },
+    'terminal': {
+        module: 'terminal',
+        title: 'Terminal SSH',
+    },
+};
+
+// ============================================================
+// INICIALIZAÇÃO AUTOMÁTICA
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    IdenzaRouter.register(IDENZA_ROUTES);
+    IdenzaRouter.init();
+    window.IdenzaRouter = IdenzaRouter;
+});
+
+// ============================================================
+// EXPORTAÇÃO
+// ============================================================
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { IdenzaRouter, IDENZA_ROUTES };
 }
-
-// Exportação
-export default NexusRouter;
-
-/* ============================================================
-   FIM DO ARQUIVO: js/core/router.js
-   PRÓXIMO: js/core/state.js
-   ============================================================ */
