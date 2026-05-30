@@ -1,0 +1,567 @@
+/* ============================================================
+   NEXUS ROBOTICS ACADEMY v6.0
+   ARQUIVO: css/themes/theme-print.css
+   DESCRIÇÃO: Tema Print — impressão de relatórios, certificados
+              e documentação em PDF. Otimizado para A4.
+   ============================================================ */
+
+/* ==========================================
+   1. VARIÁVEIS DO TEMA PRINT
+   ========================================== */
+.theme-print {
+  /* Cores — tudo em preto e branco */
+  --color-primary: #000000;
+  --color-primary-light: #333333;
+  --color-primary-dark: #000000;
+  --gold-primary: #000000;
+  --gold-secondary: #555555;
+  --gold-dark: #000000;
+  --gold-light: #ffffff;
+
+  /* Background */
+  --color-bg: #ffffff;
+  --color-bg-alt: #ffffff;
+
+  /* Texto */
+  --color-text: #000000;
+  --color-text-light: #333333;
+  --color-text-muted: #555555;
+
+  /* Superfícies */
+  --color-surface: #ffffff;
+  --color-surface-hover: #ffffff;
+  --color-surface-alt: #fafafa;
+
+  /* Bordas */
+  --color-border: #000000;
+  --color-border-hover: #000000;
+
+  /* Sombras — nenhuma */
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-gold-glow: none;
+
+  /* Status em tons de cinza */
+  --color-critical: #000000;
+  --color-critical-bg: #f0f0f0;
+  --color-warning: #333333;
+  --color-warning-bg: #f5f5f5;
+  --color-success: #000000;
+  --color-success-bg: #f0f0f0;
+  --color-info: #333333;
+  --color-info-bg: #f5f5f5;
+
+  /* Gradientes — nenhum */
+  --gradient-gold: none;
+  --gradient-gold-subtle: none;
+  --gradient-card: none;
+  --gradient-card-hover: none;
+
+  /* Fontes para impressão */
+  --font-display: 'Georgia', 'Times New Roman', serif;
+  --font-body: 'Georgia', 'Times New Roman', serif;
+  --font-mono: 'Courier New', monospace;
+  --font-accent: 'Georgia', 'Times New Roman', serif;
+
+  /* Tamanhos menores para economizar papel */
+  --text-base: 11pt;
+  --text-sm: 9pt;
+  --text-xs: 8pt;
+  --text-lg: 13pt;
+  --text-xl: 16pt;
+  --text-2xl: 20pt;
+
+  /* Layout para A4 */
+  --max-content-width: 100%;
+  --header-height: auto;
+  --sidebar-width: 0;
+}
+
+/* ==========================================
+   2. RESET DE IMPRESSÃO
+   ========================================== */
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  body {
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #000000;
+    background: #ffffff;
+  }
+
+  @page {
+    margin: 1.5cm 2cm;
+    size: A4;
+
+    @top-left {
+      content: 'Nexus Robotics Academy';
+      font-family: 'Georgia', serif;
+      font-size: 8pt;
+      color: #666;
+    }
+
+    @top-right {
+      content: 'v6.0 | ' counter(page);
+      font-family: 'Georgia', serif;
+      font-size: 8pt;
+      color: #666;
+    }
+
+    @bottom-center {
+      content: 'Documento confidencial — Nexus Robotics Intelligence S.A.';
+      font-family: 'Georgia', serif;
+      font-size: 7pt;
+      color: #999;
+    }
+  }
+
+  @page :first {
+    @top-left {
+      content: '';
+    }
+    @top-right {
+      content: '';
+    }
+  }
+}
+
+/* ==========================================
+   3. OCULTAR ELEMENTOS NÃO IMPRIMÍVEIS
+   ========================================== */
+.theme-print .no-print,
+.theme-print .header,
+.theme-print .sidebar,
+.theme-print .nav-menu,
+.theme-print .hamburger,
+.theme-print .header-actions,
+.theme-print .header-status,
+.theme-print .toast-container,
+.theme-print .overlay,
+.theme-print .mobile-overlay,
+.theme-print .luxury-particles,
+.theme-print .btn,
+.theme-print .modal,
+.theme-print .tab-nav,
+.theme-print .scrollbar-styled,
+.theme-print [data-tooltip]::after,
+.theme-print .copy-btn {
+  display: none !important;
+}
+
+/* ==========================================
+   4. HEADER (IMPRESSÃO)
+   ========================================== */
+.theme-print .header-print {
+  display: block !important;
+  text-align: center;
+  border-bottom: 3px double #000000;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.theme-print .header-print .logo-print {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 18pt;
+  font-weight: bold;
+  letter-spacing: 2pt;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.theme-print .header-print .logo-tagline-print {
+  font-size: 8pt;
+  letter-spacing: 3pt;
+  text-transform: uppercase;
+  color: #555;
+}
+
+/* ==========================================
+   5. CARDS
+   ========================================== */
+.theme-print .card {
+  background: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 0;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  box-shadow: none;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.theme-print .card::before,
+.theme-print .card::after {
+  display: none;
+}
+
+.theme-print .card:hover {
+  transform: none;
+  border-color: #000000;
+}
+
+.theme-print .card-header {
+  border-bottom: 1px solid #000000;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.theme-print .card-header h3 {
+  font-size: 12pt;
+  font-weight: bold;
+  color: #000000;
+}
+
+.theme-print .card-header i {
+  color: #000000;
+  font-size: 10pt;
+}
+
+.theme-print .card-footer {
+  border-top: 1px solid #cccccc;
+  padding-top: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+/* ==========================================
+   6. TABELAS
+   ========================================== */
+.theme-print table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9pt;
+  margin-bottom: 1rem;
+}
+
+.theme-print table th {
+  background: #f0f0f0 !important;
+  color: #000000 !important;
+  font-weight: bold;
+  border: 1px solid #000000;
+  padding: 5px 8px;
+  text-align: left;
+}
+
+.theme-print table td {
+  border: 1px solid #cccccc;
+  padding: 4px 8px;
+  color: #000000;
+}
+
+.theme-print table tr:nth-child(even) td {
+  background: #fafafa !important;
+}
+
+.theme-print .table-container {
+  border: 1px solid #000000;
+  border-radius: 0;
+}
+
+/* ==========================================
+   7. BADGES
+   ========================================== */
+.theme-print .badge {
+  border: 1px solid #000000;
+  background: #f5f5f5 !important;
+  color: #000000 !important;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 0;
+}
+
+.theme-print .badge-critical {
+  border: 2px solid #000000;
+  background: #e0e0e0 !important;
+}
+
+.theme-print .badge-warning {
+  border: 2px solid #555555;
+  background: #f0f0f0 !important;
+}
+
+/* ==========================================
+   8. CÓDIGO
+   ========================================== */
+.theme-print code {
+  background: #f5f5f5 !important;
+  border: 1px solid #cccccc;
+  color: #000000 !important;
+  font-family: 'Courier New', monospace;
+  font-size: 9pt;
+  padding: 1px 4px;
+}
+
+.theme-print pre {
+  background: #fafafa !important;
+  border: 1px solid #000000;
+  color: #000000 !important;
+  font-family: 'Courier New', monospace;
+  font-size: 8pt;
+  padding: 0.6rem;
+  line-height: 1.3;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ==========================================
+   9. BLOCKQUOTE
+   ========================================== */
+.theme-print blockquote {
+  border-left: 3px solid #000000;
+  background: #fafafa;
+  padding: 0.5rem 0.8rem;
+  margin: 0.8rem 0;
+  font-style: italic;
+}
+
+/* ==========================================
+   10. LINKS
+   ========================================== */
+.theme-print a {
+  color: #000000;
+  text-decoration: underline;
+}
+
+.theme-print a[href]::after {
+  content: ' [' attr(href) ']';
+  font-size: 7pt;
+  color: #666;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+/* Não mostrar URL de links internos */
+.theme-print a[href^="#"]::after {
+  content: '';
+}
+
+/* ==========================================
+   11. IMAGENS
+   ========================================== */
+.theme-print img {
+  max-width: 100% !important;
+  page-break-inside: avoid;
+}
+
+/* ==========================================
+   12. PAGE BREAKS
+   ========================================== */
+.theme-print .page-break-before {
+  page-break-before: always;
+}
+
+.theme-print .page-break-after {
+  page-break-after: always;
+}
+
+.theme-print .no-break-inside {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* ==========================================
+   13. LISTAS
+   ========================================== */
+.theme-print ul li::before {
+  content: '■';
+  color: #000000;
+}
+
+.theme-print ol li::marker {
+  color: #000000;
+}
+
+/* ==========================================
+   14. FOOTER
+   ========================================== */
+.theme-print .footer {
+  margin-top: 1.5rem;
+  padding-top: 0.8rem;
+  border-top: 2px solid #000000;
+  font-size: 8pt;
+  color: #555;
+  background: #ffffff !important;
+}
+
+.theme-print .footer::before {
+  display: none;
+}
+
+.theme-print .footer-col h4 {
+  font-size: 9pt;
+  color: #000000 !important;
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 0.2rem;
+}
+
+.theme-print .footer-col p,
+.theme-print .footer-col li {
+  color: #333333 !important;
+}
+
+/* ==========================================
+   15. CERTIFICADO (ESTILO ESPECIAL)
+   ========================================== */
+.theme-print .certificate {
+  text-align: center;
+  border: 5px double #000000;
+  padding: 2rem;
+  margin: 1rem 0;
+  background: #ffffff;
+}
+
+.theme-print .certificate h1 {
+  font-size: 24pt;
+  font-weight: bold;
+  letter-spacing: 3pt;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.theme-print .certificate .recipient {
+  font-size: 18pt;
+  font-style: italic;
+  border-bottom: 2px solid #000000;
+  display: inline-block;
+  padding: 0 2rem 0.5rem;
+  margin: 1rem 0;
+}
+
+.theme-print .certificate .description {
+  font-size: 11pt;
+  max-width: 70%;
+  margin: 1.5rem auto;
+  line-height: 1.6;
+}
+
+.theme-print .certificate .signature-line {
+  display: inline-block;
+  width: 200px;
+  border-top: 1px solid #000000;
+  margin-top: 3rem;
+  padding-top: 0.3rem;
+  font-size: 9pt;
+}
+
+/* ==========================================
+   16. RELATÓRIO DE DIAGNÓSTICO
+   ========================================== */
+.theme-print .diagnostic-report {
+  font-family: 'Courier New', monospace;
+  font-size: 10pt;
+  line-height: 1.4;
+}
+
+.theme-print .diagnostic-report .report-title {
+  font-family: 'Georgia', serif;
+  font-size: 14pt;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #000000;
+}
+
+.theme-print .diagnostic-report .report-meta {
+  font-size: 8pt;
+  color: #555;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.theme-print .diagnostic-report .log-entry {
+  font-family: 'Courier New', monospace;
+  font-size: 8pt;
+  padding: 2px 0;
+  border-bottom: 1px dotted #cccccc;
+}
+
+.theme-print .diagnostic-report .log-error {
+  font-weight: bold;
+}
+
+/* ==========================================
+   17. SUMÁRIO / ÍNDICE
+   ========================================== */
+.theme-print .table-of-contents {
+  border: 1px solid #000000;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  page-break-after: always;
+}
+
+.theme-print .table-of-contents h2 {
+  font-size: 14pt;
+  text-align: center;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.theme-print .table-of-contents ul {
+  list-style: none;
+  padding: 0;
+}
+
+.theme-print .table-of-contents li {
+  padding: 3px 0;
+  border-bottom: 1px dotted #cccccc;
+}
+
+/* ==========================================
+   18. WATERMARK (MARCA D'ÁGUA)
+   ========================================== */
+.theme-print .watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 60pt;
+  color: rgba(0, 0, 0, 0.04);
+  pointer-events: none;
+  z-index: -1;
+  white-space: nowrap;
+  font-weight: bold;
+  letter-spacing: 10pt;
+}
+
+/* ==========================================
+   19. PROGRESS BAR (IMPRESSÃO)
+   ========================================== */
+.theme-print .progress {
+  border: 1px solid #000000;
+  background: #ffffff;
+  height: 12px;
+}
+
+.theme-print .progress-bar {
+  background: #000000 !important;
+  height: 100%;
+}
+
+/* ==========================================
+   20. ESTADO VAZIO
+   ========================================== */
+.theme-print .empty-state {
+  text-align: center;
+  padding: 1rem;
+  border: 1px dashed #999;
+  color: #666;
+  font-style: italic;
+}
+
+/* ============================================================
+   FIM DO ARQUIVO: css/themes/theme-print.css
+   PRÓXIMO: js/data/products-catalog.js
+   ============================================================ */
