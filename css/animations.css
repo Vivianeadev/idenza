@@ -1,0 +1,574 @@
+/* ============================================================
+   NEXUS ROBOTICS ACADEMY v6.0
+   ARQUIVO: css/animations.css
+   DESCRIÇÃO: Keyframes, transições, partículas, efeitos hover,
+              skeletons, animações de entrada e saída
+   ============================================================ */
+
+/* ==========================================
+   1. PARTÍCULAS DE LUXO (FUNDO)
+   ========================================== */
+.luxury-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: var(--z-below, -1);
+  overflow: hidden;
+}
+
+.luxury-particle {
+  position: absolute;
+  background: radial-gradient(circle, var(--gold-primary, #D4AF37) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatLuxury var(--duration, 20s) infinite linear;
+  animation-delay: var(--delay, 0s);
+}
+
+.luxury-particle:nth-child(1)  { width: 120px; height: 120px; left: 10%;  --duration: 22s; --delay: 0s; }
+.luxury-particle:nth-child(2)  { width: 80px;  height: 80px;  left: 30%;  --duration: 18s; --delay: -5s; }
+.luxury-particle:nth-child(3)  { width: 150px; height: 150px; left: 50%;  --duration: 25s; --delay: -10s; }
+.luxury-particle:nth-child(4)  { width: 60px;  height: 60px;  left: 70%;  --duration: 16s; --delay: -15s; }
+.luxury-particle:nth-child(5)  { width: 100px; height: 100px; left: 85%;  --duration: 20s; --delay: -7s; }
+.luxury-particle:nth-child(6)  { width: 90px;  height: 90px;  left: 20%;  --duration: 24s; --delay: -12s; }
+.luxury-particle:nth-child(7)  { width: 70px;  height: 70px;  left: 60%;  --duration: 19s; --delay: -3s; }
+.luxury-particle:nth-child(8)  { width: 110px; height: 110px; left: 45%;  --duration: 21s; --delay: -8s; }
+
+@keyframes floatLuxury {
+  0% {
+    transform: translateY(105vh) rotate(0deg) scale(0.3);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.12;
+  }
+  15% {
+    opacity: 0.08;
+  }
+  85% {
+    opacity: 0.08;
+  }
+  95% {
+    opacity: 0.12;
+  }
+  100% {
+    transform: translateY(-150px) rotate(360deg) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* ==========================================
+   2. ANIMAÇÕES DE ENTRADA
+   ========================================== */
+.animate-fade-in {
+  animation: fadeIn var(--duration-300, 300ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)) both;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-500, 500ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)) both;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown var(--duration-500, 500ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)) both;
+}
+
+.animate-fade-in-left {
+  animation: fadeInLeft var(--duration-500, 500ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)) both;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight var(--duration-500, 500ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)) both;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-300, 300ms) var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) both;
+}
+
+.animate-slide-up {
+  animation: slideUp var(--duration-500, 500ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)) both;
+}
+
+/* Delays */
+.delay-100  { animation-delay: 100ms; }
+.delay-200  { animation-delay: 200ms; }
+.delay-300  { animation-delay: 300ms; }
+.delay-500  { animation-delay: 500ms; }
+.delay-700  { animation-delay: 700ms; }
+.delay-1000 { animation-delay: 1000ms; }
+
+/* ==========================================
+   3. KEYFRAMES DE ENTRADA
+   ========================================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(60px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   4. ANIMAÇÕES DE SAÍDA
+   ========================================== */
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes fadeOutUp {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-20px); }
+}
+
+@keyframes fadeOutDown {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(20px); }
+}
+
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(100%); }
+}
+
+@keyframes slideOutLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-100%); }
+}
+
+/* ==========================================
+   5. PULSES E BATIDAS
+   ========================================== */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.05); opacity: 0.7; }
+}
+
+@keyframes pulse-strong {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+
+@keyframes heartbeat {
+  0%   { transform: scale(1); }
+  14%  { transform: scale(1.1); }
+  28%  { transform: scale(1); }
+  42%  { transform: scale(1.1); }
+  70%  { transform: scale(1); }
+}
+
+@keyframes ping {
+  0%   { transform: scale(1); opacity: 1; }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+/* ==========================================
+   6. ROTAÇÕES E GIROS
+   ========================================== */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes wobble {
+  0%   { transform: rotate(0deg); }
+  15%  { transform: rotate(-3deg); }
+  30%  { transform: rotate(3deg); }
+  45%  { transform: rotate(-2deg); }
+  60%  { transform: rotate(2deg); }
+  75%  { transform: rotate(-1deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* ==========================================
+   7. FLUTUAÇÃO E BALANÇO
+   ========================================== */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes swing {
+  20%  { transform: rotate(3deg); }
+  40%  { transform: rotate(-3deg); }
+  60%  { transform: rotate(1.5deg); }
+  80%  { transform: rotate(-1.5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* ==========================================
+   8. BRILHO E SHIMMER
+   ========================================== */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
+  50%      { box-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.3); }
+}
+
+@keyframes glow-critical {
+  0%, 100% { box-shadow: 0 0 5px rgba(198, 40, 40, 0.3); }
+  50%      { box-shadow: 0 0 20px rgba(198, 40, 40, 0.6), 0 0 40px rgba(198, 40, 40, 0.3); }
+}
+
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(212, 175, 55, 0.2); }
+  50%      { border-color: rgba(212, 175, 55, 0.6); }
+}
+
+/* ==========================================
+   9. DIGITAÇÃO (TYPEWRITER)
+   ========================================== */
+@keyframes typewriter {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes blink-caret {
+  0%, 100% { border-color: transparent; }
+  50%      { border-color: var(--gold-primary, #D4AF37); }
+}
+
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--gold-primary, #D4AF37);
+  animation: typewriter 3s steps(40) 1s both,
+             blink-caret 0.75s step-end infinite;
+}
+
+/* ==========================================
+   10. SLIDE EM BACKGROUND
+   ========================================== */
+@keyframes bg-slide-left {
+  from { background-position: 0 0; }
+  to   { background-position: -100% 0; }
+}
+
+@keyframes bg-slide-right {
+  from { background-position: 0 0; }
+  to   { background-position: 100% 0; }
+}
+
+/* ==========================================
+   11. EFEITOS DE HOVER
+   ========================================== */
+.hover-lift {
+  transition: transform var(--transition-base, 300ms ease),
+              box-shadow var(--transition-base, 300ms ease);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg, 0 10px 30px rgba(10, 49, 71, 0.12));
+}
+
+.hover-lift-sm:hover {
+  transform: translateY(-2px);
+}
+
+.hover-lift-lg:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl, 0 25px 50px rgba(10, 49, 71, 0.15));
+}
+
+.hover-scale {
+  transition: transform var(--transition-base, 300ms ease);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-glow {
+  transition: box-shadow var(--transition-base, 300ms ease);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-gold-glow, 0 0 30px rgba(212, 175, 55, 0.4));
+}
+
+.hover-border-gold {
+  transition: border-color var(--transition-base, 300ms ease);
+}
+
+.hover-border-gold:hover {
+  border-color: var(--gold-primary, #D4AF37);
+}
+
+.hover-bg-gold {
+  transition: background var(--transition-fast, 150ms ease);
+}
+
+.hover-bg-gold:hover {
+  background: var(--gold-surface, rgba(212, 175, 55, 0.08));
+}
+
+/* ==========================================
+   12. SKELETON LOADING
+   ========================================== */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-gray-200, #e5e7eb) 0%,
+    var(--color-gray-100, #f3f4f6) 40%,
+    var(--color-gray-200, #e5e7eb) 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+  border-radius: var(--radius-md, 8px);
+  cursor: progress;
+}
+
+.skeleton-text {
+  height: 14px;
+  margin-bottom: var(--space-2, 0.5rem);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.skeleton-text:last-child {
+  width: 60%;
+}
+
+.skeleton-title {
+  height: 20px;
+  width: 70%;
+  margin-bottom: var(--space-3, 0.75rem);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full, 9999px);
+  flex-shrink: 0;
+}
+
+.skeleton-card {
+  height: 180px;
+  border-radius: var(--radius-lg, 12px);
+}
+
+.skeleton-button {
+  height: 40px;
+  width: 120px;
+  border-radius: var(--radius-md, 8px);
+}
+
+/* ==========================================
+   13. ANIMAÇÕES DE NOTIFICAÇÃO
+   ========================================== */
+@keyframes bell-ring {
+  0%   { transform: rotate(0); }
+  10%  { transform: rotate(15deg); }
+  20%  { transform: rotate(-15deg); }
+  30%  { transform: rotate(10deg); }
+  40%  { transform: rotate(-10deg); }
+  50%  { transform: rotate(5deg); }
+  60%  { transform: rotate(-5deg); }
+  100% { transform: rotate(0); }
+}
+
+.bell-animation {
+  animation: bell-ring 1s var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
+  transform-origin: top center;
+}
+
+/* ==========================================
+   14. STAGGER (ITENS EM SEQUÊNCIA)
+   ========================================== */
+.stagger-item {
+  opacity: 0;
+  animation: fadeInUp var(--duration-500, 500ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)) forwards;
+}
+
+.stagger-item:nth-child(1)  { animation-delay: 0ms; }
+.stagger-item:nth-child(2)  { animation-delay: 100ms; }
+.stagger-item:nth-child(3)  { animation-delay: 200ms; }
+.stagger-item:nth-child(4)  { animation-delay: 300ms; }
+.stagger-item:nth-child(5)  { animation-delay: 400ms; }
+.stagger-item:nth-child(6)  { animation-delay: 500ms; }
+.stagger-item:nth-child(7)  { animation-delay: 600ms; }
+.stagger-item:nth-child(8)  { animation-delay: 700ms; }
+.stagger-item:nth-child(9)  { animation-delay: 800ms; }
+.stagger-item:nth-child(10) { animation-delay: 900ms; }
+
+/* ==========================================
+   15. ANIMAÇÕES DE SCROLL (INTERSECTION OBSERVER)
+   ========================================== */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity var(--duration-700, 700ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)),
+              transform var(--duration-700, 700ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Variantes */
+.reveal-on-scroll-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity var(--duration-700, 700ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)),
+              transform var(--duration-700, 700ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
+}
+
+.reveal-on-scroll-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-on-scroll-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity var(--duration-700, 700ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)),
+              transform var(--duration-700, 700ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
+}
+
+.reveal-on-scroll-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-on-scroll-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity var(--duration-700, 700ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1)),
+              transform var(--duration-700, 700ms) var(--ease-out, cubic-bezier(0, 0, 0.2, 1));
+}
+
+.reveal-on-scroll-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ==========================================
+   16. ANIMAÇÕES DE ESTADO (CRITICAL/WARNING)
+   ========================================== */
+@keyframes critical-flash {
+  0%, 100% { background-color: transparent; }
+  50%      { background-color: var(--color-critical-bg, rgba(198, 40, 40, 0.08)); }
+}
+
+@keyframes warning-flash {
+  0%, 100% { background-color: transparent; }
+  50%      { background-color: var(--color-warning-bg, rgba(230, 81, 0, 0.08)); }
+}
+
+.flash-critical {
+  animation: critical-flash 2s infinite;
+}
+
+.flash-warning {
+  animation: warning-flash 2s infinite;
+}
+
+/* ==========================================
+   17. RIPPLE EFFECT (CLICK)
+   ========================================== */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.3);
+  transform: scale(0);
+  animation: ripple-anim 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple-anim {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ==========================================
+   18. CONTADOR NUMÉRICO
+   ========================================== */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.count-animation {
+  display: inline-block;
+  animation: count-up 0.5s var(--ease-out, cubic-bezier(0, 0, 0.2, 1)) both;
+}
+
+/* ==========================================
+   19. LINHA DO TEMPO (TIMELINE)
+   ========================================== */
+@keyframes timeline-grow {
+  from { height: 0; }
+  to   { height: 100%; }
+}
+
+.timeline-line {
+  animation: timeline-grow 1.5s var(--ease-out, cubic-bezier(0, 0, 0.2, 1)) forwards;
+}
+
+/* ==========================================
+   20. UTILITÁRIOS DE ANIMAÇÃO
+   ========================================== */
+.animation-paused      { animation-play-state: paused !important; }
+.animation-running     { animation-play-state: running !important; }
+.animation-iteration-1 { animation-iteration-count: 1 !important; }
+.animation-infinite    { animation-iteration-count: infinite !important; }
+
+.transition-none       { transition: none !important; }
+.transition-all        { transition: all var(--transition-base, 300ms) var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)); }
+
+/* ============================================================
+   FIM DO ARQUIVO: css/animations.css
+   PRÓXIMO: css/responsive.css
+   ============================================================ */
