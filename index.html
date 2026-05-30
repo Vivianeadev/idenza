@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Nexus Robotics Academy — Ecossistema completo de aprendizado, diagnóstico e criação em robótica, IoT e inteligência artificial.">
+    <meta name="description" content="Idenza Robotics Academy — Ecossistema completo de aprendizado, diagnóstico e criação em robótica, IoT e inteligência artificial.">
     <meta name="theme-color" content="#0a3147">
-    <title>Nexus Robotics Academy | Diagnostic System & Robotics Academy v6.0</title>
+    <meta name="author" content="Idenza Robotics Intelligence S.A.">
+    <title>Idenza Robotics Academy | Diagnostic System & Robotics Academy v6.0</title>
 
     <!-- ==================== CSS ==================== -->
     <!-- Fundação -->
@@ -47,19 +48,20 @@
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner">
             <i class="fas fa-robot fa-spin"></i>
-            <p class="loading-text">Inicializando Nexus Robotics Academy...</p>
+            <p class="loading-text">Inicializando Idenza Robotics Academy...</p>
+            <p class="loading-subtext">Diagnostic System & Robotics Academy v6.0</p>
         </div>
     </div>
 
     <!-- ==================== HEADER ==================== -->
     <header class="header" id="mainHeader">
         <div class="nav-container">
-            <!-- Logo -->
+            <!-- Logo Idenza -->
             <div class="logo-area">
-                <a href="/" class="logo-link" aria-label="Nexus Robotics Academy — Página inicial">
+                <a href="/" class="logo-link" aria-label="Idenza Robotics Academy — Página inicial">
                     <div class="logo">
                         <i class="fas fa-robot"></i>
-                        <span>Nexus Robotics</span>
+                        <span>Idenza Robotics</span>
                     </div>
                     <div class="logo-tagline">Academy & Diagnostic Engine v6.0</div>
                 </a>
@@ -69,7 +71,7 @@
             <div class="header-status" id="headerStatus">
                 <div class="status-indicator">
                     <span class="status-dot" id="systemStatusDot"></span>
-                    <span id="systemStatusLabel">Sistema: --</span>
+                    <span id="systemStatusLabel">Idenza: --</span>
                 </div>
                 <div class="status-indicator">
                     <span class="status-dot" id="rosStatusDot"></span>
@@ -82,27 +84,27 @@
             </div>
 
             <!-- Seletor de tema -->
-            <div class="theme-selector">
-                <button class="theme-btn" data-theme="luxury" aria-label="Tema Luxo" title="Tema Luxo">
+            <div class="theme-selector" aria-label="Seletor de tema visual">
+                <button class="theme-btn" data-theme="luxury" aria-label="Tema Luxo Idenza" title="Tema Luxo — O original da Idenza">
                     <i class="fas fa-crown"></i>
                 </button>
                 <button class="theme-btn" data-theme="dark" aria-label="Tema Escuro" title="Tema Escuro">
                     <i class="fas fa-moon"></i>
                 </button>
-                <button class="theme-btn" data-theme="high-contrast" aria-label="Alto Contraste" title="Alto Contraste">
+                <button class="theme-btn" data-theme="high-contrast" aria-label="Alto Contraste" title="Alto Contraste — Acessibilidade">
                     <i class="fas fa-eye"></i>
                 </button>
             </div>
 
             <!-- Menu mobile -->
-            <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
+            <button class="hamburger" id="hamburger" aria-label="Abrir menu de navegação" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
             <!-- Navegação principal -->
-            <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Navegação principal">
+            <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Navegação principal da Idenza Robotics Academy">
                 <ul>
                     <li><a href="#dashboard" data-module="dashboard" class="nav-link active">
                         <i class="fas fa-tachometer-alt"></i> Dashboard
@@ -117,7 +119,7 @@
                         <span class="nav-hint">projetos</span>
                     </a></li>
                     <li><a href="#products" data-module="products" class="nav-link">
-                        <i class="fas fa-boxes"></i> Produtos
+                        <i class="fas fa-microchip"></i> Produtos
                         <span class="nav-hint">catálogo</span>
                     </a></li>
                     <li><a href="#guides" data-module="guides" class="nav-link">
@@ -133,7 +135,7 @@
                         <span class="nav-hint">treino</span>
                     </a></li>
                     <li><a href="#marketplace" data-module="marketplace" class="nav-link">
-                        <i class="fas fa-shopping-cart"></i> Loja
+                        <i class="fas fa-shopping-cart"></i> Loja Idenza
                         <span class="nav-hint">kits</span>
                     </a></li>
                 </ul>
@@ -141,8 +143,8 @@
         </div>
     </header>
 
-    <!-- ==================== SIDEBAR (desktop) ==================== -->
-    <aside class="sidebar" id="sidebar" role="complementary" aria-label="Barra lateral">
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar" role="complementary" aria-label="Barra lateral da Idenza Academy">
         <div class="sidebar-section">
             <h3 class="sidebar-title"><i class="fas fa-clock"></i> Acesso Rápido</h3>
             <ul class="sidebar-menu">
@@ -154,49 +156,58 @@
         </div>
 
         <div class="sidebar-section">
-            <h3 class="sidebar-title"><i class="fas fa-fire"></i> Em Alta</h3>
+            <h3 class="sidebar-title"><i class="fas fa-fire"></i> Em Alta na Idenza</h3>
             <ul class="sidebar-menu" id="trendingTopics">
                 <li><a href="#academy/trilha-ros"><i class="fas fa-star"></i> ROS 2 para Iniciantes</a></li>
                 <li><a href="#academy/trilha-iot"><i class="fas fa-star"></i> IoT com ESP32</a></li>
-                <li><a href="#academy/trilha-ai"><i class="fas fa-star"></i> IA na Borda</a></li>
+                <li><a href="#academy/trilha-ai"><i class="fas fa-star"></i> IA na Borda com Jetson</a></li>
             </ul>
         </div>
 
         <div class="sidebar-section">
-            <h3 class="sidebar-title"><i class="fas fa-certificate"></i> Certificações</h3>
+            <h3 class="sidebar-title"><i class="fas fa-certificate"></i> Certificações Idenza</h3>
             <div class="sidebar-cert-progress">
                 <div class="cert-item">
-                    <span>Nexus IoT Fundamentals</span>
+                    <span>Idenza IoT Fundamentals</span>
                     <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
                 </div>
                 <div class="cert-item">
-                    <span>Nexus ROS Associate</span>
+                    <span>Idenza ROS Associate</span>
                     <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
                 </div>
                 <div class="cert-item">
-                    <span>Nexus AI Robotics Pro</span>
+                    <span>Idenza AI Robotics Pro</span>
                     <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
                 </div>
             </div>
         </div>
+
+        <div class="sidebar-section">
+            <h3 class="sidebar-title"><i class="fas fa-info-circle"></i> Sobre a Idenza</h3>
+            <p class="sidebar-about">
+                A <strong>Idenza Robotics Academy</strong> é a plataforma definitiva para aprender, diagnosticar e criar sistemas robóticos, IoT e inteligência artificial. Do iniciante ao especialista.
+            </p>
+        </div>
     </aside>
 
     <!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
-    <main class="main-content" id="mainContent" role="main">
-        <!-- Módulos carregados dinamicamente aqui -->
+    <main class="main-content" id="mainContent" role="main" aria-label="Conteúdo principal da Idenza Robotics Academy">
         <div class="module-container" id="moduleContainer">
-            <!-- Conteúdo padrão: Dashboard -->
             <div class="module-loading">
                 <i class="fas fa-spinner fa-spin"></i>
-                <p>Carregando módulo...</p>
+                <p>Carregando Idenza Robotics Academy...</p>
+                <p class="loading-subtext">Preparando seu ambiente de aprendizado</p>
             </div>
         </div>
     </main>
 
     <!-- ==================== MODAL CONTAINER ==================== -->
     <div class="modal-overlay" id="modalOverlay" aria-hidden="true">
-        <div class="modal-container" id="modalContainer" role="dialog" aria-modal="true">
-            <button class="modal-close" id="modalClose" aria-label="Fechar modal">&times;</button>
+        <div class="modal-container" id="modalContainer" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Idenza Robotics Academy</h2>
+                <button class="modal-close" id="modalClose" aria-label="Fechar janela">&times;</button>
+            </div>
             <div class="modal-content" id="modalContent"></div>
         </div>
     </div>
@@ -204,47 +215,63 @@
     <!-- ==================== TOAST CONTAINER ==================== -->
     <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 
+    <!-- ==================== BUSCA GLOBAL ==================== -->
+    <div class="search-overlay" id="searchOverlay" aria-hidden="true">
+        <div class="search-modal">
+            <div class="search-header">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" id="globalSearchInput" placeholder="Buscar na Idenza Academy... (cursos, produtos, projetos)" aria-label="Busca global">
+                <kbd class="search-shortcut">ESC</kbd>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+    </div>
+
     <!-- ==================== FOOTER ==================== -->
-    <footer class="footer-main" role="contentinfo">
+    <footer class="footer-main" role="contentinfo" aria-label="Rodapé da Idenza Robotics Academy">
         <div class="footer-gold-line" aria-hidden="true"></div>
         <div class="footer-content">
             <div class="footer-col">
-                <h4><i class="fas fa-book"></i> Nexus Robotics Academy</h4>
+                <h4><i class="fas fa-robot"></i> Idenza Robotics Academy</h4>
                 <ul>
                     <li><strong>Versão:</strong> 6.0.0</li>
-                    <li><strong>Build:</strong> <span id="buildDate">--</span></li>
+                    <li><strong>Build:</strong> <span id="buildDate">2026</span></li>
                     <li><strong>Navegação:</strong> Use o menu superior ou a barra lateral.</li>
                     <li><strong>Atalho:</strong> <kbd>Ctrl</kbd> + <kbd>K</kbd> para busca global</li>
+                    <li><strong>Idioma:</strong> Português (Brasil)</li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4><i class="fas fa-gavel"></i> Compliance & Legal</h4>
                 <ul>
                     <li><strong>Ferramenta Diagnóstica:</strong> NÃO é sistema de controle.</li>
-                    <li><strong>Nenhuma Ação Automática:</strong> Requer intervenção humana.</li>
-                    <li><strong>Safety:</strong> ISO 13849-1 PLd / IEC 61508 SIL 2</li>
-                    <li><strong>Conformidade:</strong> ISO 10218-1, ROS-Industrial</li>
+                    <li><strong>Nenhuma Ação Automática:</strong> Requer intervenção humana qualificada.</li>
+                    <li><strong>Safety:</strong> Conforme ISO 13849-1 PLd / IEC 61508 SIL 2</li>
+                    <li><strong>Robótica:</strong> Conforme ISO 10218-1, ISO/TS 15066</li>
+                    <li><strong>Software:</strong> ROS-Industrial compliant</li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4><i class="fas fa-building"></i> Desenvolvedor</h4>
                 <ul>
-                    <li><strong>Empresa:</strong> Nexus Robotics Intelligence S.A.</li>
+                    <li><strong>Empresa:</strong> Idenza Robotics Intelligence S.A.</li>
                     <li><strong>CNPJ:</strong> 47.891.236/0001-09</li>
-                    <li><strong>Produto:</strong> Nexus Robotics Academy™</li>
-                    <li><strong>Licença:</strong> Proprietária</li>
-                    <li><strong>Contato:</strong> <a href="mailto:compliance@nexus-robotics.com">compliance@nexus-robotics.com</a></li>
+                    <li><strong>Produto:</strong> Idenza Robotics Academy™</li>
+                    <li><strong>Motor:</strong> Idenza Diagnostic Engine™ v6.0</li>
+                    <li><strong>Licença:</strong> Proprietária — Todos os direitos reservados</li>
+                    <li><strong>Contato:</strong> <a href="mailto:contato@idenzarobotics.com">contato@idenzarobotics.com</a></li>
+                    <li><strong>Suporte:</strong> <a href="mailto:suporte@idenzarobotics.com">suporte@idenzarobotics.com</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-disclaimer">
             <div class="legal-title">ISENÇÃO DE RESPONSABILIDADE</div>
-            <p>Este software é fornecido "como está", sem garantias de qualquer tipo, expressas ou implícitas. A Nexus Robotics Intelligence S.A. não se responsabiliza por danos diretos, indiretos, incidentais ou consequenciais resultantes do uso ou incapacidade de uso deste sistema.</p>
-            <p>As sugestões e planos de ação exibidos são recomendações geradas com base nos dados disponíveis. O operador humano é o único responsável por validar e executar qualquer ação no sistema físico.</p>
-            <p>© 2026 Nexus Robotics Intelligence S.A. Todos os direitos reservados. ROS® é marca registrada da Open Source Robotics Foundation.</p>
+            <p>Este software é fornecido "como está", sem garantias de qualquer tipo, expressas ou implícitas. A Idenza Robotics Intelligence S.A. não se responsabiliza por danos diretos, indiretos, incidentais ou consequenciais resultantes do uso ou incapacidade de uso deste sistema.</p>
+            <p>As sugestões e planos de ação exibidos são recomendações geradas com base nos dados disponíveis. O operador humano qualificado é o único responsável por validar e executar qualquer ação no sistema físico.</p>
+            <p>© 2026 Idenza Robotics Intelligence S.A. Todos os direitos reservados. ROS® é marca registrada da Open Source Robotics Foundation. Todas as outras marcas registradas pertencem aos seus respectivos proprietários.</p>
         </div>
         <div class="footer-copyright">
-            Build v6.0.0 — Nexus Robotics Intelligence S.A. — Compliance Tag: NR-COMP-2026-003
+            Idenza Robotics Academy™ — Build v6.0.0 — Idenza Robotics Intelligence S.A. — Compliance Tag: IDZ-COMP-2026-001
         </div>
     </footer>
 
@@ -300,12 +327,15 @@
     <!-- Inicialização -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            NexusApp.init({
+            window.IdenzaApp = window.IdenzaApp || {};
+            IdenzaApp.init({
                 defaultModule: 'dashboard',
                 defaultTheme: 'luxury',
                 rosBridgeUrl: 'ws://localhost:9090',
                 mqttBrokerUrl: 'ws://localhost:9001',
                 language: 'pt-BR',
+                appName: 'Idenza Robotics Academy',
+                appVersion: '6.0.0',
             });
         });
     </script>
