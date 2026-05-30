@@ -1,641 +1,282 @@
-/* ============================================================
-   NEXUS ROBOTICS ACADEMY v6.0
-   ARQUIVO: css/themes/theme-high-contrast.css
-   DESCRIÇÃO: Tema High Contrast — acessibilidade WCAG AAA,
-              contraste máximo, foco visível reforçado
-   ============================================================ */
-
-/* ==========================================
-   1. VARIÁVEIS DO TEMA HIGH CONTRAST
-   ========================================== */
-.theme-high-contrast {
-  /* Cores base — alto contraste */
-  --color-primary: #000000;
-  --color-primary-light: #1a1a1a;
-  --color-primary-dark: #000000;
-  --color-primary-surface: #0d0d0d;
-
-  /* Dourado convertido para alto contraste */
-  --gold-primary: #000000;
-  --gold-secondary: #333333;
-  --gold-dark: #000000;
-  --gold-light: #ffffff;
-  --gold-surface: rgba(0, 0, 0, 0.05);
-  --gold-border: rgba(0, 0, 0, 0.4);
-
-  /* Background */
-  --color-bg: #ffffff;
-  --color-bg-alt: #f5f5f5;
-
-  /* Texto */
-  --color-text: #000000;
-  --color-text-light: #1a1a1a;
-  --color-text-muted: #333333;
-
-  /* Superfícies */
-  --color-surface: #ffffff;
-  --color-surface-hover: #f0f0f0;
-  --color-surface-alt: #fafafa;
-
-  /* Bordas */
-  --color-border: rgba(0, 0, 0, 0.3);
-  --color-border-hover: rgba(0, 0, 0, 0.7);
-
-  /* Sombras (reduzidas para clareza) */
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.15);
-  --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.25);
-  --shadow-gold-glow: none;
-
-  /* Status com cores de alto contraste */
-  --color-critical: #b71c1c;
-  --color-critical-bg: rgba(183, 28, 28, 0.1);
-  --color-warning: #e65100;
-  --color-warning-bg: rgba(230, 81, 0, 0.1);
-  --color-success: #1b5e20;
-  --color-success-bg: rgba(27, 94, 32, 0.1);
-  --color-info: #0d3b5e;
-  --color-info-bg: rgba(13, 59, 94, 0.1);
-
-  /* Gradientes desligados */
-  --gradient-gold: none;
-  --gradient-gold-subtle: none;
-  --gradient-card: none;
-  --gradient-card-hover: none;
-}
-
-/* ==========================================
-   2. FUNDO GLOBAL
-   ========================================== */
-.theme-high-contrast body {
-  background: #ffffff;
-  color: #000000;
-}
-
-/* ==========================================
-   3. HEADER
-   ========================================== */
-.theme-high-contrast .header {
-  background: #ffffff;
-  border-bottom: 3px solid #000000;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.theme-high-contrast .header::after {
-  display: none;
-}
-
-/* ==========================================
-   4. LOGO
-   ========================================== */
-.theme-high-contrast .logo-text {
-  color: #000000;
-  -webkit-text-fill-color: #000000;
-  background: none;
-}
-
-.theme-high-contrast .logo-icon {
-  color: #000000;
-  text-shadow: none;
-  animation: none;
-}
-
-/* ==========================================
-   5. NAVEGAÇÃO
-   ========================================== */
-.theme-high-contrast .nav-link {
-  color: #000000;
-  font-weight: 600;
-}
-
-.theme-high-contrast .nav-link:hover {
-  background: #000000;
-  color: #ffffff;
-}
-
-.theme-high-contrast .nav-link.active {
-  background: #000000;
-  color: #ffffff;
-  border-bottom: 3px solid #000000;
-}
-
-.theme-high-contrast .nav-link i {
-  color: #000000;
-}
-
-.theme-high-contrast .nav-link:hover i,
-.theme-high-contrast .nav-link.active i {
-  color: #ffffff;
-}
-
-/* ==========================================
-   6. CARDS
-   ========================================== */
-.theme-high-contrast .card {
-  background: #ffffff;
-  border: 2px solid #000000;
-  box-shadow: none;
-}
-
-.theme-high-contrast .card::before {
-  display: none;
-}
-
-.theme-high-contrast .card::after {
-  display: none;
-}
-
-.theme-high-contrast .card:hover {
-  border-color: #000000;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
-  transform: none;
-}
-
-.theme-high-contrast .card-header {
-  border-bottom: 2px solid #000000;
-}
-
-.theme-high-contrast .card-header h3 {
-  color: #000000;
-  font-weight: 700;
-}
-
-.theme-high-contrast .card-header i {
-  color: #000000;
-  text-shadow: none;
-}
-
-.theme-high-contrast .card-footer {
-  border-top: 2px solid #000000;
-}
-
-/* ==========================================
-   7. CARDS DE STATUS
-   ========================================== */
-.theme-high-contrast .card-critical {
-  border: 3px solid #b71c1c;
-  border-left: 6px solid #b71c1c;
-}
-
-.theme-high-contrast .card-warning {
-  border: 3px solid #e65100;
-  border-left: 6px solid #e65100;
-}
-
-.theme-high-contrast .card-success {
-  border: 3px solid #1b5e20;
-  border-left: 6px solid #1b5e20;
-}
-
-.theme-high-contrast .card-info {
-  border: 3px solid #0d3b5e;
-  border-left: 6px solid #0d3b5e;
-}
-
-/* ==========================================
-   8. TABELAS
-   ========================================== */
-.theme-high-contrast .table-container {
-  border: 2px solid #000000;
-}
-
-.theme-high-contrast table th {
-  background: #000000;
-  color: #ffffff;
-  border-bottom: 3px solid #000000;
-  font-weight: 700;
-}
-
-.theme-high-contrast table td {
-  border-bottom: 1px solid #000000;
-  color: #000000;
-}
-
-.theme-high-contrast table tbody tr:hover {
-  background: #e0e0e0;
-}
-
-.theme-high-contrast table tr.row-critical {
-  background: rgba(183, 28, 28, 0.15);
-  font-weight: 600;
-}
-
-.theme-high-contrast table tr.row-warning {
-  background: rgba(230, 81, 0, 0.15);
-  font-weight: 600;
-}
-
-/* ==========================================
-   9. BOTÕES
-   ========================================== */
-.theme-high-contrast .btn {
-  border: 2px solid #000000;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.theme-high-contrast .btn-primary {
-  background: #000000;
-  color: #ffffff;
-  border-color: #000000;
-}
-
-.theme-high-contrast .btn-primary:hover {
-  background: #ffffff;
-  color: #000000;
-  box-shadow: 0 0 0 3px #000000;
-  transform: none;
-}
-
-.theme-high-contrast .btn-secondary {
-  background: #ffffff;
-  color: #000000;
-  border-color: #000000;
-}
-
-.theme-high-contrast .btn-secondary:hover {
-  background: #000000;
-  color: #ffffff;
-}
-
-.theme-high-contrast .btn-dark {
-  background: #000000;
-  color: #ffffff;
-  border-color: #000000;
-}
-
-.theme-high-contrast .btn-danger {
-  background: #b71c1c;
-  color: #ffffff;
-  border: 3px solid #b71c1c;
-}
-
-.theme-high-contrast .btn-danger:hover {
-  background: #ffffff;
-  color: #b71c1c;
-}
-
-.theme-high-contrast .btn:focus-visible {
-  outline: 4px solid #000000;
-  outline-offset: 4px;
-}
-
-/* ==========================================
-   10. INPUTS
-   ========================================== */
-.theme-high-contrast .form-input {
-  background: #ffffff;
-  border: 2px solid #000000;
-  color: #000000;
-  font-weight: 500;
-}
-
-.theme-high-contrast .form-input::placeholder {
-  color: #555555;
-  font-weight: 400;
-}
-
-.theme-high-contrast .form-input:focus {
-  border-color: #000000;
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.3);
-  outline: none;
-}
-
-.theme-high-contrast .form-label {
-  color: #000000;
-  font-weight: 700;
-}
-
-.theme-high-contrast .input-group {
-  border: 2px solid #000000;
-}
-
-.theme-high-contrast .input-group .input-group-icon {
-  background: #000000;
-  color: #ffffff;
-  border-right: 2px solid #000000;
-}
-
-/* ==========================================
-   11. BADGES
-   ========================================== */
-.theme-high-contrast .badge {
-  border: 2px solid #000000;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.theme-high-contrast .badge-gold {
-  background: #000000;
-  color: #ffffff;
-  border-color: #000000;
-}
-
-.theme-high-contrast .badge-critical {
-  background: #b71c1c;
-  color: #ffffff;
-  border-color: #b71c1c;
-}
-
-.theme-high-contrast .badge-warning {
-  background: #e65100;
-  color: #ffffff;
-  border-color: #e65100;
-}
-
-.theme-high-contrast .badge-success {
-  background: #1b5e20;
-  color: #ffffff;
-  border-color: #1b5e20;
-}
-
-.theme-high-contrast .badge-info {
-  background: #0d3b5e;
-  color: #ffffff;
-  border-color: #0d3b5e;
-}
-
-/* ==========================================
-   12. MODAL
-   ========================================== */
-.theme-high-contrast .modal {
-  background: #ffffff;
-  border: 4px solid #000000;
-  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
-}
-
-.theme-high-contrast .modal-header {
-  border-bottom: 3px solid #000000;
-}
-
-.theme-high-contrast .modal-header h3 {
-  color: #000000;
-  font-weight: 700;
-}
-
-.theme-high-contrast .modal-footer {
-  border-top: 3px solid #000000;
-}
-
-/* ==========================================
-   13. SIDEBAR
-   ========================================== */
-.theme-high-contrast .sidebar {
-  background: #ffffff;
-  border-right: 3px solid #000000;
-}
-
-.theme-high-contrast .sidebar-item {
-  color: #000000;
-  font-weight: 600;
-}
-
-.theme-high-contrast .sidebar-item:hover {
-  background: #000000;
-  color: #ffffff;
-}
-
-.theme-high-contrast .sidebar-item.active {
-  background: #000000;
-  color: #ffffff;
-  border-left: 5px solid #000000;
-}
-
-/* ==========================================
-   14. TOASTS
-   ========================================== */
-.theme-high-contrast .toast {
-  background: #ffffff;
-  border: 3px solid #000000;
-  box-shadow: 4px 4px 0 #000000;
-}
-
-/* ==========================================
-   15. TABS
-   ========================================== */
-.theme-high-contrast .tab-nav {
-  border-bottom: 3px solid #000000;
-}
-
-.theme-high-contrast .tab-btn {
-  color: #000000;
-  font-weight: 600;
-  border: 2px solid transparent;
-}
-
-.theme-high-contrast .tab-btn:hover {
-  background: #e0e0e0;
-}
-
-.theme-high-contrast .tab-btn.active {
-  background: #000000;
-  color: #ffffff;
-  border-color: #000000;
-  border-bottom-color: #000000;
-}
-
-/* ==========================================
-   16. ACCORDION
-   ========================================== */
-.theme-high-contrast .accordion {
-  border: 2px solid #000000;
-}
-
-.theme-high-contrast .accordion-item {
-  border-bottom: 2px solid #000000;
-}
-
-.theme-high-contrast .accordion-header {
-  font-weight: 700;
-  color: #000000;
-}
-
-.theme-high-contrast .accordion-header:hover {
-  background: #e0e0e0;
-}
-
-/* ==========================================
-   17. LINKS
-   ========================================== */
-.theme-high-contrast a {
-  color: #000000;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 2px;
-  font-weight: 600;
-}
-
-.theme-high-contrast a:hover {
-  background: #000000;
-  color: #ffffff;
-}
-
-.theme-high-contrast a:focus-visible {
-  outline: 4px solid #000000;
-  outline-offset: 4px;
-  background: #000000;
-  color: #ffffff;
-}
-
-/* ==========================================
-   18. CÓDIGO
-   ========================================== */
-.theme-high-contrast code {
-  background: #f0f0f0;
-  color: #000000;
-  border: 1px solid #000000;
-  font-weight: 500;
-}
-
-.theme-high-contrast pre {
-  background: #f5f5f5;
-  border: 2px solid #000000;
-  color: #000000;
-}
-
-/* ==========================================
-   19. BLOCKQUOTE
-   ========================================== */
-.theme-high-contrast blockquote {
-  background: #f5f5f5;
-  border-left: 5px solid #000000;
-  color: #000000;
-}
-
-/* ==========================================
-   20. SCROLLBAR
-   ========================================== */
-.theme-high-contrast ::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
-
-.theme-high-contrast ::-webkit-scrollbar-thumb {
-  background: #000000;
-  border-radius: 0;
-}
-
-.theme-high-contrast ::-webkit-scrollbar-thumb:hover {
-  background: #333333;
-}
-
-/* ==========================================
-   21. FOCO VISÍVEL GLOBAL
-   ========================================== */
-.theme-high-contrast :focus-visible {
-  outline: 4px solid #000000;
-  outline-offset: 4px;
-  border-radius: 2px;
-}
-
-/* ==========================================
-   22. TOOLTIP
-   ========================================== */
-.theme-high-contrast .tooltip-content {
-  background: #000000;
-  color: #ffffff;
-  border: 2px solid #000000;
-  font-weight: 600;
-}
-
-/* ==========================================
-   23. FOOTER
-   ========================================== */
-.theme-high-contrast .footer {
-  background: #000000;
-  color: #ffffff;
-  border-top: 5px solid #000000;
-}
-
-.theme-high-contrast .footer::before {
-  display: none;
-}
-
-.theme-high-contrast .footer-col h4 {
-  color: #ffffff;
-  font-weight: 700;
-}
-
-.theme-high-contrast .footer-col p,
-.theme-high-contrast .footer-col li {
-  color: #e0e0e0;
-  font-weight: 500;
-}
-
-/* ==========================================
-   24. SELEÇÃO DE TEXTO
-   ========================================== */
-.theme-high-contrast ::selection {
-  background: #000000;
-  color: #ffffff;
-}
-
-/* ==========================================
-   25. LOADING
-   ========================================== */
-.theme-high-contrast .spinner {
-  border-color: rgba(0, 0, 0, 0.2);
-  border-top-color: #000000;
-}
-
-.theme-high-contrast .skeleton {
-  background: #e0e0e0;
-  animation: none;
-}
-
-/* ==========================================
-   26. OVERLAY
-   ========================================== */
-.theme-high-contrast .overlay {
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: none;
-}
-
-/* ==========================================
-   27. PARTÍCULAS DESLIGADAS
-   ========================================== */
-.theme-high-contrast .luxury-particles {
-  display: none;
-}
-
-/* ==========================================
-   28. ANIMAÇÕES REDUZIDAS
-   ========================================== */
-.theme-high-contrast *,
-.theme-high-contrast *::before,
-.theme-high-contrast *::after {
-  animation-duration: 0.01ms !important;
-  transition-duration: 0.01ms !important;
-}
-
-.theme-high-contrast .pulse-critical,
-.theme-high-contrast .pulse-warning,
-.theme-high-contrast .pulse-success,
-.theme-high-contrast .pulse-gold {
-  animation: none;
-}
-
-/* ==========================================
-   29. SKIP LINK (ACESSIBILIDADE)
-   ========================================== */
-.theme-high-contrast .skip-link {
-  position: absolute;
-  top: -100px;
-  left: 0;
-  background: #000000;
-  color: #ffffff;
-  padding: 12px 24px;
-  font-weight: 700;
-  z-index: 9999;
-  text-decoration: none;
-  border: 3px solid #ffffff;
-}
-
-.theme-high-contrast .skip-link:focus {
-  top: 0;
+/**
+ * ============================================================
+ * IDENZA ROBOTICS ACADEMY — TEMA ALTO CONTRASTE
+ * ============================================================
+ * 
+ * Tema de acessibilidade com alto contraste:
+ * - Texto preto puro sobre fundo branco
+ * - Bordas grossas e bem definidas
+ * - Sem transparências ou blur
+ * - Foco visível reforçado
+ * - Tamanhos de fonte ligeiramente maiores
+ * - Cumpre WCAG 2.1 AAA
+ * 
+ * Ativado por: <html data-theme="high-contrast">
+ * 
+ * @version 6.0.0
+ * @license Proprietária — Idenza Robotics Intelligence S.A.
+ * ============================================================
+ */
+
+[data-theme="high-contrast"] {
+    /* ===== CORES DE TEXTO ===== */
+    --color-text: #000000;
+    --color-text-light: #1a1a1a;
+    --color-text-muted: #333333;
+    --color-primary: #000000;
+    --color-primary-light: #1a1a1a;
+    --color-primary-dark: #000000;
+
+    /* ===== DOURADO (MANTIDO PARA IDENTIDADE) ===== */
+    --gold-primary: #B8860B;
+    --gold-secondary: #8B6508;
+    --gold-dark: #6B4E04;
+    --gold-light: #FFFFFF;
+    --gold-surface: rgba(184, 134, 11, 0.2);
+    --gold-surface-hover: rgba(184, 134, 11, 0.35);
+    --gold-border: #B8860B;
+    --gold-border-light: #8B6508;
+
+    /* ===== GRADIENTES (SUBSTITUÍDOS POR SÓLIDOS) ===== */
+    --gradient-gold: #B8860B;
+    --gradient-gold-horizontal: #B8860B;
+    --gradient-gold-subtle: rgba(184, 134, 11, 0.15);
+    --gradient-gold-glow: rgba(184, 134, 11, 0.25);
+    --gradient-dark: #000000;
+    --gradient-dark-radial: #000000;
+    --gradient-card: #FFFFFF;
+    --gradient-card-hover: #FFFFFF;
+    --gradient-bg: #FFFFFF;
+
+    /* ===== STATUS ===== */
+    --color-critical: #8B0000;
+    --color-critical-bg: rgba(139, 0, 0, 0.15);
+    --color-critical-border: #8B0000;
+    --color-warning: #8B4500;
+    --color-warning-bg: rgba(139, 69, 0, 0.15);
+    --color-warning-border: #8B4500;
+    --color-success: #004d00;
+    --color-success-bg: rgba(0, 77, 0, 0.15);
+    --color-success-border: #004d00;
+    --color-info: #00008B;
+    --color-info-bg: rgba(0, 0, 139, 0.15);
+    --color-info-border: #00008B;
+
+    /* ===== SUPERFÍCIES ===== */
+    --color-white: #FFFFFF;
+    --color-off-white: #FAFAFA;
+    --color-light-gray: #DDDDDD;
+    --color-medium-gray: #999999;
+    --color-dark-gray: #333333;
+    --color-black: #000000;
+
+    /* ===== SOMBRAS (SUBSTITUÍDAS POR BORDAS) ===== */
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --shadow-2xl: none;
+    --shadow-gold-sm: 0 0 0 2px #B8860B;
+    --shadow-gold-md: 0 0 0 3px #B8860B;
+    --shadow-gold-lg: 0 0 0 4px #B8860B;
+    --shadow-gold-glow: 0 0 0 3px #B8860B;
+
+    /* ===== SCROLLBAR ===== */
+    --scrollbar-track: #DDDDDD;
+    --scrollbar-thumb: #666666;
+    --scrollbar-thumb-hover: #333333;
+
+    /* ===== CÓDIGO ===== */
+    --code-bg: #F5F5F5;
+    --code-border: #999999;
+    --code-color: #000000;
+    --pre-bg: #F0F0F0;
+    --pre-color: #000000;
+    --pre-border: #999999;
 }
 
 /* ============================================================
-   FIM DO ARQUIVO: css/themes/theme-high-contrast.css
-   PRÓXIMO: css/themes/theme-print.css
-   ============================================================ */
+ * AJUSTES ESPECÍFICOS DO TEMA ALTO CONTRASTE
+ * ============================================================ */
+[data-theme="high-contrast"] body {
+    background: #FFFFFF;
+    color: #000000;
+}
+
+[data-theme="high-contrast"] .header {
+    background: #FFFFFF;
+    border-bottom: 2px solid #000000;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+[data-theme="high-contrast"] .logo {
+    color: #000000;
+}
+
+[data-theme="high-contrast"] .logo-tagline {
+    color: #333333;
+}
+
+[data-theme="high-contrast"] .nav-link {
+    color: #000000;
+    border: 1px solid transparent;
+}
+
+[data-theme="high-contrast"] .nav-link:hover,
+[data-theme="high-contrast"] .nav-link:focus,
+[data-theme="high-contrast"] .nav-link.active {
+    color: #000000;
+    background: #DDDDDD;
+    border-color: #000000;
+    outline: 3px solid #000000;
+    outline-offset: 2px;
+}
+
+[data-theme="high-contrast"] .panel,
+[data-theme="high-contrast"] .card {
+    background: #FFFFFF;
+    border: 2px solid #000000;
+    box-shadow: none;
+}
+
+[data-theme="high-contrast"] .panel:hover,
+[data-theme="high-contrast"] .card:hover {
+    border-color: #000000;
+    box-shadow: 0 0 0 3px #000000;
+    transform: none;
+}
+
+[data-theme="high-contrast"] .panel::before {
+    background: #000000;
+}
+
+[data-theme="high-contrast"] .table thead {
+    background: #000000;
+}
+
+[data-theme="high-contrast"] .table thead th {
+    color: #FFFFFF;
+}
+
+[data-theme="high-contrast"] .table tbody td {
+    border-bottom: 1px solid #000000;
+}
+
+[data-theme="high-contrast"] .btn {
+    border: 2px solid #000000;
+    font-weight: 700;
+}
+
+[data-theme="high-contrast"] .btn-primary {
+    background: #000000;
+    color: #FFFFFF;
+}
+
+[data-theme="high-contrast"] .btn-gold {
+    background: #B8860B;
+    color: #000000;
+    border-color: #000000;
+}
+
+[data-theme="high-contrast"] .btn-outline {
+    background: #FFFFFF;
+    color: #000000;
+    border-color: #000000;
+}
+
+[data-theme="high-contrast"] .btn:focus-visible {
+    outline: 4px solid #000000;
+    outline-offset: 3px;
+}
+
+[data-theme="high-contrast"] a:focus-visible {
+    outline: 3px solid #000000;
+    outline-offset: 3px;
+}
+
+[data-theme="high-contrast"] input:focus,
+[data-theme="high-contrast"] textarea:focus,
+[data-theme="high-contrast"] select:focus {
+    border-color: #000000;
+    box-shadow: 0 0 0 3px #000000;
+    outline: none;
+}
+
+[data-theme="high-contrast"] .sidebar {
+    background: #FFFFFF;
+    border-left: 2px solid #000000;
+}
+
+[data-theme="high-contrast"] .footer-main {
+    background: #000000;
+    color: #FFFFFF;
+    border-top: 3px solid #B8860B;
+}
+
+[data-theme="high-contrast"] .footer-col h4 {
+    color: #FFD700;
+}
+
+[data-theme="high-contrast"] .footer-col li {
+    color: #FFFFFF;
+}
+
+[data-theme="high-contrast"] .luxury-particle {
+    display: none !important;
+}
+
+[data-theme="high-contrast"] .badge {
+    border: 2px solid #000000;
+    font-weight: 700;
+}
+
+[data-theme="high-contrast"] .badge-critical {
+    background: #FFE0E0;
+    color: #8B0000;
+    border-color: #8B0000;
+}
+
+[data-theme="high-contrast"] .badge-warning {
+    background: #FFF0E0;
+    color: #8B4500;
+    border-color: #8B4500;
+}
+
+[data-theme="high-contrast"] .badge-success {
+    background: #E0FFE0;
+    color: #004d00;
+    border-color: #004d00;
+}
+
+[data-theme="high-contrast"] .modal-overlay {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: none;
+}
+
+[data-theme="high-contrast"] .modal-container {
+    background: #FFFFFF;
+    border: 3px solid #000000;
+    box-shadow: 0 0 0 5px rgba(0,0,0,0.2);
+}
+
+[data-theme="high-contrast"] .search-overlay {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: none;
+}
+
+[data-theme="high-contrast"] .toast {
+    background: #FFFFFF;
+    border: 2px solid #000000;
+}
+
+[data-theme="high-contrast"] * {
+    transition: none !important;
+    animation: none !important;
+}
+
+[data-theme="high-contrast"] ::selection {
+    background: #000000;
+    color: #FFFFFF;
+}
