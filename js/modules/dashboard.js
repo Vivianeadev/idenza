@@ -236,4 +236,237 @@ const IdenzaDashboard = {
 
         container.innerHTML = `
             <table class="table">
-                <thead><tr><th>Dispositivo</th><th>Tipo</th><th>Status</th><th>Último TX</th></tr
+                <thead><tr><th>Dispositivo</th><th>Tipo</th><th>Status</th><th>Último TX</th></tr></thead>
+                <tbody>
+                    ${devices.map(dev => `
+                        <tr class="${dev.status === 'degraded' ? 'tr-warning' : ''}">
+                            <td><code>${dev.id}</code></td>
+                            <td>${dev.type}</td>
+                            <td>
+                                <span class="status-dot-sm ${dev.status === 'active' ? 'status-dot-active' : 'status-dot-warning'}"></span>
+                                <strong>${dev.status === 'active' ? 'ATIVO' : 'DEGRAD.'}</strong>
+                            </td>
+                            <td>${dev.latency}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    },
+
+    _renderEventStream() {
+        const container = document.getElementById('eventStream');
+        if (!container) return;
+
+        const events = [
+            { time: '14:30:01', level: 'info', message: 'System health: ALL NODES OK' },
+            { time: '14:30:25', level: 'info', message: 'Cycle #47 completed' },
+            { time: '14:31:48', level: 'warn', message: 'USB buffer overflow. Frames: 12' },
+            { time: '14:32:02', level: 'warn', message: 'USB buffer overflow. Frames: 28' },
+            { time: '14:32:17', level: 'error', message: 'SIGSEGV at 0x7f8b2c004000' },
+            { time: '14:32:19', level: 'error', message: 'Restart #1: GPU memory fail' },
+            { time: '14:32:23', level: 'error', message: 'Restart #2: GPU memory fail' },
+            { time: '14:32:27', level: 'error', message: 'Restart #3: GPU memory fail' },
+            { time: '14:32:35', level: 'warn', message: 'Conveyor speed: 2.3 m/s (limit: 1.5)' },
+            { time: '14:33:10', level: 'error', message: 'PROTECTIVE STOP ACTIVATED' },
+        ];
+
+        container.innerHTML = events.map(evt => `
+            <div class="log-entry log-${evt.level}">
+                <span class="timestamp">${evt.time}</span>
+                <span class="level">${evt.level.toUpperCase()}</span>
+                <span class="message">${evt.message}</span>
+            </div>
+        `).join('');
+    },
+
+    _renderRootCauseAnalysis() {
+        const container = document.getElementById('rootCauseAnalysis');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="analysis-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> Causa Raiz Principal</h3>
+                <div class="cause-chain">
+                    <div class="cause-step"><span class="step-label">🌡️ GATILHO</span> IOT-ENV-001: 47.2°C</div>
+                    <div class="cause-step"><span class="arrow">⬇</span></div>
+                    <div class="cause-step"><span class="step-label">🔥 EFEITO 1</span> GPU superaquece</div>
+                    <div class="cause-step"><span class="arrow">⬇</span></div>
+                    <div class="cause-step"><span class="step-label">📹 EFEITO 2</span> Câmera perde dados (USB buffer overflow)</div>
+                    <div class="cause-step"><span class="arrow">⬇</span></div>
+                    <div class="cause-step"><span class="step-label">💥 EFEITO 3</span> /vision_pipeline SIGSEGV — 3 restarts falham</div>
+                    <div class="cause-step"><span class="arrow">⬇</span></div>
+                    <div class="cause-step"><span class="step-label">🚫 EFEITO 4</span> Robô perde detecção visual de objetos</div>
+                    <div class="cause-step"><span class="arrow">⬇</span></div>
+                    <div class="cause-step"><span class="step-label">🛑 RESULTADO</span> Safety monitor ativa protective stop</div>
+                </div>
+            </div>
+            <div class="dependency-flow" style="margin-top:var(--space-4);">
+                <div class="dep-node root">🌡️ Sensor térmico falhou</div><div class="dep-arrow">⬇</div>
+                <div class="dep-node root">GPU superaqueceu (47.2°C)</div><div class="dep-arrow">⬇</div>
+                <div class="dep-node" style="background:rgba(230,81,0,0.08);border-color:var(--color-warning);color:var(--color-warning);">Câmera perdeu dados</div><div class="dep-arrow">⬇</div>
+                <div class="dep-node failed">Visão do robô quebrou</div><div class="dep-arrow">⬇</div>
+                <div class="dep-row"><div class="dep-node failed">Robô ficou cego</div><div style="color:var(--gold-primary);">+</div><div class="dep-node root">Esteira 2.3 m/s</div></div><div class="dep-arrow">⬇</div>
+                <div class="dep-node failed">🛑 Parada Protetiva</div>
+            </div>
+        `;
+    },
+
+    _renderDidactic() {
+        const container = document.getElementById('didaticExplanation');
+        if (!container) return;
+
+        container.innerHTML = `
+            <span class="layman-explain" style="display:block;margin-bottom:var(--space-4);">Pense no robô como uma pessoa trabalhando numa linha de montagem</span>
+            <div class="didatic-grid">
+                <div class="sense-card failed">
+                    <i class="fas fa-eye"></i>
+                    <h4>👁️ VISÃO</h4>
+                    <p class="status-text" style="color:var(--color-critical);">❌ CEGO</p>
+                    <p class="tiny-hint">Câmera "queimou" por superaquecimento</p>
+                </div>
+                <div class="sense-card warning-sense">
+                    <i class="fas fa-ear-listen"></i>
+                    <h4>👂 AUDIÇÃO</h4>
+                    <p class="status-text" style="color:var(--color-warning);">⚠️ ATORDOADO</p>
+                    <p class="tiny-hint">Esteira turbo — como som muito alto</p>
+                </div>
+                <div class="sense-card ok-sense">
+                    <i class="fas fa-hand-paper"></i>
+                    <h4>✋ TATO</h4>
+                    <p class="status-text" style="color:var(--color-success);">✅ FUNCIONAL</p>
+                    <p class="tiny-hint">Gripper OK — a mão do robô ainda funciona</p>
+                </div>
+            </div>
+        `;
+    },
+
+    _renderActionPlan() {
+        const container = document.getElementById('actionPlan');
+        if (!container) return;
+
+        const actions = [
+            { priority: 'critical', num: 1, title: '🛑 Parar Esteira', desc: 'Serviço /conveyor/stop.', cmd: 'rosservice call /conveyor/stop', hint: 'confirmar 0.0 m/s', explain: 'Desligue a esteira primeiro — é o mais urgente' },
+            { priority: 'high', num: 2, title: '🌡️ Verificar Aquecimento', desc: 'Inspecione ventoinhas e fluxo de ar.', hint: 'superfície >60°C indica problema', explain: 'Veja se os coolers estão girando e se há poeira' },
+            { priority: 'high', num: 3, title: '⏳ Esperar Esfriar', desc: '5–10 minutos com ventilação forçada.', hint: 'Monitore IOT-ENV-001 até <40°C', explain: 'Deixe o computador descansar até esfriar' },
+            { priority: 'medium', num: 4, title: '🔧 Examinar Esteira', desc: 'Verifique o controlador do motor.', hint: 'não religar ainda', explain: 'Descubra por que a esteira estava tão rápida' },
+        ];
+
+        container.innerHTML = actions.map(a => `
+            <div class="action-step priority-${a.priority}">
+                <div class="action-number">${a.num}</div>
+                <div class="action-content">
+                    <h4>${a.title}</h4>
+                    <p>${a.desc}</p>
+                    ${a.cmd ? `<span class="action-cmd">${a.cmd}</span>` : ''}
+                    <p class="tiny-hint">${a.hint}</p>
+                    <span class="layman-explain">${a.explain}</span>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    _renderRiskLevel() {
+        const container = document.getElementById('riskLevel');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="risk-banner critical-risk">
+                <div class="risk-icon"><i class="fas fa-radiation"></i></div>
+                <div class="risk-text">
+                    <h3>🔴 NÍVEL ALTO</h3>
+                    <p>Protective stop ativo. GPU com risco de dano permanente se religado sem resfriamento.</p>
+                </div>
+            </div>
+            <span class="layman-explain">Situação perigosa — o computador pode queimar de vez se não esfriar</span>
+        `;
+    },
+
+    // ============================================================
+    // EVENTOS
+    // ============================================================
+    _bindEvents() {
+        // Escuta atualizações de diagnóstico
+        IdenzaEvents.on('idenza:sensorData', (data) => {
+            this._updateSensorData(data);
+        });
+
+        IdenzaEvents.on('idenza:robotStatusChanged', (data) => {
+            this._updateSystemStatus(data.status);
+        });
+    },
+
+    _updateSensorData(data) {
+        if (data.sensorId === 'IOT-ENV-001') {
+            const tempEl = document.getElementById('gpuTemperature');
+            if (tempEl) tempEl.textContent = `${data.data.temperature.toFixed(1)}°C`;
+        }
+        if (data.sensorId === 'IOT-CONV-001') {
+            const speedEl = document.getElementById('conveyorSpeed');
+            if (speedEl) speedEl.textContent = `${data.data.speed.toFixed(1)} m/s`;
+        }
+    },
+
+    _updateSystemStatus(status) {
+        const badge = document.getElementById('systemBadge');
+        if (!badge) return;
+
+        badge.className = 'badge';
+        switch (status) {
+            case 'operational':
+                badge.classList.add('badge-success');
+                badge.textContent = 'OPERACIONAL';
+                break;
+            case 'degraded':
+                badge.classList.add('badge-warning');
+                badge.textContent = 'DEGRADADO';
+                break;
+            case 'critical':
+            case 'stopped':
+                badge.classList.add('badge-critical');
+                badge.textContent = 'CRÍTICO';
+                break;
+        }
+    },
+
+    // ============================================================
+    // AUTO REFRESH
+    // ============================================================
+    _startAutoRefresh() {
+        if (!this.config.autoRefresh) return;
+
+        this.state.intervalId = setInterval(() => {
+            this._simulateDataUpdate();
+        }, this.config.refreshInterval);
+    },
+
+    _stopAutoRefresh() {
+        if (this.state.intervalId) {
+            clearInterval(this.state.intervalId);
+            this.state.intervalId = null;
+        }
+    },
+
+    _simulateDataUpdate() {
+        // Simula pequenas variações nos dados
+        const temp = 47.2 + (Math.random() - 0.5) * 0.3;
+        const tempEl = document.getElementById('gpuTemperature');
+        if (tempEl) tempEl.textContent = `${temp.toFixed(1)}°C`;
+    },
+
+    // ============================================================
+    // DESTRUIÇÃO
+    // ============================================================
+    destroy() {
+        this._stopAutoRefresh();
+        this.state.isLoaded = false;
+    },
+};
+
+// ============================================================
+// REGISTRO NO SISTEMA DE MÓDULOS
+// ============================================================
+if (typeof IdenzaModules === 'undefined') {
+    window.IdenzaModules = {};
+}
+IdenzaModules.initDashboard = (container) => IdenzaDashboard.init(container);
