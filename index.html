@@ -3,190 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Idenza Robotics Academy — Construa robôs reais open source com passo a passo completo, código-fonte e lista de materiais.">
+    <meta name="description" content="Idenza Robotics Academy — Construa robôs reais open source com passo a passo completo, código-fonte funcional e lista de materiais detalhada.">
     <meta name="theme-color" content="#0a3147">
-    <title>Idenza Robotics Academy | Construa Robôs Reais</title>
+    <meta name="author" content="Idenza Robotics Intelligence S.A.">
+    <title>Idenza Robotics Academy | Construa Robôs Reais Passo a Passo</title>
 
+    <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Marcellus&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+        /* ============================================================
+           IDENZA ROBOTICS ACADEMY — DESIGN SYSTEM COMPLETO
+           ============================================================ */
         :root {
             --primary: #0a3147;
+            --primary-light: #1a4b6d;
+            --primary-dark: #061d2b;
             --gold: #D4AF37;
-            --gold-dark: #B8860B;
             --gold-light: #F4E4B8;
+            --gold-dark: #B8860B;
+            --gold-surface: rgba(212, 175, 55, 0.08);
+            --gold-border: rgba(212, 175, 55, 0.2);
             --text: #2b2b2b;
-            --text-light: #4a4a4a;
+            --text-light: #5a5a5a;
+            --text-muted: #888888;
             --white: #ffffff;
-            --bg: linear-gradient(135deg, #f9f5f0 0%, #faf0f4 100%);
+            --off-white: #faf9f6;
+            --bg: linear-gradient(135deg, #f9f5f0 0%, #faf0f4 50%, #f5f7fa 100%);
             --critical: #c62828;
+            --critical-bg: rgba(198, 40, 40, 0.08);
             --warning: #e65100;
+            --warning-bg: rgba(230, 81, 0, 0.06);
             --success: #2e7d32;
-            --shadow: 0 4px 20px rgba(0,0,0,0.05);
-            --shadow-hover: 0 15px 40px rgba(10,49,71,0.12);
-            --radius: 16px;
+            --success-bg: rgba(46, 125, 50, 0.08);
+            --info: #1a4b6d;
+            --shadow-sm: 0 1px 3px rgba(10, 49, 71, 0.06);
+            --shadow-md: 0 4px 15px rgba(10, 49, 71, 0.08);
+            --shadow-lg: 0 10px 30px rgba(10, 49, 71, 0.12);
+            --shadow-xl: 0 25px 50px rgba(10, 49, 71, 0.15);
+            --shadow-gold: 0 8px 25px rgba(212, 175, 55, 0.25);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-display: 'Cinzel', 'Times New Roman', serif;
+            --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-accent: 'Marcellus', 'Georgia', serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-body);
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* HEADER */
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(10, 49, 71, 0.05); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.4); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.7); }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
         .header {
-            background: linear-gradient(180deg, var(--primary) 0%, #1a4b6d 100%);
+            background: linear-gradient(175deg, var(--primary) 0%, var(--primary-light) 70%, var(--primary-dark) 100%);
             color: var(--white);
-            padding: 3rem 2rem;
+            padding: 3.5rem 2rem 2.5rem;
             text-align: center;
             position: relative;
+            overflow: hidden;
         }
         .header::after {
             content: '';
             position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold-dark));
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(212,175,55,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        .header-icon {
+            font-size: 3.5rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            display: block;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
         .header h1 {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-family: var(--font-display);
+            font-size: clamp(1.6rem, 4vw, 2.6rem);
             letter-spacing: 3px;
             margin-bottom: 0.5rem;
             color: var(--white);
+            text-transform: uppercase;
         }
-        .header h1 i { color: var(--gold); margin-right: 10px; }
+        .header h1 .gold { color: var(--gold); }
         .header .subtitle {
-            font-family: 'Marcellus', serif;
+            font-family: var(--font-accent);
             color: var(--gold-light);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             letter-spacing: 2px;
             opacity: 0.9;
+            margin-bottom: 1.5rem;
         }
-        .header .counter {
+        .header .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
             margin-top: 1.5rem;
-            font-family: 'Cinzel', serif;
+        }
+        .header .stat-item {
+            text-align: center;
+        }
+        .header .stat-value {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
             color: var(--gold);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .header .stat-label {
+            font-family: var(--font-accent);
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
-        /* CONTAINER */
+        /* ============================================================
+           CONTAINER PRINCIPAL
+           ============================================================ */
         .container {
-            max-width: 1300px;
+            max-width: 1350px;
             margin: 0 auto;
-            padding: 2rem 1.5rem;
+            padding: 2rem 1.5rem 4rem;
         }
 
-        /* FILTROS */
-        .filtros {
+        /* ============================================================
+           BARRA DE FILTROS
+           ============================================================ */
+        .filtros-wrapper {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gold-border);
             display: flex;
             flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-bottom: 2rem;
+            gap: 1rem;
+            align-items: center;
+            position: sticky;
+            top: 1rem;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+        .filtro-grupo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
             align-items: center;
         }
-        .filtro-btn {
-            padding: 8px 18px;
-            border-radius: 30px;
-            border: 1px solid rgba(212,175,55,0.3);
-            background: var(--white);
-            color: var(--text);
-            font-family: 'Marcellus', serif;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            letter-spacing: 0.5px;
+        .filtro-label {
+            font-family: var(--font-accent);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-right: 0.3rem;
+            white-space: nowrap;
         }
-        .filtro-btn:hover, .filtro-btn.active {
+        .filtro-btn {
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--gold-border);
+            background: var(--white);
+            color: var(--text-light);
+            font-family: var(--font-accent);
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .filtro-btn:hover {
+            border-color: var(--gold);
+            color: var(--primary);
+            background: var(--gold-surface);
+        }
+        .filtro-btn.active {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--white);
             border-color: var(--gold);
+            font-weight: 700;
+            box-shadow: var(--shadow-gold);
         }
-        .busca-input {
-            padding: 10px 18px;
-            border-radius: 30px;
-            border: 1px solid rgba(212,175,55,0.3);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+        .busca-wrapper {
             flex: 1;
             min-width: 200px;
-            max-width: 350px;
+            position: relative;
             margin-left: auto;
         }
-        .busca-input:focus {
-            outline: 2px solid var(--gold);
-            border-color: var(--gold);
+        .busca-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold-dark);
+            font-size: 0.85rem;
         }
+        .busca-input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--gold-border);
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            background: var(--off-white);
+            transition: var(--transition);
+            color: var(--text);
+        }
+        .busca-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+            background: var(--white);
+        }
+        .busca-input::placeholder {
+            color: var(--text-muted);
+        }
+        .busca-clear {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: none;
+            padding: 4px;
+        }
+        .busca-clear.visible { display: block; }
 
-        /* GRID DE ROBÔS */
+        /* ============================================================
+           GRID DE ROBÔS
+           ============================================================ */
         .robos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 1.5rem;
         }
         .robo-card {
             background: var(--white);
-            border-radius: var(--radius);
-            border: 1px solid rgba(212,175,55,0.12);
-            box-shadow: var(--shadow);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            box-shadow: var(--shadow-sm);
             padding: 1.5rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
         .robo-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg), 0 4px 20px rgba(212, 175, 55, 0.1);
             border-color: var(--gold);
         }
         .robo-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 4px;
             background: linear-gradient(90deg, var(--gold), var(--gold-dark));
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 0.4s ease;
+            transition: transform 0.5s ease;
         }
         .robo-card:hover::before {
             transform: scaleX(1);
         }
-        .robo-card .robo-icon {
-            font-size: 2.2rem;
+        .robo-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
             margin-bottom: 0.8rem;
         }
+        .robo-card-icon {
+            font-size: 2rem;
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: var(--gold-surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .robo-card-icon i { color: var(--gold); }
+        .robo-card-titulos { flex: 1; }
         .robo-card h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
+            font-family: var(--font-display);
+            font-size: 1rem;
             color: var(--primary);
-            margin-bottom: 0.3rem;
-            letter-spacing: 1px;
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
         }
         .robo-card .robo-tipo {
-            font-family: 'Marcellus', serif;
-            color: var(--text-light);
-            font-size: 0.75rem;
-            margin-bottom: 0.8rem;
+            font-family: var(--font-accent);
+            color: var(--text-muted);
+            font-size: 0.68rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
         .robo-card .robo-desc {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             color: var(--text-light);
-            line-height: 1.5;
+            line-height: 1.55;
             flex: 1;
             margin-bottom: 1rem;
         }
@@ -197,45 +370,71 @@
             margin-bottom: 1rem;
         }
         .robo-tag {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            font-family: 'Marcellus', serif;
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.62rem;
+            font-family: var(--font-accent);
             letter-spacing: 0.5px;
-            background: rgba(212,175,55,0.1);
-            border: 1px solid rgba(212,175,55,0.2);
+            background: var(--gold-surface);
+            border: 1px solid var(--gold-border);
             color: var(--gold-dark);
+            white-space: nowrap;
         }
-        .robo-tag.facil { background: rgba(46,125,50,0.08); border-color: rgba(46,125,50,0.2); color: var(--success); }
-        .robo-tag.medio { background: rgba(230,81,0,0.06); border-color: rgba(230,81,0,0.2); color: var(--warning); }
-        .robo-tag.avancado { background: rgba(198,40,40,0.06); border-color: rgba(198,40,40,0.2); color: var(--critical); }
-        .robo-tag.especialista { background: rgba(10,49,71,0.06); border-color: rgba(10,49,71,0.2); color: var(--primary); }
+        .robo-tag.facil { background: var(--success-bg); border-color: rgba(46,125,50,0.2); color: var(--success); }
+        .robo-tag.medio { background: var(--warning-bg); border-color: rgba(230,81,0,0.2); color: var(--warning); }
+        .robo-tag.avancado { background: var(--critical-bg); border-color: rgba(198,40,40,0.2); color: var(--critical); }
+        .robo-tag.especialista { background: rgba(10,49,71,0.06); border-color: rgba(10,49,71,0.2); color: var(--primary); font-weight: 700; }
+        .robo-tag i { margin-right: 2px; }
 
+        .robo-card-footer {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: auto;
+        }
         .robo-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            gap: 6px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: var(--white);
             border: none;
-            border-radius: 10px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-accent);
+            font-size: 0.72rem;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.3s;
+            transition: var(--transition);
+            flex: 1;
             text-align: center;
         }
         .robo-btn:hover {
-            box-shadow: 0 8px 25px rgba(212,175,55,0.3);
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--primary);
+            font-weight: 700;
+            box-shadow: var(--shadow-gold);
+            transform: translateY(-1px);
+        }
+        .robo-btn-outline {
+            background: transparent;
+            border: 1px solid var(--gold-border);
+            color: var(--primary);
+            flex: 0;
+            padding: 10px 12px;
+        }
+        .robo-btn-outline:hover {
+            background: var(--gold-surface);
+            border-color: var(--gold);
+            box-shadow: none;
         }
 
-        /* VAZIO */
+        /* ============================================================
+           ESTADO VAZIO
+           ============================================================ */
         .vazio {
             text-align: center;
             padding: 4rem 2rem;
@@ -245,33 +444,55 @@
             font-size: 4rem;
             color: var(--gold);
             margin-bottom: 1rem;
-            opacity: 0.5;
+            opacity: 0.4;
         }
         .vazio h3 {
-            font-family: 'Cinzel', serif;
+            font-family: var(--font-display);
             color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .vazio p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
         }
 
-        /* FOOTER */
+        /* ============================================================
+           FOOTER
+           ============================================================ */
         .footer {
             background: var(--primary);
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.55);
             text-align: center;
-            padding: 2rem;
-            font-size: 0.7rem;
-            font-family: 'Marcellus', serif;
+            padding: 2.5rem 1.5rem;
+            font-size: 0.68rem;
+            font-family: var(--font-accent);
             letter-spacing: 1px;
-            margin-top: 4rem;
+            margin-top: 2rem;
+            border-top: 3px solid var(--gold);
         }
-        .footer strong { color: var(--gold); }
+        .footer strong { color: var(--gold-light); }
+        .footer a { color: var(--gold); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
 
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
         @media (max-width: 768px) {
-            .header { padding: 2rem 1rem; }
-            .header h1 { font-size: 1.4rem; }
-            .container { padding: 1rem; }
-            .robos-grid { grid-template-columns: 1fr; }
-            .filtros { flex-direction: column; align-items: stretch; }
-            .busca-input { max-width: 100%; margin-left: 0; }
+            .header { padding: 2rem 1rem 1.5rem; }
+            .header h1 { font-size: 1.3rem; letter-spacing: 1.5px; }
+            .header .stats { gap: 1.2rem; }
+            .header .stat-value { font-size: 1.3rem; }
+            .container { padding: 1rem 0.8rem 2rem; }
+            .filtros-wrapper { flex-direction: column; align-items: stretch; gap: 0.8rem; padding: 1rem; }
+            .busca-wrapper { margin-left: 0; width: 100%; }
+            .robos-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .robo-card { padding: 1.2rem; }
+        }
+        @media (max-width: 480px) {
+            .header-icon { font-size: 2.5rem; }
+            .header .subtitle { font-size: 0.8rem; }
+            .filtro-btn { font-size: 0.65rem; padding: 5px 10px; }
+            .robo-card h3 { font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -279,148 +500,293 @@
 
     <!-- ==================== HEADER ==================== -->
     <header class="header">
-        <h1><i class="fas fa-robot"></i> Idenza Robotics Academy</h1>
-        <p class="subtitle">Construa Robôs Reais • Open Source • Passo a Passo</p>
-        <p class="counter" id="contadorRobos">Carregando catálogo...</p>
+        <div class="header-content">
+            <i class="fas fa-robot header-icon"></i>
+            <h1>Idenza <span class="gold">Robotics</span> Academy</h1>
+            <p class="subtitle">Construa Robôs Reais • Open Source • Passo a Passo Completo</p>
+            <div class="stats" id="headerStats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalRobos">—</div>
+                    <div class="stat-label">Robôs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalPecas">—</div>
+                    <div class="stat-label">Peças Documentadas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCodigo">—</div>
+                    <div class="stat-label">Linhas de Código</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalPassos">—</div>
+                    <div class="stat-label">Passos Detalhados</div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
     <main class="container">
 
-        <!-- Filtros -->
-        <div class="filtros" id="filtrosContainer">
-            <button class="filtro-btn active" data-filtro="todos">Todos os Robôs</button>
-            <button class="filtro-btn" data-filtro="fácil">🟢 Fácil</button>
-            <button class="filtro-btn" data-filtro="médio">🟡 Médio</button>
-            <button class="filtro-btn" data-filtro="avançado">🔴 Avançado</button>
-            <button class="filtro-btn" data-filtro="especialista">⚫ Especialista</button>
-            <input type="text" class="busca-input" id="buscaInput" placeholder="🔍 Buscar robô...">
+        <!-- Barra de Filtros -->
+        <div class="filtros-wrapper" id="filtrosWrapper">
+            <div class="filtro-grupo">
+                <span class="filtro-label"><i class="fas fa-filter"></i> Dificuldade:</span>
+                <button class="filtro-btn active" data-filtro="todos">Todos</button>
+                <button class="filtro-btn" data-filtro="fácil">🟢 Fácil</button>
+                <button class="filtro-btn" data-filtro="médio">🟡 Médio</button>
+                <button class="filtro-btn" data-filtro="avançado">🔴 Avançado</button>
+                <button class="filtro-btn" data-filtro="especialista">⚫ Especialista</button>
+            </div>
+            <div class="filtro-grupo">
+                <span class="filtro-label"><i class="fas fa-tag"></i> Tipo:</span>
+                <button class="filtro-btn" data-tipo="todos">Todos</button>
+                <button class="filtro-btn" data-tipo="humanoide">Humanoide</button>
+                <button class="filtro-btn" data-tipo="braco">Braço</button>
+                <button class="filtro-btn" data-tipo="rover">Rover</button>
+                <button class="filtro-btn" data-tipo="quadrupede">Quadrúpede</button>
+                <button class="filtro-btn" data-tipo="drone">Drone</button>
+            </div>
+            <div class="busca-wrapper">
+                <i class="fas fa-search busca-icon"></i>
+                <input type="text" class="busca-input" id="buscaInput" placeholder="Buscar robô por nome, tipo, dificuldade...">
+                <button class="busca-clear" id="buscaClear" title="Limpar busca">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         </div>
+
+        <!-- Contador -->
+        <p style="text-align:center;margin-bottom:1.5rem;font-family:var(--font-accent);font-size:0.75rem;color:var(--text-muted);letter-spacing:1px;" id="contadorLabel">
+            Exibindo todos os robôs
+        </p>
 
         <!-- Grid de Robôs -->
         <div class="robos-grid" id="robosGrid">
-            <!-- Preenchido dinamicamente -->
+            <!-- Preenchido dinamicamente via JavaScript -->
         </div>
     </main>
 
     <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
-        <strong>Idenza Robotics Academy™</strong> — Todos os robôs são open source e podem ser construídos por qualquer pessoa.<br>
-        © 2026 Idenza Robotics Intelligence S.A. — Build v6.0.0
+        <strong>Idenza Robotics Academy™</strong> — Todos os robôs são open source e podem ser construídos por qualquer pessoa com as ferramentas certas.<br>
+        <a href="mailto:contato@idenzarobotics.com">contato@idenzarobotics.com</a> &nbsp;|&nbsp; 
+        © 2026 Idenza Robotics Intelligence S.A. &nbsp;|&nbsp; 
+        Build v6.0.0 — Compliance Tag: IDZ-COMP-2026-001
     </footer>
 
     <!-- ==================== SCRIPTS ==================== -->
     <script src="projetos/data/robos-database.js"></script>
     <script>
         (function() {
+            // ============================================================
+            // CONFIGURAÇÃO
+            // ============================================================
             const robos = window.IDENZA_ROBOS_DATABASE || [];
             const grid = document.getElementById('robosGrid');
-            const contador = document.getElementById('contadorRobos');
             const buscaInput = document.getElementById('buscaInput');
-            let filtroAtivo = 'todos';
+            const buscaClear = document.getElementById('buscaClear');
+            const contadorLabel = document.getElementById('contadorLabel');
+            
+            let filtroDificuldade = 'todos';
+            let filtroTipo = 'todos';
+            let buscaTexto = '';
 
-            // Atualiza contador
-            contador.textContent = `${robos.length} robôs open source disponíveis para construir`;
+            // ============================================================
+            // ESTATÍSTICAS DO HEADER
+            // ============================================================
+            const totalPecas = robos.reduce((sum, r) => sum + (r.pecas || 0), 0);
+            const totalPassos = robos.reduce((sum, r) => sum + (r.passos?.length || 0), 0);
+            const totalLinhasCodigo = robos.reduce((sum, r) => {
+                if (!r.codigoFonte) return sum;
+                return sum + Object.values(r.codigoFonte).reduce((s, code) => s + (code?.split('\n')?.length || 0), 0);
+            }, 0);
 
-            // Ícones por tipo de robô
-            const icones = {
-                'Humanoide': 'fas fa-child',
-                'Braço': 'fas fa-hand-holding',
-                'Rover': 'fas fa-car',
-                'Quadrúpede': 'fas fa-dog',
-                'Diferencial': 'fas fa-car-side',
-            };
+            document.getElementById('totalRobos').textContent = robos.length;
+            document.getElementById('totalPecas').textContent = totalPecas;
+            document.getElementById('totalCodigo').textContent = totalLinhasCodigo.toLocaleString();
+            document.getElementById('totalPassos').textContent = totalPassos;
 
+            // ============================================================
+            // ÍCONES POR TIPO DE ROBÔ
+            // ============================================================
             function getIcone(tipo) {
-                for (const [key, icon] of Object.entries(icones)) {
-                    if (tipo.includes(key)) return icon;
-                }
-                return 'fas fa-robot';
+                const t = tipo.toLowerCase();
+                if (t.includes('humanoide')) return 'fa-child';
+                if (t.includes('braço')) return 'fa-hand-holding';
+                if (t.includes('rover') || t.includes('carrinho') || t.includes('diferencial')) return 'fa-car-side';
+                if (t.includes('quadrúpede') || t.includes('hexapod') || t.includes('cachorro')) return 'fa-dog';
+                if (t.includes('drone') || t.includes('quadricóptero')) return 'fa-helicopter';
+                if (t.includes('telepresença')) return 'fa-video';
+                return 'fa-robot';
             }
 
             function getTagClass(dificuldade) {
-                const map = {
-                    'fácil': 'facil',
-                    'médio': 'medio',
-                    'avançado': 'avancado',
-                    'especialista': 'especialista',
-                };
+                const map = { 'fácil': 'facil', 'médio': 'medio', 'avançado': 'avancado', 'especialista': 'especialista' };
                 return map[dificuldade] || '';
             }
 
-            function renderizarRobos(filtro = 'todos', busca = '') {
+            function getDificuldadeEmoji(dificuldade) {
+                const map = { 'fácil': '🟢', 'médio': '🟡', 'avançado': '🔴', 'especialista': '⚫' };
+                return map[dificuldade] || '';
+            }
+
+            // ============================================================
+            // RENDERIZAR ROBÔS
+            // ============================================================
+            function renderizar() {
                 let filtrados = [...robos];
 
-                // Aplicar filtro de dificuldade
-                if (filtro !== 'todos') {
-                    filtrados = filtrados.filter(r => r.dificuldade === filtro);
+                // Filtro de dificuldade
+                if (filtroDificuldade !== 'todos') {
+                    filtrados = filtrados.filter(r => r.dificuldade === filtroDificuldade);
                 }
 
-                // Aplicar busca
-                if (busca.trim()) {
-                    const q = busca.toLowerCase().trim();
+                // Filtro de tipo
+                if (filtroTipo !== 'todos') {
+                    filtrados = filtrados.filter(r => {
+                        const tipo = r.tipo.toLowerCase();
+                        if (filtroTipo === 'humanoide') return tipo.includes('humanoide');
+                        if (filtroTipo === 'braco') return tipo.includes('braço');
+                        if (filtroTipo === 'rover') return tipo.includes('rover') || tipo.includes('carrinho') || tipo.includes('diferencial');
+                        if (filtroTipo === 'quadrupede') return tipo.includes('quadrúpede') || tipo.includes('hexapod') || tipo.includes('cachorro');
+                        if (filtroTipo === 'drone') return tipo.includes('drone') || tipo.includes('quadricóptero');
+                        return true;
+                    });
+                }
+
+                // Busca textual
+                if (buscaTexto.trim()) {
+                    const q = buscaTexto.toLowerCase().trim();
                     filtrados = filtrados.filter(r =>
                         r.nome.toLowerCase().includes(q) ||
                         r.tipo.toLowerCase().includes(q) ||
                         r.descricao.toLowerCase().includes(q) ||
-                        r.dificuldade.toLowerCase().includes(q)
+                        r.dificuldade.toLowerCase().includes(q) ||
+                        (r.tags && r.tags.some(t => t.toLowerCase().includes(q)))
                     );
                 }
 
-                // Atualizar grid
+                // Atualizar contador
+                if (filtrados.length === robos.length) {
+                    contadorLabel.textContent = `Exibindo todos os ${robos.length} robôs`;
+                } else {
+                    contadorLabel.textContent = `Exibindo ${filtrados.length} de ${robos.length} robôs`;
+                }
+
+                // Renderizar grid
                 if (filtrados.length === 0) {
                     grid.innerHTML = `
                         <div class="vazio">
                             <i class="fas fa-search"></i>
                             <h3>Nenhum robô encontrado</h3>
-                            <p>Tente outro filtro ou termo de busca.</p>
+                            <p>Tente ajustar os filtros ou limpar a busca.</p>
                         </div>`;
-                } else {
-                    grid.innerHTML = filtrados.map(robo => `
-                        <div class="robo-card" onclick="window.open('projetos/template.html?id=${robo.id}', '_blank')">
-                            <div class="robo-icon">
-                                <i class="${getIcone(robo.tipo)}" style="color:var(--gold);"></i>
+                    return;
+                }
+
+                grid.innerHTML = filtrados.map((robo, index) => `
+                    <div class="robo-card" style="animation: fadeInUp 0.4s ease both; animation-delay:${index * 50}ms;">
+                        <div class="robo-card-header">
+                            <div class="robo-card-icon">
+                                <i class="fas ${getIcone(robo.tipo)}"></i>
                             </div>
-                            <h3>${robo.nome}</h3>
-                            <p class="robo-tipo">${robo.tipo}</p>
-                            <p class="robo-desc">${robo.descricao.substring(0, 140)}...</p>
-                            <div class="robo-meta">
-                                <span class="robo-tag ${getTagClass(robo.dificuldade)}">${robo.dificuldade.toUpperCase()}</span>
-                                <span class="robo-tag"><i class="fas fa-clock"></i> ${robo.tempo}</span>
-                                <span class="robo-tag"><i class="fas fa-dollar-sign"></i> ${robo.custo}</span>
-                                <span class="robo-tag"><i class="fas fa-cubes"></i> ${robo.pecas} peças</span>
-                                ${robo.impressao3d ? '<span class="robo-tag"><i class="fas fa-cube"></i> Impressão 3D</span>' : ''}
+                            <div class="robo-card-titulos">
+                                <h3>${robo.nome}</h3>
+                                <p class="robo-tipo">${robo.tipo}</p>
                             </div>
-                            <a href="projetos/template.html?id=${robo.id}" target="_blank" class="robo-btn" onclick="event.stopPropagation();">
+                        </div>
+                        <p class="robo-desc">${robo.descricao.substring(0, 130)}...</p>
+                        <div class="robo-meta">
+                            <span class="robo-tag ${getTagClass(robo.dificuldade)}">${getDificuldadeEmoji(robo.dificuldade)} ${robo.dificuldade.toUpperCase()}</span>
+                            <span class="robo-tag"><i class="fas fa-clock"></i> ${robo.tempo}</span>
+                            <span class="robo-tag"><i class="fas fa-dollar-sign"></i> ${robo.custo}</span>
+                            <span class="robo-tag"><i class="fas fa-cubes"></i> ${robo.pecas} peças</span>
+                            ${robo.impressao3d ? '<span class="robo-tag"><i class="fas fa-cube"></i> Impressão 3D</span>' : ''}
+                        </div>
+                        <div class="robo-card-footer">
+                            <a href="projetos/template.html?id=${robo.id}" target="_blank" class="robo-btn">
                                 <i class="fas fa-external-link-alt"></i> Abrir Projeto Completo
                             </a>
                         </div>
-                    `).join('');
-                }
-
-                // Atualizar contador
-                contador.textContent = `${filtrados.length} de ${robos.length} robôs exibidos`;
+                    </div>
+                `).join('');
             }
 
-            // Eventos dos filtros
-            document.querySelectorAll('.filtro-btn').forEach(btn => {
+            // ============================================================
+            // EVENTOS
+            // ============================================================
+
+            // Filtros de dificuldade
+            document.querySelectorAll('.filtro-btn[data-filtro]').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.filtro-btn[data-filtro]').forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
-                    filtroAtivo = this.dataset.filtro;
-                    renderizarRobos(filtroAtivo, buscaInput.value);
+                    filtroDificuldade = this.dataset.filtro;
+                    renderizar();
                 });
             });
 
-            // Evento de busca
-            buscaInput.addEventListener('input', function() {
-                renderizarRobos(filtroAtivo, this.value);
+            // Filtros de tipo
+            document.querySelectorAll('.filtro-btn[data-tipo]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filtro-btn[data-tipo]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    filtroTipo = this.dataset.tipo;
+                    renderizar();
+                });
             });
 
-            // Renderizar inicial
-            renderizarRobos();
+            // Busca
+            buscaInput.addEventListener('input', function() {
+                buscaTexto = this.value;
+                buscaClear.classList.toggle('visible', buscaTexto.length > 0);
+                renderizar();
+            });
+
+            // Limpar busca
+            buscaClear.addEventListener('click', function() {
+                buscaInput.value = '';
+                buscaTexto = '';
+                buscaClear.classList.remove('visible');
+                renderizar();
+                buscaInput.focus();
+            });
+
+            // Atalho: Ctrl+K para focar busca
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    buscaInput.focus();
+                    buscaInput.select();
+                }
+            });
+
+            // ============================================================
+            // INICIALIZAR
+            // ============================================================
+            renderizar();
+
+            console.log(`🚀 Idenza Robotics Academy — ${robos.length} robôs carregados`);
+            console.log(`📦 ${totalPecas} peças documentadas`);
+            console.log(`💻 ${totalLinhasCodigo.toLocaleString()} linhas de código`);
+            console.log(`📋 ${totalPassos} passos detalhados`);
         })();
     </script>
+
+    <!-- Animação dos cards -->
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 
 </body>
 </html>
