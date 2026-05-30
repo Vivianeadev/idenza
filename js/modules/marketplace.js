@@ -221,3 +221,330 @@ const IdenzaMarketplace = {
 
                             <div class="kit-rating">
                                 <i class="fas fa-star" style="color:var(--gold-primary);"></i> ${kit.rating} 
+                                <span class="text-muted">(${kit.reviews} avaliações)</span>
+                            </div>
+
+                            <div class="card-footer">
+                                <button class="btn btn-sm btn-outline" onclick="IdenzaMarketplace.viewKitDetails('${kit.id}')">
+                                    <i class="fas fa-info-circle"></i> Detalhes
+                                </button>
+                                <button class="btn btn-sm btn-gold" onclick="IdenzaMarketplace.addToCart('${kit.id}')">
+                                    <i class="fas fa-cart-plus"></i> Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- Benefícios -->
+                <div class="panel panel-full" style="margin-top:var(--space-6);">
+                    <div class="panel-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h2>Por que comprar na Idenza?</h2>
+                    </div>
+                    <div class="grid-cols-3" style="gap:var(--space-4);">
+                        <div style="text-align:center;padding:var(--space-4);">
+                            <i class="fas fa-truck" style="font-size:2rem;color:var(--gold-primary);margin-bottom:var(--space-2);"></i>
+                            <h5>Frete Grátis</h5>
+                            <p class="text-small">Em compras acima de $${this.config.freeShippingThreshold}</p>
+                        </div>
+                        <div style="text-align:center;padding:var(--space-4);">
+                            <i class="fas fa-book" style="font-size:2rem;color:var(--gold-primary);margin-bottom:var(--space-2);"></i>
+                            <h5>Manuais Impressos</h5>
+                            <p class="text-small">Documentação completa em português</p>
+                        </div>
+                        <div style="text-align:center;padding:var(--space-4);">
+                            <i class="fas fa-headset" style="font-size:2rem;color:var(--gold-primary);margin-bottom:var(--space-2);"></i>
+                            <h5>Suporte Técnico</h5>
+                            <p class="text-small">Consultoria inclusa nos kits avançados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    // ============================================================
+    // DETALHES DO KIT (MODAL)
+    // ============================================================
+    viewKitDetails(kitId) {
+        const kit = this.state.kits.find(k => k.id === kitId);
+        if (!kit) return;
+
+        IdenzaModal.open({
+            title: kit.name,
+            size: 'lg',
+            content: `
+                <div class="kit-detail">
+                    <div class="kit-detail-header">
+                        <span class="badge badge-${kit.level === 'iniciante' ? 'success' : kit.level === 'intermediario' ? 'warning' : 'critical'}">${kit.level}</span>
+                        ${kit.discount ? `<span class="badge badge-gold">${kit.discount}</span>` : ''}
+                        <span class="kit-detail-price" style="margin-left:auto;">
+                            ${kit.originalPrice ? `<span style="text-decoration:line-through;color:var(--color-text-muted);">$${kit.originalPrice.toFixed(2)}</span> ` : ''}
+                            <strong style="font-size:1.5rem;color:var(--gold-primary);">$${kit.price.toFixed(2)}</strong>
+                        </span>
+                    </div>
+
+                    <p style="margin:var(--space-4) 0;">${kit.subtitle}</p>
+
+                    <h4>📦 Conteúdo do Kit</h4>
+                    <ul class="list-styled">
+                        ${kit.contents.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+
+                    <div class="grid-cols-2" style="gap:var(--space-4);margin-top:var(--space-4);">
+                        <div>
+                            <h4>🚀 Projetos Inclusos</h4>
+                            <p class="text-small">${kit.projects} projetos completos com BOM e passo a passo na Idenza Academy.</p>
+                        </div>
+                        <div>
+                            <h4>🎓 Certificação</h4>
+                            <p class="text-small">Ao completar os projetos, você recebe a certificação <strong>${kit.certification}</strong>.</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:var(--space-4);">
+                        <i class="fas fa-star" style="color:var(--gold-primary);"></i> ${kit.rating} (${kit.reviews} avaliações)
+                    </div>
+
+                    <div style="margin-top:var(--space-6);display:flex;gap:var(--space-3);justify-content:flex-end;">
+                        <button class="btn btn-outline" onclick="IdenzaModal.close()">Fechar</button>
+                        <button class="btn btn-gold" onclick="IdenzaMarketplace.addToCart('${kit.id}'); IdenzaModal.close();">
+                            <i class="fas fa-cart-plus"></i> Adicionar ao Carrinho — $${kit.price.toFixed(2)}
+                        </button>
+                    </div>
+                </div>
+            `,
+        });
+    },
+
+    // ============================================================
+    // CARRINHO DE COMPRAS
+    // ============================================================
+    addToCart(kitId, qty = 1) {
+        const kit = this.state.kits.find(k => k.id === kitId);
+        if (!kit) return;
+
+        const existing = this.state.cart.find(item => item.id === kitId);
+        if (existing) {
+            existing.qty += qty;
+        } else {
+            this.state.cart.push({
+                id: kitId,
+                name: kit.name,
+                price: kit.price,
+                qty,
+                certification: kit.certification,
+            });
+        }
+
+        this._saveCart();
+        IdenzaToast?.success(`${kit.name} adicionado ao carrinho!`);
+        this._refreshHeader();
+    },
+
+    removeFromCart(kitId) {
+        this.state.cart = this.state.cart.filter(item => item.id !== kitId);
+        this._saveCart();
+        IdenzaToast?.info('Item removido do carrinho');
+        this._refreshHeader();
+    },
+
+    updateCartQty(kitId, qty) {
+        const item = this.state.cart.find(i => i.id === kitId);
+        if (item) {
+            item.qty = Math.max(1, qty);
+            this._saveCart();
+        }
+    },
+
+    viewCart() {
+        if (this.state.cart.length === 0) {
+            IdenzaToast?.info('Seu carrinho está vazio.');
+            return;
+        }
+
+        const subtotal = this.state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const shipping = subtotal >= this.config.freeShippingThreshold ? 0 : this.config.shippingBase;
+        const discount = this._calculateDiscount(subtotal);
+        const total = subtotal - discount + shipping;
+
+        IdenzaModal.open({
+            title: '🛒 Carrinho de Compras',
+            size: 'lg',
+            content: `
+                <div class="cart-detail">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead><tr><th>Produto</th><th>Preço</th><th>Qtd</th><th>Subtotal</th><th></th></tr></thead>
+                            <tbody>
+                                ${this.state.cart.map(item => `
+                                    <tr>
+                                        <td>
+                                            <strong>${item.name}</strong>
+                                            <br><small class="text-muted">Certificação: ${item.certification}</small>
+                                        </td>
+                                        <td>$${item.price.toFixed(2)}</td>
+                                        <td>
+                                            <input type="number" class="form-input cart-qty-input" 
+                                                   value="${item.qty}" min="1" max="10" 
+                                                   style="width:60px;text-align:center;"
+                                                   onchange="IdenzaMarketplace.updateCartQty('${item.id}', parseInt(this.value))">
+                                        </td>
+                                        <td>$${(item.price * item.qty).toFixed(2)}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline" onclick="IdenzaMarketplace.removeFromCart('${item.id}'); IdenzaModal.close(); IdenzaMarketplace.viewCart();">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Cupom -->
+                    <div style="margin-top:var(--space-4);display:flex;gap:var(--space-3);align-items:center;">
+                        <input type="text" class="form-input" id="couponInput" placeholder="Cupom de desconto" style="flex:1;">
+                        <button class="btn btn-outline" id="applyCouponBtn">Aplicar</button>
+                        ${this.state.appliedCoupon ? `
+                            <span class="badge badge-success">
+                                <i class="fas fa-check"></i> ${this.state.appliedCoupon}
+                                <button class="btn-icon-only" onclick="IdenzaMarketplace.removeCoupon(); IdenzaModal.close(); IdenzaMarketplace.viewCart();" style="margin-left:4px;">×</button>
+                            </span>
+                        ` : ''}
+                    </div>
+
+                    <!-- Totais -->
+                    <div style="margin-top:var(--space-4);text-align:right;">
+                        <p>Subtotal: <strong>$${subtotal.toFixed(2)}</strong></p>
+                        ${discount > 0 ? `<p style="color:var(--color-success);">Desconto: <strong>-$${discount.toFixed(2)}</strong></p>` : ''}
+                        <p>Frete: <strong>${shipping === 0 ? '<span style="color:var(--color-success);">GRÁTIS</span>' : '$' + shipping.toFixed(2)}</strong></p>
+                        <hr>
+                        <p style="font-size:var(--text-lg);">Total: <strong style="color:var(--gold-primary);">$${total.toFixed(2)}</strong></p>
+                    </div>
+
+                    <div style="margin-top:var(--space-6);display:flex;justify-content:flex-end;gap:var(--space-3);">
+                        <button class="btn btn-outline" onclick="IdenzaModal.close()">Continuar Comprando</button>
+                        <button class="btn btn-gold" onclick="IdenzaMarketplace.checkout()">
+                            <i class="fas fa-lock"></i> Finalizar Compra
+                        </button>
+                    </div>
+                </div>
+            `,
+            onOpen: () => {
+                document.getElementById('applyCouponBtn')?.addEventListener('click', () => {
+                    const code = document.getElementById('couponInput')?.value.trim().toUpperCase();
+                    if (code && this.coupons[code]) {
+                        this.state.appliedCoupon = code;
+                        IdenzaToast?.success(`Cupom ${code} aplicado!`);
+                        IdenzaModal.close();
+                        this.viewCart();
+                    } else {
+                        IdenzaToast?.warning('Cupom inválido');
+                    }
+                });
+            },
+        });
+    },
+
+    applyCoupon(code) {
+        const coupon = this.coupons[code.toUpperCase()];
+        if (coupon) {
+            this.state.appliedCoupon = code.toUpperCase();
+            return coupon;
+        }
+        return null;
+    },
+
+    removeCoupon() {
+        this.state.appliedCoupon = null;
+    },
+
+    _calculateDiscount(subtotal) {
+        if (!this.state.appliedCoupon) return 0;
+
+        const coupon = this.coupons[this.state.appliedCoupon];
+        if (!coupon) return 0;
+
+        if (coupon.type === 'percent') {
+            return subtotal * coupon.discount;
+        }
+        return coupon.discount;
+    },
+
+    // ============================================================
+    // CHECKOUT (SIMULADO)
+    // ============================================================
+    checkout() {
+        const subtotal = this.state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const shipping = subtotal >= this.config.freeShippingThreshold ? 0 : this.config.shippingBase;
+        const discount = this._calculateDiscount(subtotal);
+        const total = subtotal - discount + shipping;
+
+        IdenzaModal.close();
+
+        IdenzaModal.open({
+            title: '🎉 Pedido Confirmado!',
+            size: 'md',
+            content: `
+                <div style="text-align:center;padding:var(--space-6);">
+                    <i class="fas fa-check-circle" style="font-size:4rem;color:var(--color-success);margin-bottom:var(--space-4);"></i>
+                    <h3>Pedido #IDZ-${Date.now().toString(36).toUpperCase()}</h3>
+                    <p>Total: <strong style="color:var(--gold-primary);font-size:1.5rem;">$${total.toFixed(2)}</strong></p>
+                    <p class="text-small">Um email de confirmação foi enviado.</p>
+                    <p class="text-small">Tempo estimado de entrega: 5-7 dias úteis.</p>
+                    <div class="cert-list" style="margin-top:var(--space-4);">
+                        <strong>Certificações incluídas:</strong>
+                        ${this.state.cart.map(item => `<p class="text-small">🎓 ${item.certification}</p>`).join('')}
+                    </div>
+                </div>
+            `,
+        });
+
+        // Limpa carrinho
+        this.state.cart = [];
+        this.state.appliedCoupon = null;
+        this._saveCart();
+    },
+
+    // ============================================================
+    // PERSISTÊNCIA
+    // ============================================================
+    _saveCart() {
+        IdenzaStorage.set('marketplace_cart', this.state.cart);
+    },
+
+    _refreshHeader() {
+        // Atualiza badge do carrinho se houver
+        const cartCount = this.state.cart.reduce((sum, item) => sum + item.qty, 0);
+        const cartTotal = this.state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        
+        const cartBtn = document.getElementById('viewCartBtn');
+        if (cartBtn) {
+            if (cartCount > 0) {
+                cartBtn.style.display = '';
+                cartBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> Carrinho (${cartCount}) — $${cartTotal.toFixed(2)}`;
+            } else {
+                cartBtn.style.display = 'none';
+            }
+        }
+    },
+
+    // ============================================================
+    // EVENTOS
+    // ============================================================
+    _bindEvents() {
+        IdenzaDOM.delegate(document, 'click', '#viewCartBtn', () => {
+            this.viewCart();
+        });
+    },
+};
+
+// ============================================================
+// REGISTRO NO SISTEMA DE MÓDULOS
+// ============================================================
+if (typeof IdenzaModules === 'undefined') {
+    window.IdenzaModules = {};
+}
+IdenzaModules.initMarketplace = (container) => IdenzaMarketplace.init(container);
