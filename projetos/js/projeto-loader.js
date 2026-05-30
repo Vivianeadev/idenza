@@ -107,4 +107,21 @@
         ${robo.dicas ? `
         <div class="panel">
             <h2><i class="fas fa-lightbulb"></i> Dicas e Solução de Problemas</h2>
-            <ul>${robo.dicas.map(d => `<li>${d}</li>`).join
+            <ul>${robo.dicas.map(d => `<li>${d}</li>`).join('')}</ul>
+        </div>` : ''}
+        
+        <!-- Comunidade -->
+        ${robo.comunidade || robo.github ? `
+        <div class="panel">
+            <h2><i class="fas fa-users"></i> Comunidade e Recursos</h2>
+            ${robo.comunidade ? `<p><a href="${robo.comunidade}" target="_blank"><i class="fas fa-globe"></i> Site Oficial</a></p>` : ''}
+            ${robo.github ? `<p><a href="${robo.github}" target="_blank"><i class="fab fa-github"></i> Repositório GitHub</a></p>` : ''}
+        </div>` : ''}
+    `;
+    
+    function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+})();
