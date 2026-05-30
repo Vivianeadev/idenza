@@ -577,4 +577,136 @@ void moverServo(int perna, char junta, int angulo) {
             {
                 numero: 2,
                 titulo: "Instalar Motores e Eletrônica",
-                descricao: "Fixe os motores com rodas na base. Conecte ao L298N. Conecte o L298N aos GPIOs do Raspberry Pi. Fixe
+                descricao: "Fixe os motores com rodas na base. Conecte ao L298N. Conecte o L298N aos GPIOs do Raspberry Pi. Fixe a câmera USB na parte superior do suporte.",
+                imagem: null,
+                codigo: "gpio_motores.txt"
+            },
+            {
+                numero: 3,
+                titulo: "Configurar o Raspberry Pi",
+                descricao: "Instale o Raspberry Pi OS. Habilite câmera e I²C via raspi-config. Instale os pacotes: python3-flask, python3-opencv, python3-rpi.gpio.",
+                codigo: "setup_pi.sh"
+            },
+            {
+                numero: 4,
+                titulo: "Executar Servidor Web",
+                descricao: "Execute o script Python que cria um servidor web com streaming de vídeo e controles. Acesse de qualquer navegador na mesma rede WiFi.",
+                codigo: "telepresenca_server.py"
+            },
+            {
+                numero: 5,
+                titulo: "Testar Pilotagem Remota",
+                descricao: "Conecte o celular/tablet ao WiFi do robô. Abra o navegador no IP do Raspberry Pi. Use o joystick virtual para pilotar o robô enquanto vê o vídeo ao vivo!",
+                imagem: null
+            },
+        ],
+
+        codigoFonte: {
+            "setup_pi.sh": `#!/bin/bash
+sudo apt update
+sudo apt install -y python3-pip python3-opencv python3-flask
+pip3 install rpi-lgpio flask-socketio
+echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
+sudo systemctl enable ssh
+echo "Setup concluido! Reinicie o Raspberry Pi."`,
+
+            "telepresenca_server.py": `# Idenza Academy — Servidor Web Robo de Telepresenca
+from flask import Flask, render_template_string, Response
+import cv2
+import RPi.GPIO as GPIO
+import time
+
+app = Flask(__name__)
+
+# Pinos dos motores
+IN1, IN2 = 17, 18
+IN3, IN4 = 22, 23
+
+GPIO.setmode(GPIO.BCM)
+for pin in [IN1, IN2, IN3, IN4]:
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, 0)
+
+camera = cv2.VideoCapture(0)
+
+HTML = """
+<!DOCTYPE html>
+<html><head>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a1a;color:#fff;font-family:Arial;text-align:center}
+h1{color:#D4AF37;padding:10px;font-size:1.2rem}
+img{width:100%;max-width:640px;border-radius:10px}
+.btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-width:300px;margin:15px auto}
+button{padding:15px;border:none;border-radius:10px;font-size:1.2rem;cursor:pointer;background:#333;color:#fff}
+button:active{background:#D4AF37}
+</style></head><body>
+<h1>Idenza Telepresenca</h1>
+<img src="/video">
+<div class="btns">
+<button onclick="fetch('/esq')">⬅️</button>
+<button onclick="fetch('/frente')">⬆️</button>
+<button onclick="fetch('/dir')">➡️</button>
+<button onclick="fetch('/tras')">⬇️</button>
+<button onclick="fetch('/parar')" style="background:#c62828">🛑</button>
+</div>
+</body></html>"""
+
+@app.route('/')
+def index():
+    return HTML
+
+def gen_frames():
+    while True:
+        success, frame = camera.read()
+        if not success: break
+        _, buffer = cv2.imencode('.jpg', frame)
+        yield (b'--frame\\r\\nContent-Type: image/jpeg\\r\\n\\r\\n' + buffer.tobytes() + b'\\r\\n')
+
+@app.route('/video')
+def video():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/frente')
+def frente():
+    GPIO.output(IN1,1);GPIO.output(IN2,0);GPIO.output(IN3,1);GPIO.output(IN4,0)
+    return 'OK'
+
+@app.route('/tras')
+def tras():
+    GPIO.output(IN1,0);GPIO.output(IN2,1);GPIO.output(IN3,0);GPIO.output(IN4,1)
+    return 'OK'
+
+@app.route('/esq')
+def esq():
+    GPIO.output(IN1,0);GPIO.output(IN2,1);GPIO.output(IN3,1);GPIO.output(IN4,0)
+    return 'OK'
+
+@app.route('/dir')
+def dir():
+    GPIO.output(IN1,1);GPIO.output(IN2,0);GPIO.output(IN3,0);GPIO.output(IN4,1)
+    return 'OK'
+
+@app.route('/parar')
+def parar():
+    for p in [IN1,IN2,IN3,IN4]: GPIO.output(p,0)
+    return 'OK'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80)`,
+        },
+
+        dicas: [
+            "Use um tablet Android antigo — funciona perfeitamente e reduz custo",
+            "O suporte do tablet deve ser robusto — quedas são caras",
+            "Streaming de vídeo consome bateria — power bank de 10000mAh dura ~4 horas",
+            "Para acesso remoto fora de casa, configure VPN (Tailscale é gratuito e fácil)",
+        ],
+    },
+];
+
+// Exportação
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = IDENZA_ROBOS_DATABASE;
+}
