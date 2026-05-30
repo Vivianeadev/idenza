@@ -3,22 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Idenza Robotics Academy — Construa robôs reais open source com passo a passo completo, código-fonte funcional e lista de materiais detalhada.">
-    <meta name="theme-color" content="#0a3147">
-    <meta name="author" content="Idenza Robotics Intelligence S.A.">
-    <title>Idenza Robotics Academy | Construa Robôs Reais Passo a Passo</title>
+    <title id="pageTitle">Carregando Projeto — Idenza Robotics Academy</title>
 
-    <!-- Fontes -->
+    <!-- Fontes Idenza -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Marcellus&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    
-    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         /* ============================================================
-           IDENZA ROBOTICS ACADEMY — DESIGN SYSTEM COMPLETO
+           IDENZA ROBOTICS ACADEMY — PÁGINA DE PROJETO (LUXO)
            ============================================================ */
         :root {
             --primary: #0a3147;
@@ -27,766 +22,959 @@
             --gold: #D4AF37;
             --gold-light: #F4E4B8;
             --gold-dark: #B8860B;
-            --gold-surface: rgba(212, 175, 55, 0.08);
-            --gold-border: rgba(212, 175, 55, 0.2);
+            --gold-surface: rgba(212, 175, 55, 0.07);
+            --gold-border: rgba(212, 175, 55, 0.18);
             --text: #2b2b2b;
             --text-light: #5a5a5a;
             --text-muted: #888888;
             --white: #ffffff;
-            --off-white: #faf9f6;
-            --bg: linear-gradient(135deg, #f9f5f0 0%, #faf0f4 50%, #f5f7fa 100%);
+            --bg: linear-gradient(170deg, #f9f5f0 0%, #faf0f4 40%, #f5f7fa 100%);
             --critical: #c62828;
-            --critical-bg: rgba(198, 40, 40, 0.08);
+            --critical-bg: rgba(198, 40, 40, 0.06);
             --warning: #e65100;
-            --warning-bg: rgba(230, 81, 0, 0.06);
+            --warning-bg: rgba(230, 81, 0, 0.05);
             --success: #2e7d32;
-            --success-bg: rgba(46, 125, 50, 0.08);
-            --info: #1a4b6d;
-            --shadow-sm: 0 1px 3px rgba(10, 49, 71, 0.06);
-            --shadow-md: 0 4px 15px rgba(10, 49, 71, 0.08);
-            --shadow-lg: 0 10px 30px rgba(10, 49, 71, 0.12);
-            --shadow-xl: 0 25px 50px rgba(10, 49, 71, 0.15);
-            --shadow-gold: 0 8px 25px rgba(212, 175, 55, 0.25);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --radius-full: 9999px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --success-bg: rgba(46, 125, 50, 0.06);
+            --shadow-sm: 0 1px 3px rgba(10,49,71,0.05);
+            --shadow-md: 0 4px 15px rgba(10,49,71,0.07);
+            --shadow-lg: 0 10px 30px rgba(10,49,71,0.10);
+            --shadow-gold: 0 6px 20px rgba(212,175,55,0.2);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 18px;
             --font-display: 'Cinzel', 'Times New Roman', serif;
-            --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-body: 'Inter', system-ui, sans-serif;
             --font-accent: 'Marcellus', 'Georgia', serif;
             --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin:0; padding:0; box-sizing:border-box; }
 
         body {
             font-family: var(--font-body);
             background: var(--bg);
             color: var(--text);
-            line-height: 1.6;
+            line-height: 1.65;
             min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(10, 49, 71, 0.05); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.4); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.7); }
-
-        /* ============================================================
-           HEADER
-           ============================================================ */
-        .header {
-            background: linear-gradient(175deg, var(--primary) 0%, var(--primary-light) 70%, var(--primary-dark) 100%);
-            color: var(--white);
-            padding: 3.5rem 2rem 2.5rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold-dark));
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-        }
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 70%, rgba(212,175,55,0.08) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-        .header-icon {
-            font-size: 3.5rem;
-            color: var(--gold);
-            margin-bottom: 1rem;
-            display: block;
-            text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .header h1 {
-            font-family: var(--font-display);
-            font-size: clamp(1.6rem, 4vw, 2.6rem);
-            letter-spacing: 3px;
-            margin-bottom: 0.5rem;
-            color: var(--white);
-            text-transform: uppercase;
-        }
-        .header h1 .gold { color: var(--gold); }
-        .header .subtitle {
-            font-family: var(--font-accent);
-            color: var(--gold-light);
-            font-size: 1.05rem;
-            letter-spacing: 2px;
-            opacity: 0.9;
-            margin-bottom: 1.5rem;
-        }
-        .header .stats {
-            display: flex;
-            justify-content: center;
-            gap: 2.5rem;
-            flex-wrap: wrap;
-            margin-top: 1.5rem;
-        }
-        .header .stat-item {
-            text-align: center;
-        }
-        .header .stat-value {
-            font-family: var(--font-display);
-            font-size: 1.8rem;
-            color: var(--gold);
-            font-weight: 700;
-        }
-        .header .stat-label {
-            font-family: var(--font-accent);
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.7);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        /* ============================================================
-           CONTAINER PRINCIPAL
-           ============================================================ */
-        .container {
-            max-width: 1350px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem 4rem;
-        }
-
-        /* ============================================================
-           BARRA DE FILTROS
-           ============================================================ */
-        .filtros-wrapper {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            padding: 1.2rem 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--gold-border);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-            position: sticky;
-            top: 1rem;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-        }
-        .filtro-grupo {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            align-items: center;
-        }
-        .filtro-label {
-            font-family: var(--font-accent);
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-right: 0.3rem;
-            white-space: nowrap;
-        }
-        .filtro-btn {
-            padding: 6px 14px;
-            border-radius: var(--radius-full);
-            border: 1px solid var(--gold-border);
-            background: var(--white);
-            color: var(--text-light);
-            font-family: var(--font-accent);
-            font-size: 0.72rem;
-            cursor: pointer;
-            transition: var(--transition);
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
-        .filtro-btn:hover {
-            border-color: var(--gold);
-            color: var(--primary);
-            background: var(--gold-surface);
-        }
-        .filtro-btn.active {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--white);
-            border-color: var(--gold);
-            font-weight: 700;
-            box-shadow: var(--shadow-gold);
-        }
-        .busca-wrapper {
-            flex: 1;
-            min-width: 200px;
-            position: relative;
-            margin-left: auto;
-        }
-        .busca-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gold-dark);
-            font-size: 0.85rem;
-        }
-        .busca-input {
-            width: 100%;
-            padding: 10px 14px 10px 38px;
-            border-radius: var(--radius-full);
-            border: 1px solid var(--gold-border);
-            font-family: var(--font-body);
-            font-size: 0.82rem;
-            background: var(--off-white);
-            transition: var(--transition);
-            color: var(--text);
-        }
-        .busca-input:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
-            background: var(--white);
-        }
-        .busca-input::placeholder {
-            color: var(--text-muted);
-        }
-        .busca-clear {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.8rem;
-            display: none;
-            padding: 4px;
-        }
-        .busca-clear.visible { display: block; }
-
-        /* ============================================================
-           GRID DE ROBÔS
-           ============================================================ */
-        .robos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-        }
-        .robo-card {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            box-shadow: var(--shadow-sm);
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
-        .robo-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg), 0 4px 20px rgba(212, 175, 55, 0.1);
-            border-color: var(--gold);
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 7px; }
+        ::-webkit-scrollbar-track { background: rgba(10,49,71,0.04); }
+        ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.35); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,0.55); }
+
+        /* ============================================================
+           HEADER — GRADIENTE IDENZA COM BREADCRUMB
+           ============================================================ */
+        .projeto-header {
+            background: linear-gradient(175deg, var(--primary) 0%, var(--primary-light) 60%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 2.5rem 2rem 2rem;
+            position: relative;
+            overflow: hidden;
         }
-        .robo-card::before {
+        .projeto-header::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--gold-dark));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.5s ease;
+            bottom: 0; left: 0;
+            width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold-dark));
+            box-shadow: 0 0 25px rgba(212,175,55,0.45);
         }
-        .robo-card:hover::before {
-            transform: scaleX(1);
+        .projeto-header::before {
+            content: '';
+            position: absolute;
+            top: -30%; left: -20%;
+            width: 140%; height: 160%;
+            background: radial-gradient(ellipse at 35% 60%, rgba(212,175,55,0.06) 0%, transparent 55%);
+            pointer-events: none;
         }
-        .robo-card-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.8rem;
-            margin-bottom: 0.8rem;
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
-        .robo-card-icon {
-            font-size: 2rem;
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-md);
-            background: var(--gold-surface);
+        .breadcrumb {
             display: flex;
             align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .robo-card-icon i { color: var(--gold); }
-        .robo-card-titulos { flex: 1; }
-        .robo-card h3 {
-            font-family: var(--font-display);
-            font-size: 1rem;
-            color: var(--primary);
-            margin-bottom: 2px;
-            letter-spacing: 0.5px;
-            line-height: 1.3;
-        }
-        .robo-card .robo-tipo {
-            font-family: var(--font-accent);
-            color: var(--text-muted);
-            font-size: 0.68rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-        .robo-card .robo-desc {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            line-height: 1.55;
-            flex: 1;
-            margin-bottom: 1rem;
-        }
-        .robo-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-bottom: 1rem;
-        }
-        .robo-tag {
-            padding: 3px 10px;
-            border-radius: var(--radius-full);
-            font-size: 0.62rem;
-            font-family: var(--font-accent);
-            letter-spacing: 0.5px;
-            background: var(--gold-surface);
-            border: 1px solid var(--gold-border);
-            color: var(--gold-dark);
-            white-space: nowrap;
-        }
-        .robo-tag.facil { background: var(--success-bg); border-color: rgba(46,125,50,0.2); color: var(--success); }
-        .robo-tag.medio { background: var(--warning-bg); border-color: rgba(230,81,0,0.2); color: var(--warning); }
-        .robo-tag.avancado { background: var(--critical-bg); border-color: rgba(198,40,40,0.2); color: var(--critical); }
-        .robo-tag.especialista { background: rgba(10,49,71,0.06); border-color: rgba(10,49,71,0.2); color: var(--primary); font-weight: 700; }
-        .robo-tag i { margin-right: 2px; }
-
-        .robo-card-footer {
-            display: flex;
             gap: 0.5rem;
-            align-items: center;
-            margin-top: auto;
-        }
-        .robo-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 10px 18px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: var(--white);
-            border: none;
-            border-radius: var(--radius-sm);
+            margin-bottom: 1.5rem;
             font-family: var(--font-accent);
             font-size: 0.72rem;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            cursor: pointer;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.55);
+        }
+        .breadcrumb a {
+            color: var(--gold-light);
             text-decoration: none;
             transition: var(--transition);
-            flex: 1;
+        }
+        .breadcrumb a:hover { color: var(--gold); }
+        .breadcrumb i { font-size: 0.55rem; color: var(--gold); }
+        .breadcrumb .current { color: var(--white); opacity: 0.9; }
+        .projeto-header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            letter-spacing: 2px;
+            margin-bottom: 0.4rem;
+            color: var(--white);
+        }
+        .projeto-header .subtipo {
+            font-family: var(--font-accent);
+            color: var(--gold-light);
+            font-size: 0.88rem;
+            letter-spacing: 1.5px;
+            opacity: 0.85;
+            margin-bottom: 1.2rem;
+        }
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.7);
+        }
+        .meta-item i {
+            color: var(--gold);
+            font-size: 0.85rem;
+            width: 20px;
             text-align: center;
         }
-        .robo-btn:hover {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--primary);
-            font-weight: 700;
-            box-shadow: var(--shadow-gold);
-            transform: translateY(-1px);
-        }
-        .robo-btn-outline {
-            background: transparent;
-            border: 1px solid var(--gold-border);
-            color: var(--primary);
-            flex: 0;
-            padding: 10px 12px;
-        }
-        .robo-btn-outline:hover {
-            background: var(--gold-surface);
-            border-color: var(--gold);
-            box-shadow: none;
+        .meta-item strong {
+            color: var(--white);
+            font-weight: 600;
         }
 
         /* ============================================================
-           ESTADO VAZIO
+           LAYOUT PRINCIPAL (COM SIDEBAR)
            ============================================================ */
-        .vazio {
-            text-align: center;
-            padding: 4rem 2rem;
-            grid-column: 1 / -1;
+        .main-layout {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+            display: flex;
+            gap: 2rem;
+            flex: 1;
         }
-        .vazio i {
-            font-size: 4rem;
-            color: var(--gold);
-            margin-bottom: 1rem;
-            opacity: 0.4;
+        .conteudo {
+            flex: 1;
+            min-width: 0;
         }
-        .vazio h3 {
+
+        /* ===== SIDEBAR DE NAVEGAÇÃO ===== */
+        .sidebar-nav {
+            width: 220px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 1.5rem;
+            align-self: flex-start;
+            max-height: calc(100vh - 3rem);
+            overflow-y: auto;
+        }
+        .sidebar-nav-inner {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gold-border);
+            padding: 1.2rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .sidebar-nav h4 {
             font-family: var(--font-display);
+            font-size: 0.68rem;
+            color: var(--primary);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gold-border);
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.6rem;
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            margin-bottom: 1px;
+        }
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: var(--gold-surface);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        .sidebar-nav a i {
+            font-size: 0.6rem;
+            color: var(--gold-dark);
+            width: 14px;
+            text-align: center;
+        }
+        .sidebar-nav .progress-mini {
+            margin-top: 0.8rem;
+            padding-top: 0.6rem;
+            border-top: 1px solid var(--gold-border);
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+        .sidebar-nav .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--gold-surface);
+            border-radius: 4px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .sidebar-nav .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* ============================================================
+           PAINÉIS
+           ============================================================ */
+        .panel {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.8rem;
+            border: 1px solid var(--gold-border);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.3rem;
+            transition: var(--transition);
+        }
+        .panel:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--gold-border);
+        }
+        .panel-header i {
+            font-size: 1.1rem;
+            color: var(--gold);
+        }
+        .panel-header h2 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--primary);
+            letter-spacing: 0.8px;
+            margin: 0;
+        }
+        .panel-header .badge {
+            margin-left: auto;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-family: var(--font-accent);
+            font-size: 0.6rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: var(--gold-surface);
+            color: var(--gold-dark);
+            border: 1px solid var(--gold-border);
+        }
+
+        /* ============================================================
+           BOM TABLE
+           ============================================================ */
+        .bom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+        .bom-table thead th {
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px 14px;
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            text-align: left;
+            font-weight: 500;
+        }
+        .bom-table thead th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+        .bom-table thead th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+        .bom-table tbody td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(212,175,55,0.08);
+            color: var(--text);
+        }
+        .bom-table tbody tr:hover td {
+            background: var(--gold-surface);
+        }
+        .bom-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .bom-table .item-nome {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .bom-table .item-preco {
+            font-family: var(--font-mono);
+            color: var(--gold-dark);
+            font-weight: 600;
+            text-align: right;
+        }
+        .bom-table .item-qtd {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* ============================================================
+           TIMELINE DE PASSOS (SUBSTITUI OS CARDS ANTIGOS)
+           ============================================================ */
+        .timeline {
+            position: relative;
+            padding-left: 2.5rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 18px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--gold) 0%, var(--gold-border) 100%);
+        }
+        .timeline-step {
+            position: relative;
+            margin-bottom: 1.8rem;
+            padding: 1.2rem 1.4rem;
+            background: var(--white);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--gold-border);
+            transition: var(--transition);
+        }
+        .timeline-step:hover {
+            border-color: var(--gold);
+            box-shadow: var(--shadow-gold);
+        }
+        .timeline-step.completed {
+            border-left: 3px solid var(--success);
+        }
+        .timeline-step .step-marker {
+            position: absolute;
+            left: -2.5rem;
+            top: 1.2rem;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 0 4px var(--white);
+            z-index: 2;
+        }
+        .timeline-step.completed .step-marker {
+            background: var(--success);
+            color: var(--white);
+            border-color: var(--success);
+        }
+        .timeline-step .step-marker i {
+            font-size: 0.7rem;
+        }
+        .timeline-step h4 {
+            font-family: var(--font-display);
+            font-size: 0.88rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.5px;
+        }
+        .timeline-step p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            line-height: 1.55;
+        }
+        .timeline-step .step-code-ref {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+            padding: 5px 12px;
+            background: var(--gold-surface);
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-family: var(--font-mono);
+            color: var(--gold-dark);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .timeline-step .step-code-ref:hover {
+            border-color: var(--gold);
+            background: var(--white);
+        }
+
+        /* ============================================================
+           BLOCOS DE CÓDIGO (COM HEADER E BOTÃO COPIAR)
+           ============================================================ */
+        .code-section {
+            margin: 0.8rem 0 1.5rem;
+        }
+        .code-section h4 {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
             color: var(--primary);
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .vazio p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
+        .code-section h4 i {
+            color: var(--gold);
+            font-size: 0.7rem;
+        }
+        .code-block {
+            background: #151b22;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid rgba(212,175,55,0.15);
+        }
+        .code-block-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1rem;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .code-block-header .code-lang {
+            font-family: var(--font-accent);
+            font-size: 0.6rem;
+            letter-spacing: 1px;
+            color: var(--gold-light);
+            text-transform: uppercase;
+        }
+        .code-block-header .copy-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.6rem;
+            font-family: var(--font-accent);
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .code-block-header .copy-btn:hover {
+            background: rgba(212,175,55,0.15);
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+        .code-block-header .copy-btn.copiado {
+            background: rgba(46,125,50,0.2);
+            color: var(--success);
+            border-color: var(--success);
+        }
+        .code-block pre {
+            margin: 0;
+            padding: 1.2rem;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            line-height: 1.6;
+            color: #c9d1d9;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* ============================================================
+           LISTA DE APRENDIZADO
+           ============================================================ */
+        .learning-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+        .learning-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.5rem 0.7rem;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+        .learning-list li:hover {
+            background: var(--gold-surface);
+        }
+        .learning-list li i {
+            color: var(--success);
+            font-size: 0.65rem;
+            margin-top: 3px;
+        }
+
+        /* ============================================================
+           ALERTA DE PRÉ-REQUISITOS
+           ============================================================ */
+        .alert-prereq {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            padding: 1rem 1.2rem;
+            background: var(--warning-bg);
+            border-left: 3px solid var(--warning);
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.8rem;
+            font-size: 0.8rem;
+        }
+        .alert-prereq i {
+            color: var(--warning);
+            font-size: 1rem;
+            margin-top: 2px;
+        }
+
+        /* ============================================================
+           DICAS (CARDS PEQUENOS)
+           ============================================================ */
+        .tips-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+        }
+        .tip-card {
+            padding: 0.8rem 1rem;
+            background: var(--gold-surface);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gold-border);
+            font-size: 0.75rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .tip-card i {
+            color: var(--gold);
+            font-size: 0.8rem;
+            margin-top: 2px;
         }
 
         /* ============================================================
            FOOTER
            ============================================================ */
-        .footer {
+        .projeto-footer {
             background: var(--primary);
-            color: rgba(255, 255, 255, 0.55);
+            color: rgba(255,255,255,0.5);
             text-align: center;
-            padding: 2.5rem 1.5rem;
-            font-size: 0.68rem;
+            padding: 2rem;
+            font-size: 0.62rem;
             font-family: var(--font-accent);
             letter-spacing: 1px;
-            margin-top: 2rem;
+            margin-top: auto;
             border-top: 3px solid var(--gold);
         }
-        .footer strong { color: var(--gold-light); }
-        .footer a { color: var(--gold); text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
+        .projeto-footer strong { color: var(--gold-light); }
 
         /* ============================================================
            RESPONSIVO
            ============================================================ */
-        @media (max-width: 768px) {
-            .header { padding: 2rem 1rem 1.5rem; }
-            .header h1 { font-size: 1.3rem; letter-spacing: 1.5px; }
-            .header .stats { gap: 1.2rem; }
-            .header .stat-value { font-size: 1.3rem; }
-            .container { padding: 1rem 0.8rem 2rem; }
-            .filtros-wrapper { flex-direction: column; align-items: stretch; gap: 0.8rem; padding: 1rem; }
-            .busca-wrapper { margin-left: 0; width: 100%; }
-            .robos-grid { grid-template-columns: 1fr; gap: 1rem; }
-            .robo-card { padding: 1.2rem; }
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .sidebar-nav {
+                width: 100%;
+                position: static;
+                order: -1;
+                max-height: none;
+            }
+            .sidebar-nav-inner {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                padding: 0.8rem;
+            }
+            .sidebar-nav h4 { width: 100%; margin-bottom: 0.3rem; }
+            .sidebar-nav a { font-size: 0.65rem; padding: 0.3rem 0.5rem; }
+            .learning-list { grid-template-columns: 1fr; }
+            .tips-grid { grid-template-columns: 1fr; }
+            .timeline { padding-left: 2rem; }
+            .timeline-step .step-marker { left: -2rem; width: 32px; height: 32px; font-size: 0.75rem; }
+            .projeto-header { padding: 1.8rem 1rem 1.5rem; }
+            .meta-row { gap: 1rem; }
         }
         @media (max-width: 480px) {
-            .header-icon { font-size: 2.5rem; }
-            .header .subtitle { font-size: 0.8rem; }
-            .filtro-btn { font-size: 0.65rem; padding: 5px 10px; }
-            .robo-card h3 { font-size: 0.9rem; }
+            .projeto-header h1 { font-size: 1.2rem; }
+            .panel { padding: 1.2rem; }
+            .code-block pre { font-size: 0.6rem; padding: 0.8rem; }
         }
     </style>
 </head>
 <body>
 
     <!-- ==================== HEADER ==================== -->
-    <header class="header">
-        <div class="header-content">
-            <i class="fas fa-robot header-icon"></i>
-            <h1>Idenza <span class="gold">Robotics</span> Academy</h1>
-            <p class="subtitle">Construa Robôs Reais • Open Source • Passo a Passo Completo</p>
-            <div class="stats" id="headerStats">
-                <div class="stat-item">
-                    <div class="stat-value" id="totalRobos">—</div>
-                    <div class="stat-label">Robôs</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="totalPecas">—</div>
-                    <div class="stat-label">Peças Documentadas</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="totalCodigo">—</div>
-                    <div class="stat-label">Linhas de Código</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="totalPassos">—</div>
-                    <div class="stat-label">Passos Detalhados</div>
-                </div>
+    <header class="projeto-header">
+        <div class="header-inner">
+            <div class="breadcrumb">
+                <a href="../index.html"><i class="fas fa-home"></i> Idenza Academy</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="../index.html">Catálogo de Robôs</a>
+                <i class="fas fa-chevron-right"></i>
+                <span class="current" id="breadcrumbNome">Carregando...</span>
+            </div>
+            <h1 id="nomeRobo">Carregando Projeto...</h1>
+            <p class="subtipo" id="tipoRobo"></p>
+            <div class="meta-row">
+                <div class="meta-item"><i class="fas fa-signal"></i> Dificuldade: <strong id="dificuldade">—</strong></div>
+                <div class="meta-item"><i class="fas fa-clock"></i> Tempo: <strong id="tempo">—</strong></div>
+                <div class="meta-item"><i class="fas fa-dollar-sign"></i> Custo: <strong id="custo">—</strong></div>
+                <div class="meta-item"><i class="fas fa-cubes"></i> Peças: <strong id="pecas">—</strong></div>
             </div>
         </div>
     </header>
 
-    <!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
-    <main class="container">
+    <!-- ==================== LAYOUT PRINCIPAL ==================== -->
+    <div class="main-layout">
 
-        <!-- Barra de Filtros -->
-        <div class="filtros-wrapper" id="filtrosWrapper">
-            <div class="filtro-grupo">
-                <span class="filtro-label"><i class="fas fa-filter"></i> Dificuldade:</span>
-                <button class="filtro-btn active" data-filtro="todos">Todos</button>
-                <button class="filtro-btn" data-filtro="fácil">🟢 Fácil</button>
-                <button class="filtro-btn" data-filtro="médio">🟡 Médio</button>
-                <button class="filtro-btn" data-filtro="avançado">🔴 Avançado</button>
-                <button class="filtro-btn" data-filtro="especialista">⚫ Especialista</button>
+        <!-- Sidebar de Navegação -->
+        <nav class="sidebar-nav" id="sidebarNav">
+            <div class="sidebar-nav-inner">
+                <h4><i class="fas fa-compass"></i> Navegar</h4>
+                <a href="#sobre"><i class="fas fa-info-circle"></i> Sobre</a>
+                <a href="#aprendizado"><i class="fas fa-graduation-cap"></i> Aprendizado</a>
+                <a href="#materiais"><i class="fas fa-shopping-cart"></i> Materiais</a>
+                <a href="#passos"><i class="fas fa-list-ol"></i> Passo a Passo</a>
+                <a href="#codigo"><i class="fas fa-code"></i> Código-Fonte</a>
+                <a href="#dicas"><i class="fas fa-lightbulb"></i> Dicas</a>
+                <div class="progress-mini">
+                    Progresso
+                    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+                </div>
             </div>
-            <div class="filtro-grupo">
-                <span class="filtro-label"><i class="fas fa-tag"></i> Tipo:</span>
-                <button class="filtro-btn" data-tipo="todos">Todos</button>
-                <button class="filtro-btn" data-tipo="humanoide">Humanoide</button>
-                <button class="filtro-btn" data-tipo="braco">Braço</button>
-                <button class="filtro-btn" data-tipo="rover">Rover</button>
-                <button class="filtro-btn" data-tipo="quadrupede">Quadrúpede</button>
-                <button class="filtro-btn" data-tipo="drone">Drone</button>
-            </div>
-            <div class="busca-wrapper">
-                <i class="fas fa-search busca-icon"></i>
-                <input type="text" class="busca-input" id="buscaInput" placeholder="Buscar robô por nome, tipo, dificuldade...">
-                <button class="busca-clear" id="buscaClear" title="Limpar busca">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
+        </nav>
 
-        <!-- Contador -->
-        <p style="text-align:center;margin-bottom:1.5rem;font-family:var(--font-accent);font-size:0.75rem;color:var(--text-muted);letter-spacing:1px;" id="contadorLabel">
-            Exibindo todos os robôs
-        </p>
-
-        <!-- Grid de Robôs -->
-        <div class="robos-grid" id="robosGrid">
-            <!-- Preenchido dinamicamente via JavaScript -->
-        </div>
-    </main>
+        <!-- Conteúdo Principal -->
+        <main class="conteudo" id="conteudoProjeto">
+            <p style="text-align:center;padding:3rem;color:var(--text-muted);">
+                <i class="fas fa-spinner fa-spin"></i> Carregando dados do projeto...
+            </p>
+        </main>
+    </div>
 
     <!-- ==================== FOOTER ==================== -->
-    <footer class="footer">
-        <strong>Idenza Robotics Academy™</strong> — Todos os robôs são open source e podem ser construídos por qualquer pessoa com as ferramentas certas.<br>
-        <a href="mailto:contato@idenzarobotics.com">contato@idenzarobotics.com</a> &nbsp;|&nbsp; 
-        © 2026 Idenza Robotics Intelligence S.A. &nbsp;|&nbsp; 
-        Build v6.0.0 — Compliance Tag: IDZ-COMP-2026-001
+    <footer class="projeto-footer">
+        <strong>Idenza Robotics Academy™</strong> — Projeto Open Source · Construa seu próprio robô<br>
+        © 2026 Idenza Robotics Intelligence S.A. · Build v6.0.0
     </footer>
 
     <!-- ==================== SCRIPTS ==================== -->
-    <script src="projetos/data/robos-database.js"></script>
+    <script src="data/robos-database.js"></script>
     <script>
         (function() {
-            // ============================================================
-            // CONFIGURAÇÃO
-            // ============================================================
-            const robos = window.IDENZA_ROBOS_DATABASE || [];
-            const grid = document.getElementById('robosGrid');
-            const buscaInput = document.getElementById('buscaInput');
-            const buscaClear = document.getElementById('buscaClear');
-            const contadorLabel = document.getElementById('contadorLabel');
-            
-            let filtroDificuldade = 'todos';
-            let filtroTipo = 'todos';
-            let buscaTexto = '';
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
 
-            // ============================================================
-            // ESTATÍSTICAS DO HEADER
-            // ============================================================
-            const totalPecas = robos.reduce((sum, r) => sum + (r.pecas || 0), 0);
-            const totalPassos = robos.reduce((sum, r) => sum + (r.passos?.length || 0), 0);
-            const totalLinhasCodigo = robos.reduce((sum, r) => {
-                if (!r.codigoFonte) return sum;
-                return sum + Object.values(r.codigoFonte).reduce((s, code) => s + (code?.split('\n')?.length || 0), 0);
-            }, 0);
-
-            document.getElementById('totalRobos').textContent = robos.length;
-            document.getElementById('totalPecas').textContent = totalPecas;
-            document.getElementById('totalCodigo').textContent = totalLinhasCodigo.toLocaleString();
-            document.getElementById('totalPassos').textContent = totalPassos;
-
-            // ============================================================
-            // ÍCONES POR TIPO DE ROBÔ
-            // ============================================================
-            function getIcone(tipo) {
-                const t = tipo.toLowerCase();
-                if (t.includes('humanoide')) return 'fa-child';
-                if (t.includes('braço')) return 'fa-hand-holding';
-                if (t.includes('rover') || t.includes('carrinho') || t.includes('diferencial')) return 'fa-car-side';
-                if (t.includes('quadrúpede') || t.includes('hexapod') || t.includes('cachorro')) return 'fa-dog';
-                if (t.includes('drone') || t.includes('quadricóptero')) return 'fa-helicopter';
-                if (t.includes('telepresença')) return 'fa-video';
-                return 'fa-robot';
+            if (!id) {
+                document.getElementById('nomeRobo').textContent = 'Projeto não especificado';
+                document.getElementById('tipoRobo').textContent = 'Use ?id=nome-do-robo na URL';
+                return;
             }
 
-            function getTagClass(dificuldade) {
-                const map = { 'fácil': 'facil', 'médio': 'medio', 'avançado': 'avancado', 'especialista': 'especialista' };
-                return map[dificuldade] || '';
-            }
+            const robo = IDENZA_ROBOS_DATABASE.find(r => r.id === id);
 
-            function getDificuldadeEmoji(dificuldade) {
-                const map = { 'fácil': '🟢', 'médio': '🟡', 'avançado': '🔴', 'especialista': '⚫' };
-                return map[dificuldade] || '';
+            if (!robo) {
+                document.getElementById('nomeRobo').textContent = 'Robô não encontrado';
+                document.getElementById('tipoRobo').textContent = `ID "${id}" não existe no banco de dados.`;
+                return;
             }
 
             // ============================================================
-            // RENDERIZAR ROBÔS
+            // PREENCHER HEADER
             // ============================================================
-            function renderizar() {
-                let filtrados = [...robos];
+            document.title = `${robo.nome} — Idenza Robotics Academy`;
+            document.getElementById('nomeRobo').textContent = robo.nome;
+            document.getElementById('tipoRobo').textContent = robo.tipo;
+            document.getElementById('breadcrumbNome').textContent = robo.nome;
+            document.getElementById('dificuldade').textContent = robo.dificuldade.toUpperCase();
+            document.getElementById('tempo').textContent = robo.tempo;
+            document.getElementById('custo').textContent = robo.custo;
+            document.getElementById('pecas').textContent = robo.pecas;
 
-                // Filtro de dificuldade
-                if (filtroDificuldade !== 'todos') {
-                    filtrados = filtrados.filter(r => r.dificuldade === filtroDificuldade);
-                }
+            // ============================================================
+            // CONSTRUIR CONTEÚDO
+            // ============================================================
+            const conteudo = document.getElementById('conteudoProjeto');
+            let html = '';
 
-                // Filtro de tipo
-                if (filtroTipo !== 'todos') {
-                    filtrados = filtrados.filter(r => {
-                        const tipo = r.tipo.toLowerCase();
-                        if (filtroTipo === 'humanoide') return tipo.includes('humanoide');
-                        if (filtroTipo === 'braco') return tipo.includes('braço');
-                        if (filtroTipo === 'rover') return tipo.includes('rover') || tipo.includes('carrinho') || tipo.includes('diferencial');
-                        if (filtroTipo === 'quadrupede') return tipo.includes('quadrúpede') || tipo.includes('hexapod') || tipo.includes('cachorro');
-                        if (filtroTipo === 'drone') return tipo.includes('drone') || tipo.includes('quadricóptero');
-                        return true;
-                    });
-                }
-
-                // Busca textual
-                if (buscaTexto.trim()) {
-                    const q = buscaTexto.toLowerCase().trim();
-                    filtrados = filtrados.filter(r =>
-                        r.nome.toLowerCase().includes(q) ||
-                        r.tipo.toLowerCase().includes(q) ||
-                        r.descricao.toLowerCase().includes(q) ||
-                        r.dificuldade.toLowerCase().includes(q) ||
-                        (r.tags && r.tags.some(t => t.toLowerCase().includes(q)))
-                    );
-                }
-
-                // Atualizar contador
-                if (filtrados.length === robos.length) {
-                    contadorLabel.textContent = `Exibindo todos os ${robos.length} robôs`;
-                } else {
-                    contadorLabel.textContent = `Exibindo ${filtrados.length} de ${robos.length} robôs`;
-                }
-
-                // Renderizar grid
-                if (filtrados.length === 0) {
-                    grid.innerHTML = `
-                        <div class="vazio">
-                            <i class="fas fa-search"></i>
-                            <h3>Nenhum robô encontrado</h3>
-                            <p>Tente ajustar os filtros ou limpar a busca.</p>
-                        </div>`;
-                    return;
-                }
-
-                grid.innerHTML = filtrados.map((robo, index) => `
-                    <div class="robo-card" style="animation: fadeInUp 0.4s ease both; animation-delay:${index * 50}ms;">
-                        <div class="robo-card-header">
-                            <div class="robo-card-icon">
-                                <i class="fas ${getIcone(robo.tipo)}"></i>
-                            </div>
-                            <div class="robo-card-titulos">
-                                <h3>${robo.nome}</h3>
-                                <p class="robo-tipo">${robo.tipo}</p>
-                            </div>
-                        </div>
-                        <p class="robo-desc">${robo.descricao.substring(0, 130)}...</p>
-                        <div class="robo-meta">
-                            <span class="robo-tag ${getTagClass(robo.dificuldade)}">${getDificuldadeEmoji(robo.dificuldade)} ${robo.dificuldade.toUpperCase()}</span>
-                            <span class="robo-tag"><i class="fas fa-clock"></i> ${robo.tempo}</span>
-                            <span class="robo-tag"><i class="fas fa-dollar-sign"></i> ${robo.custo}</span>
-                            <span class="robo-tag"><i class="fas fa-cubes"></i> ${robo.pecas} peças</span>
-                            ${robo.impressao3d ? '<span class="robo-tag"><i class="fas fa-cube"></i> Impressão 3D</span>' : ''}
-                        </div>
-                        <div class="robo-card-footer">
-                            <a href="projetos/template.html?id=${robo.id}" target="_blank" class="robo-btn">
-                                <i class="fas fa-external-link-alt"></i> Abrir Projeto Completo
-                            </a>
-                        </div>
+            // SEÇÃO: SOBRE
+            html += `
+            <section class="panel" id="sobre">
+                <div class="panel-header">
+                    <i class="fas fa-robot"></i>
+                    <h2>Sobre este Robô</h2>
+                </div>
+                <p style="font-size:0.85rem;">${robo.descricao}</p>
+                ${robo.video ? `<p style="margin-top:0.8rem;"><a href="${robo.video}" target="_blank" style="color:var(--gold-dark);text-decoration:underline;font-size:0.8rem;"><i class="fas fa-play-circle"></i> Assistir vídeo de demonstração</a></p>` : ''}
+                ${robo.impressao3d ? `
+                <div class="alert-prereq" style="margin-top:1rem;background:rgba(10,49,71,0.04);border-left-color:var(--primary);">
+                    <i class="fas fa-cube"></i>
+                    <div>
+                        <strong>Este robô requer impressão 3D.</strong>
+                        ${robo.arquivos3D ? `<br><a href="${robo.arquivos3D}" target="_blank" style="color:var(--gold-dark);font-size:0.75rem;">Baixar arquivos STL gratuitos <i class="fas fa-external-link-alt"></i></a>` : ''}
                     </div>
-                `).join('');
+                </div>` : ''}
+            </section>`;
+
+            // SEÇÃO: APRENDIZADO
+            if (robo.aprendizado) {
+                html += `
+                <section class="panel" id="aprendizado">
+                    <div class="panel-header">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h2>O Que Você Vai Aprender</h2>
+                        <span class="badge">${robo.aprendizado.length} habilidades</span>
+                    </div>
+                    <ul class="learning-list">
+                        ${robo.aprendizado.map(a => `<li><i class="fas fa-check-circle"></i> ${a}</li>`).join('')}
+                    </ul>
+                </section>`;
             }
 
-            // ============================================================
-            // EVENTOS
-            // ============================================================
+            // SEÇÃO: PRÉ-REQUISITOS
+            if (robo.preRequisitos && robo.preRequisitos.length > 0) {
+                html += `
+                <section class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h2>Pré-Requisitos</h2>
+                    </div>
+                    ${robo.preRequisitos.map(p => `
+                        <div class="alert-prereq">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>${p}</div>
+                        </div>
+                    `).join('')}
+                </section>`;
+            }
 
-            // Filtros de dificuldade
-            document.querySelectorAll('.filtro-btn[data-filtro]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filtro-btn[data-filtro]').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    filtroDificuldade = this.dataset.filtro;
-                    renderizar();
+            // SEÇÃO: MATERIAIS (BOM)
+            if (robo.bom && robo.bom.length > 0) {
+                html += `
+                <section class="panel" id="materiais">
+                    <div class="panel-header">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h2>Lista de Materiais (BOM)</h2>
+                        <span class="badge">${robo.bom.length} itens</span>
+                    </div>
+                    <table class="bom-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qtd</th>
+                                <th>Preço</th>
+                                <th>Função</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${robo.bom.map(item => `
+                                <tr>
+                                    <td class="item-nome">${item.link ? `<a href="${item.link}" target="_blank" style="color:var(--gold-dark);">${item.item}</a>` : item.item}</td>
+                                    <td class="item-qtd">${item.qtd}</td>
+                                    <td class="item-preco">${item.preco}</td>
+                                    <td style="font-size:0.72rem;color:var(--text-muted);">${item.funcao}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </section>`;
+            }
+
+            // SEÇÃO: FERRAMENTAS
+            if (robo.ferramentas && robo.ferramentas.length > 0) {
+                html += `
+                <section class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-tools"></i>
+                        <h2>Ferramentas Necessárias</h2>
+                    </div>
+                    <ul class="learning-list">
+                        ${robo.ferramentas.map(f => `<li><i class="fas fa-wrench"></i> ${f}</li>`).join('')}
+                    </ul>
+                </section>`;
+            }
+
+            // SEÇÃO: PASSO A PASSO (TIMELINE)
+            if (robo.passos && robo.passos.length > 0) {
+                html += `
+                <section class="panel" id="passos">
+                    <div class="panel-header">
+                        <i class="fas fa-list-ol"></i>
+                        <h2>Passo a Passo Completo</h2>
+                        <span class="badge">${robo.passos.length} passos</span>
+                    </div>
+                    <div class="timeline">
+                        ${robo.passos.map((p, i) => `
+                            <div class="timeline-step" data-step="${i}">
+                                <div class="step-marker">${p.numero || i + 1}</div>
+                                <h4>${p.titulo}</h4>
+                                <p>${p.descricao}</p>
+                                ${p.codigo ? `<span class="step-code-ref" onclick="document.getElementById('codigo').scrollIntoView({behavior:'smooth'})"><i class="fas fa-code"></i> Código: ${p.codigo}</span>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>`;
+            }
+
+            // SEÇÃO: CÓDIGO-FONTE
+            if (robo.codigoFonte && Object.keys(robo.codigoFonte).length > 0) {
+                html += `
+                <section class="panel" id="codigo">
+                    <div class="panel-header">
+                        <i class="fas fa-code"></i>
+                        <h2>Código-Fonte Completo</h2>
+                        <span class="badge">${Object.keys(robo.codigoFonte).length} arquivos</span>
+                    </div>
+                    ${Object.entries(robo.codigoFonte).map(([nome, codigo]) => {
+                        const ext = nome.split('.').pop();
+                        const lang = { py: 'Python', ino: 'Arduino C++', cpp: 'C++', sh: 'Bash', txt: 'Texto', js: 'JavaScript' };
+                        return `
+                        <div class="code-section">
+                            <h4><i class="fas fa-file-code"></i> ${nome}</h4>
+                            <div class="code-block">
+                                <div class="code-block-header">
+                                    <span class="code-lang">${lang[ext] || ext.toUpperCase()}</span>
+                                    <button class="copy-btn" onclick="copiarCodigo(this, '${nome.replace(/'/g, "\\'")}')">
+                                        <i class="fas fa-copy"></i> Copiar
+                                    </button>
+                                </div>
+                                <pre><code>${escapeHTML(codigo)}</code></pre>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </section>`;
+            }
+
+            // SEÇÃO: DICAS
+            if (robo.dicas && robo.dicas.length > 0) {
+                html += `
+                <section class="panel" id="dicas">
+                    <div class="panel-header">
+                        <i class="fas fa-lightbulb"></i>
+                        <h2>Dicas e Solução de Problemas</h2>
+                    </div>
+                    <div class="tips-grid">
+                        ${robo.dicas.map(d => `
+                            <div class="tip-card">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>${d}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>`;
+            }
+
+            // SEÇÃO: COMUNIDADE
+            if (robo.comunidade || robo.github) {
+                html += `
+                <section class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-users"></i>
+                        <h2>Comunidade e Recursos</h2>
+                    </div>
+                    <div style="display:flex;gap:1rem;flex-wrap:wrap;font-size:0.8rem;">
+                        ${robo.comunidade ? `<a href="${robo.comunidade}" target="_blank" style="color:var(--gold-dark);text-decoration:underline;"><i class="fas fa-globe"></i> Site Oficial</a>` : ''}
+                        ${robo.github ? `<a href="${robo.github}" target="_blank" style="color:var(--gold-dark);text-decoration:underline;"><i class="fab fa-github"></i> Repositório GitHub</a>` : ''}
+                    </div>
+                </section>`;
+            }
+
+            conteudo.innerHTML = html;
+
+            // ============================================================
+            // FUNÇÕES AUXILIARES
+            // ============================================================
+            function escapeHTML(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            // Copiar código
+            window.copiarCodigo = function(btn, nome) {
+                const codeBlock = btn.closest('.code-block');
+                const code = codeBlock.querySelector('code').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    btn.classList.add('copiado');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                    setTimeout(() => {
+                        btn.classList.remove('copiado');
+                        btn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+                    }, 2000);
+                });
+            };
+
+            // ============================================================
+            // SIDEBAR — ATIVAR LINK CONFORME SCROLL
+            // ============================================================
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+            const sections = document.querySelectorAll('section[id]');
+            
+            function updateActiveLink() {
+                let current = '';
+                sections.forEach(section => {
+                    const top = section.getBoundingClientRect().top;
+                    if (top < 150) current = section.id;
+                });
+                sidebarLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+                });
+            }
+            window.addEventListener('scroll', updateActiveLink, { passive: true });
+
+            // ============================================================
+            // PROGRESSO (MARCAR PASSOS COMO CONCLUÍDOS)
+            // ============================================================
+            const passos = document.querySelectorAll('.timeline-step');
+            passos.forEach(step => {
+                step.addEventListener('click', function() {
+                    this.classList.toggle('completed');
+                    const marker = this.querySelector('.step-marker');
+                    if (this.classList.contains('completed')) {
+                        marker.innerHTML = '<i class="fas fa-check"></i>';
+                    } else {
+                        marker.textContent = this.dataset.step ? parseInt(this.dataset.step) + 1 : '';
+                    }
+                    atualizarProgresso();
                 });
             });
 
-            // Filtros de tipo
-            document.querySelectorAll('.filtro-btn[data-tipo]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filtro-btn[data-tipo]').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    filtroTipo = this.dataset.tipo;
-                    renderizar();
-                });
-            });
+            function atualizarProgresso() {
+                const total = passos.length;
+                const completos = document.querySelectorAll('.timeline-step.completed').length;
+                const pct = total > 0 ? Math.round((completos / total) * 100) : 0;
+                const fill = document.getElementById('progressFill');
+                if (fill) fill.style.width = pct + '%';
+            }
 
-            // Busca
-            buscaInput.addEventListener('input', function() {
-                buscaTexto = this.value;
-                buscaClear.classList.toggle('visible', buscaTexto.length > 0);
-                renderizar();
-            });
-
-            // Limpar busca
-            buscaClear.addEventListener('click', function() {
-                buscaInput.value = '';
-                buscaTexto = '';
-                buscaClear.classList.remove('visible');
-                renderizar();
-                buscaInput.focus();
-            });
-
-            // Atalho: Ctrl+K para focar busca
-            document.addEventListener('keydown', function(e) {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                    e.preventDefault();
-                    buscaInput.focus();
-                    buscaInput.select();
-                }
-            });
-
-            // ============================================================
-            // INICIALIZAR
-            // ============================================================
-            renderizar();
-
-            console.log(`🚀 Idenza Robotics Academy — ${robos.length} robôs carregados`);
-            console.log(`📦 ${totalPecas} peças documentadas`);
-            console.log(`💻 ${totalLinhasCodigo.toLocaleString()} linhas de código`);
-            console.log(`📋 ${totalPassos} passos detalhados`);
+            console.log(`✅ Projeto "${robo.nome}" carregado com sucesso.`);
         })();
     </script>
-
-    <!-- Animação dos cards -->
-    <style>
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
-
 </body>
 </html>
