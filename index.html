@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Idenza Robotics Academy — Construa robôs reais open source com passo a passo completo, código-fonte funcional e lista de materiais detalhada.">
     <meta name="theme-color" content="#0a3147">
-    <meta name="author" content="Idenza Robotics Intelligence S.A.">
     <title>Idenza Robotics Academy | Construa Robôs Reais Passo a Passo</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,470 +14,183 @@
 
     <style>
         :root {
-            --primary: #0a3147;
-            --primary-light: #1a4b6d;
-            --primary-dark: #061d2b;
-            --gold: #D4AF37;
-            --gold-light: #F4E4B8;
-            --gold-dark: #B8860B;
-            --gold-surface: rgba(212, 175, 55, 0.08);
-            --gold-border: rgba(212, 175, 55, 0.18);
-            --rose: #b5838d;
-            --rose-light: #e4c1c9;
-            --rose-dark: #8b5a65;
-            --rose-surface: rgba(181, 131, 141, 0.06);
-            --rose-border: rgba(181, 131, 141, 0.25);
-            --text: #2b2b2b;
-            --text-light: #5a5a5a;
-            --text-muted: #888888;
-            --white: #ffffff;
-            --off-white: #faf9f6;
+            --primary: #0a3147; --primary-light: #1a4b6d; --primary-dark: #061d2b;
+            --gold: #D4AF37; --gold-light: #F4E4B8; --gold-dark: #B8860B;
+            --gold-surface: rgba(212,175,55,0.07); --gold-border: rgba(212,175,55,0.18);
+            --rose: #b5838d; --rose-light: #e4c1c9; --rose-dark: #8b5a65;
+            --rose-surface: rgba(181,131,141,0.06); --rose-border: rgba(181,131,141,0.25);
+            --text: #2b2b2b; --text-light: #5a5a5a; --text-muted: #888888;
+            --white: #fff; --off-white: #faf9f6;
             --bg: linear-gradient(170deg, #f9f5f0 0%, #faf0f4 40%, #f5f7fa 100%);
-            --critical: #c62828;
-            --critical-bg: rgba(198, 40, 40, 0.06);
-            --warning: #e65100;
-            --warning-bg: rgba(230, 81, 0, 0.05);
-            --success: #2e7d32;
-            --success-bg: rgba(46, 125, 50, 0.06);
+            --critical: #c62828; --critical-bg: rgba(198,40,40,0.06);
+            --warning: #e65100; --warning-bg: rgba(230,81,0,0.05);
+            --success: #2e7d32; --success-bg: rgba(46,125,50,0.06);
             --shadow-sm: 0 1px 3px rgba(10,49,71,0.04);
             --shadow-md: 0 4px 15px rgba(10,49,71,0.06);
-            --shadow-lg: 0 10px 30px rgba(10,49,71,0.10);
             --shadow-rose: 0 6px 20px rgba(181,131,141,0.18);
-            --shadow-gold: 0 6px 20px rgba(212,175,55,0.18);
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --radius-xl: 16px;
-            --font-display: 'Cinzel', 'Times New Roman', serif;
-            --font-body: 'Inter', system-ui, sans-serif;
-            --font-accent: 'Marcellus', 'Georgia', serif;
-            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-            --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+            --font-display: 'Cinzel','Times New Roman',serif;
+            --font-body: 'Inter',system-ui,sans-serif;
+            --font-accent: 'Marcellus','Georgia',serif;
+            --font-mono: 'JetBrains Mono','Courier New',monospace;
+            --transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
         }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden}
+        ::-webkit-scrollbar{width:7px}
+        ::-webkit-scrollbar-track{background:rgba(10,49,71,0.03)}
+        ::-webkit-scrollbar-thumb{background:rgba(181,131,141,0.3);border-radius:4px}
+        ::-webkit-scrollbar-thumb:hover{background:rgba(181,131,141,0.5)}
 
-        * { margin:0; padding:0; box-sizing:border-box; }
+        /* HEADER */
+        .header{background:linear-gradient(175deg,var(--primary)0%,var(--primary-light)60%,var(--primary-dark)100%);color:var(--white);padding:2.5rem 2rem 2rem;text-align:center;position:relative;overflow:hidden}
+        .header::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--gold),var(--rose-light),var(--gold-light),var(--rose),var(--gold-dark));box-shadow:0 0 30px rgba(212,175,55,0.4)}
+        .header::before{content:'';position:absolute;top:-40%;left:-20%;width:140%;height:180%;background:radial-gradient(ellipse at 40% 55%,rgba(212,175,55,0.06)0%,rgba(181,131,141,0.04)30%,transparent 60%);pointer-events:none}
+        .header-content{position:relative;z-index:1}
+        .header-icon{font-size:3rem;color:var(--gold);margin-bottom:0.6rem;display:block;text-shadow:0 0 35px rgba(212,175,55,0.35);animation:floatIcon 3.5s ease-in-out infinite}
+        @keyframes floatIcon{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        .header h1{font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2.2rem);letter-spacing:3px;color:var(--white);text-transform:uppercase}
+        .header h1 .gold{color:var(--gold)}
+        .header .subtitle{font-family:var(--font-accent);color:var(--rose-light);font-size:0.9rem;letter-spacing:2px;opacity:.85;margin-top:0.4rem}
+        .header-stats{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-top:1.2rem}
+        .header-stat{text-align:center}
+        .stat-value{font-family:var(--font-display);font-size:1.5rem;color:var(--gold);font-weight:700}
+        .stat-label{font-family:var(--font-accent);font-size:0.6rem;color:rgba(255,255,255,0.6);letter-spacing:1.5px;text-transform:uppercase}
 
-        body {
-            font-family: var(--font-body);
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+        /* FILTROS */
+        .filtros-bar{max-width:1300px;margin:0 auto;padding:0.8rem 1.5rem;position:sticky;top:0.5rem;z-index:50}
+        .filtros-inner{background:rgba(255,255,255,0.93);backdrop-filter:blur(10px);border-radius:var(--radius-sm);border:1px solid var(--rose-border);padding:0.8rem 1rem;display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;box-shadow:var(--shadow-sm)}
+        .filtro-chip{padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--rose-border);background:var(--white);color:var(--text-light);font-family:var(--font-accent);font-size:0.65rem;cursor:pointer;transition:var(--transition);letter-spacing:0.5px;white-space:nowrap}
+        .filtro-chip:hover{border-color:var(--rose-dark);color:var(--rose-dark);background:var(--rose-surface)}
+        .filtro-chip.active{background:var(--rose);color:var(--white);border-color:var(--rose-dark);font-weight:600;box-shadow:var(--shadow-rose)}
+        .filtro-chip.gold-active{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--white);border-color:var(--gold);font-weight:600;box-shadow:0 6px 20px rgba(212,175,55,0.18)}
+        .busca-wrap{flex:1;min-width:180px;position:relative;margin-left:auto}
+        .busca-wrap input{width:100%;padding:7px 10px 7px 32px;border-radius:var(--radius-sm);border:1px solid var(--rose-border);font-family:var(--font-body);font-size:0.75rem;background:var(--off-white);transition:var(--transition);color:var(--text)}
+        .busca-wrap input:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 3px rgba(181,131,141,0.1)}
+        .busca-wrap .busca-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--rose);font-size:0.7rem}
 
-        ::-webkit-scrollbar { width: 7px; }
-        ::-webkit-scrollbar-track { background: rgba(10,49,71,0.03); }
-        ::-webkit-scrollbar-thumb { background: rgba(181,131,141,0.3); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(181,131,141,0.5); }
+        /* VITRINE */
+        .vitrine{max-width:1300px;margin:0 auto;padding:0.8rem 1.5rem 3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1rem}
+        .robo-card{background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--rose-border);box-shadow:var(--shadow-sm);padding:1.2rem;display:flex;flex-direction:column;transition:var(--transition);position:relative;overflow:hidden;cursor:pointer}
+        .robo-card:hover{border-color:var(--rose);box-shadow:var(--shadow-rose);transform:translateY(-2px)}
+        .robo-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--rose),var(--gold),var(--rose-light));transform:scaleX(0);transform-origin:left;transition:transform 0.45s ease}
+        .robo-card:hover::before{transform:scaleX(1)}
+        .card-top{display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.6rem}
+        .card-icon{width:42px;height:42px;border-radius:var(--radius-sm);background:var(--rose-surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--rose-border)}
+        .card-icon i{color:var(--rose-dark);font-size:1.1rem}
+        .card-titulos h3{font-family:var(--font-display);font-size:0.9rem;color:var(--primary);margin-bottom:2px;letter-spacing:0.5px;line-height:1.3}
+        .card-tipo{font-family:var(--font-accent);color:var(--text-muted);font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px}
+        .card-desc{font-size:0.72rem;color:var(--text-light);line-height:1.5;flex:1;margin-bottom:0.6rem}
+        .card-tags{display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.6rem}
+        .robo-tag{padding:2px 8px;border-radius:var(--radius-sm);font-size:0.55rem;font-family:var(--font-accent);letter-spacing:0.5px;background:var(--rose-surface);border:1px solid var(--rose-border);color:var(--rose-dark);white-space:nowrap}
+        .robo-tag.facil{background:var(--success-bg);border-color:rgba(46,125,50,0.2);color:var(--success)}
+        .robo-tag.medio{background:var(--warning-bg);border-color:rgba(230,81,0,0.2);color:var(--warning)}
+        .robo-tag.avancado{background:var(--critical-bg);border-color:rgba(198,40,40,0.2);color:var(--critical)}
+        .robo-tag.especialista{background:rgba(10,49,71,0.05);border-color:rgba(10,49,71,0.2);color:var(--primary);font-weight:700}
+        .card-footer{display:flex;gap:0.4rem;margin-top:auto}
+        .robo-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 14px;background:var(--primary);color:var(--white);border:none;border-radius:var(--radius-sm);font-family:var(--font-accent);font-size:0.65rem;letter-spacing:0.8px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:var(--transition);flex:1;text-align:center}
+        .robo-btn:hover{background:var(--rose-dark);box-shadow:var(--shadow-rose)}
+        .card-update{font-size:0.5rem;color:var(--text-muted);font-family:var(--font-accent);text-align:right;margin-top:0.3rem;font-style:italic}
+        .section-title{max-width:1300px;margin:1rem auto 0.3rem;padding:0 1.5rem;font-family:var(--font-display);font-size:0.9rem;color:var(--rose-dark);letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:0.5rem;grid-column:1/-1}
+        .section-title i{color:var(--gold);font-size:0.8rem}
+        .section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--rose-border),transparent);margin-left:0.6rem}
+        .vazio{text-align:center;padding:4rem 2rem;grid-column:1/-1}
+        .vazio i{font-size:3rem;color:var(--rose);margin-bottom:1rem;opacity:.3}
+        .vazio h3{font-family:var(--font-display);color:var(--primary)}
 
-        /* ============================================================
-           HEADER
-           ============================================================ */
-        .header {
-            background: linear-gradient(175deg, var(--primary) 0%, var(--primary-light) 60%, var(--primary-dark) 100%);
-            color: var(--white);
-            padding: 3rem 2rem 2.5rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--rose-light), var(--gold-light), var(--rose), var(--gold-dark));
-            box-shadow: 0 0 30px rgba(212,175,55,0.4);
-        }
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -40%; left: -20%;
-            width: 140%; height: 180%;
-            background: radial-gradient(ellipse at 40% 55%, rgba(212,175,55,0.06) 0%, rgba(181,131,141,0.04) 30%, transparent 60%);
-            pointer-events: none;
-        }
-        .header-content { position: relative; z-index: 1; }
-        .header-icon {
-            font-size: 3.2rem;
-            color: var(--gold);
-            margin-bottom: 0.8rem;
-            display: block;
-            text-shadow: 0 0 35px rgba(212,175,55,0.35);
-            animation: floatIcon 3.5s ease-in-out infinite;
-        }
-        @keyframes floatIcon {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-9px); }
-        }
-        .header h1 {
-            font-family: var(--font-display);
-            font-size: clamp(1.5rem, 3.5vw, 2.5rem);
-            letter-spacing: 3px;
-            margin-bottom: 0.4rem;
-            color: var(--white);
-            text-transform: uppercase;
-        }
-        .header h1 .gold { color: var(--gold); }
-        .header .subtitle {
-            font-family: var(--font-accent);
-            color: var(--rose-light);
-            font-size: 1rem;
-            letter-spacing: 2px;
-            opacity: 0.85;
-            margin-bottom: 1.5rem;
-        }
-        .header-stats {
-            display: flex;
-            justify-content: center;
-            gap: 2.5rem;
-            flex-wrap: wrap;
-            margin-top: 1.2rem;
-        }
-        .header-stat {
-            text-align: center;
-        }
-        .header-stat .stat-value {
-            font-family: var(--font-display);
-            font-size: 1.6rem;
-            color: var(--gold);
-            font-weight: 700;
-        }
-        .header-stat .stat-label {
-            font-family: var(--font-accent);
-            font-size: 0.65rem;
-            color: rgba(255,255,255,0.6);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
+        /* PÁGINA DE DETALHES */
+        .pagina-detalhe{display:none;min-height:100vh;flex-direction:column}
+        .pagina-detalhe.ativa{display:flex}
+        .detalhe-header{background:linear-gradient(175deg,var(--primary)0%,var(--primary-light)60%,var(--primary-dark)100%);color:var(--white);padding:2rem;position:relative;overflow:hidden}
+        .detalhe-header::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--gold),var(--rose-light),var(--gold-dark));box-shadow:0 0 25px rgba(212,175,55,0.4)}
+        .detalhe-header-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+        .breadcrumb{display:flex;align-items:center;gap:0.4rem;margin-bottom:1rem;font-family:var(--font-accent);font-size:0.68rem;letter-spacing:1px;color:rgba(255,255,255,0.5)}
+        .breadcrumb a{color:var(--gold-light);text-decoration:none;cursor:pointer}
+        .breadcrumb a:hover{color:var(--gold)}
+        .breadcrumb i{font-size:0.5rem;color:var(--gold)}
+        .detalhe-header h1{font-family:var(--font-display);font-size:clamp(1.2rem,2.5vw,1.8rem);letter-spacing:2px;margin-bottom:0.3rem}
+        .detalhe-header .subtipo{font-family:var(--font-accent);color:var(--rose-light);font-size:0.8rem;letter-spacing:1.5px;opacity:.85}
+        .detalhe-meta{display:flex;flex-wrap:wrap;gap:1.5rem;margin-top:0.8rem;font-size:0.72rem;color:rgba(255,255,255,0.7)}
+        .detalhe-meta i{color:var(--gold);width:18px;text-align:center;margin-right:4px}
+        .detalhe-meta strong{color:var(--white);font-weight:600}
+        .detalhe-layout{max-width:1100px;margin:0 auto;padding:1.5rem;display:flex;gap:1.5rem;flex:1}
+        .detalhe-sidebar{width:200px;flex-shrink:0;position:sticky;top:1rem;align-self:flex-start}
+        .detalhe-sidebar-inner{background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--rose-border);padding:1rem;box-shadow:var(--shadow-sm)}
+        .detalhe-sidebar h4{font-family:var(--font-display);font-size:0.62rem;color:var(--primary);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:1px solid var(--rose-border)}
+        .detalhe-sidebar a{display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0.5rem;font-size:0.65rem;color:var(--text-light);text-decoration:none;border-radius:var(--radius-sm);transition:var(--transition);cursor:pointer;margin-bottom:1px}
+        .detalhe-sidebar a:hover,.detalhe-sidebar a.active{background:var(--rose-surface);color:var(--primary);font-weight:500}
+        .detalhe-sidebar a i{font-size:0.55rem;color:var(--rose-dark);width:12px;text-align:center}
+        .detalhe-conteudo{flex:1;min-width:0}
+        .panel{background:var(--white);border-radius:var(--radius-sm);padding:1.4rem;border:1px solid var(--rose-border);box-shadow:var(--shadow-sm);margin-bottom:1rem;transition:var(--transition)}
+        .panel:hover{box-shadow:var(--shadow-md)}
+        .panel-header{display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--rose-border)}
+        .panel-header i{font-size:1rem;color:var(--gold)}
+        .panel-header h2{font-family:var(--font-display);font-size:0.9rem;color:var(--primary);letter-spacing:0.8px;margin:0}
+        .panel-header .badge{margin-left:auto;padding:3px 10px;border-radius:20px;font-family:var(--font-accent);font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;background:var(--rose-surface);color:var(--rose-dark);border:1px solid var(--rose-border)}
+        .bom-table{width:100%;border-collapse:collapse;font-size:0.72rem}
+        .bom-table th{background:var(--primary);color:var(--white);padding:8px 12px;font-family:var(--font-display);font-size:0.58rem;letter-spacing:1px;text-transform:uppercase;text-align:left;font-weight:500}
+        .bom-table th:first-child{border-radius:var(--radius-sm)0 0 0}
+        .bom-table th:last-child{border-radius:0 var(--radius-sm)0 0}
+        .bom-table td{padding:8px 12px;border-bottom:1px solid rgba(181,131,141,0.08)}
+        .bom-table tr:hover td{background:var(--rose-surface)}
+        .bom-table .item-nome{font-weight:600;color:var(--primary)}
+        .bom-table .item-preco{font-family:var(--font-mono);color:var(--gold-dark);font-weight:600;text-align:right}
+        .timeline{position:relative;padding-left:2.2rem}
+        .timeline::before{content:'';position:absolute;left:16px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--rose)0%,var(--rose-border)100%)}
+        .timeline-step{position:relative;margin-bottom:1.4rem;padding:1rem 1.2rem;background:var(--white);border-radius:var(--radius-sm);border:1px solid var(--rose-border);cursor:pointer;transition:var(--transition)}
+        .timeline-step:hover{border-color:var(--rose);box-shadow:var(--shadow-rose)}
+        .timeline-step.completed{border-left:3px solid var(--success)}
+        .step-marker{position:absolute;left:-2.2rem;top:1rem;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:0.75rem;border:2px solid var(--gold);box-shadow:0 0 0 4px var(--white);z-index:2}
+        .timeline-step.completed .step-marker{background:var(--success);color:var(--white);border-color:var(--success)}
+        .timeline-step h4{font-family:var(--font-display);font-size:0.8rem;color:var(--primary);margin-bottom:0.2rem}
+        .timeline-step p{font-size:0.72rem;color:var(--text-light)}
+        .code-block{background:#151b22;border-radius:var(--radius-sm);overflow:hidden;border:1px solid rgba(212,175,55,0.12);margin:0.6rem 0}
+        .code-block-header{display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0.8rem;background:rgba(0,0,0,0.3);border-bottom:1px solid rgba(255,255,255,0.04)}
+        .code-block-header .code-lang{font-family:var(--font-accent);font-size:0.55rem;letter-spacing:1px;color:var(--rose-light);text-transform:uppercase}
+        .code-block-header .copy-btn{display:flex;align-items:center;gap:0.3rem;padding:3px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:3px;color:rgba(255,255,255,0.4);font-size:0.55rem;font-family:var(--font-accent);cursor:pointer;transition:var(--transition)}
+        .code-block-header .copy-btn:hover{background:rgba(212,175,55,0.15);color:var(--gold);border-color:var(--gold)}
+        .code-block-header .copy-btn.copiado{background:rgba(46,125,50,0.2);color:var(--success);border-color:var(--success)}
+        .code-block pre{margin:0;padding:1rem;overflow-x:auto;font-family:var(--font-mono);font-size:0.62rem;line-height:1.5;color:#c9d1d9;white-space:pre-wrap;word-break:break-word}
+        .tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+        .tip-card{padding:0.7rem 0.8rem;background:var(--rose-surface);border-radius:var(--radius-sm);border:1px solid var(--rose-border);font-size:0.68rem;color:var(--text-light);display:flex;align-items:flex-start;gap:0.4rem}
+        .tip-card i{color:var(--gold);font-size:0.7rem;margin-top:2px}
+        .learning-list{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;font-size:0.72rem}
+        .learning-list li{display:flex;align-items:flex-start;gap:0.4rem;padding:0.4rem 0.6rem;border-radius:var(--radius-sm);transition:var(--transition)}
+        .learning-list li:hover{background:var(--rose-surface)}
+        .learning-list li i{color:var(--success);font-size:0.6rem;margin-top:3px}
+        .alert-prereq{display:flex;align-items:flex-start;gap:0.6rem;padding:0.8rem 1rem;background:var(--warning-bg);border-left:3px solid var(--warning);border-radius:var(--radius-sm);margin-bottom:0.5rem;font-size:0.72rem}
+        .alert-prereq i{color:var(--warning);font-size:0.9rem;margin-top:2px}
+        .projeto-footer{background:var(--primary);color:rgba(255,255,255,0.5);text-align:center;padding:1.5rem;font-size:0.58rem;font-family:var(--font-accent);letter-spacing:1px;border-top:3px solid var(--rose)}
+        .projeto-footer strong{color:var(--rose-light)}
+        .progress-mini{margin-top:0.6rem;padding-top:0.5rem;border-top:1px solid var(--rose-border);font-size:0.55rem;color:var(--text-muted)}
+        .progress-mini .progress-bar{width:100%;height:4px;background:var(--rose-surface);border-radius:4px;margin-top:3px;overflow:hidden}
+        .progress-mini .progress-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--gold-dark));border-radius:4px;transition:width 0.5s ease}
 
-        /* ============================================================
-           BARRA DE FILTROS
-           ============================================================ */
-        .filtros-bar {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 1rem 1.5rem;
-            position: sticky;
-            top: 0.8rem;
-            z-index: 50;
+        @media(max-width:768px){
+            .header{padding:1.8rem 1rem 1.5rem}.header h1{font-size:1.1rem}.vitrine{grid-template-columns:1fr;padding:0.5rem 0.8rem}
+            .filtros-bar{padding:0.4rem 0.8rem}.filtros-inner{flex-direction:column;align-items:stretch}
+            .busca-wrap{margin-left:0;width:100%}.detalhe-layout{flex-direction:column}.detalhe-sidebar{width:100%;position:static}
+            .detalhe-sidebar-inner{display:flex;flex-wrap:wrap;gap:0.3rem}.detalhe-sidebar h4{width:100%;margin-bottom:0.2rem}
+            .detalhe-sidebar a{font-size:0.6rem;padding:0.25rem 0.4rem}.learning-list{grid-template-columns:1fr}.tips-grid{grid-template-columns:1fr}
         }
-        .filtros-inner {
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(12px);
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--rose-border);
-            padding: 0.9rem 1.2rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-            align-items: center;
-            box-shadow: var(--shadow-sm);
-        }
-        .filtro-chip {
-            padding: 5px 14px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--rose-border);
-            background: var(--white);
-            color: var(--text-light);
-            font-family: var(--font-accent);
-            font-size: 0.68rem;
-            cursor: pointer;
-            transition: var(--transition);
-            letter-spacing: 0.6px;
-            white-space: nowrap;
-        }
-        .filtro-chip:hover { border-color: var(--rose-dark); color: var(--rose-dark); background: var(--rose-surface); }
-        .filtro-chip.active {
-            background: var(--rose);
-            color: var(--white);
-            border-color: var(--rose-dark);
-            font-weight: 600;
-            box-shadow: var(--shadow-rose);
-        }
-        .filtro-chip.gold-active {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--white);
-            border-color: var(--gold);
-            font-weight: 600;
-            box-shadow: var(--shadow-gold);
-        }
-        .busca-wrap {
-            flex: 1;
-            min-width: 200px;
-            position: relative;
-            margin-left: auto;
-        }
-        .busca-wrap input {
-            width: 100%;
-            padding: 8px 12px 8px 36px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--rose-border);
-            font-family: var(--font-body);
-            font-size: 0.78rem;
-            background: var(--off-white);
-            transition: var(--transition);
-            color: var(--text);
-        }
-        .busca-wrap input:focus {
-            outline: none;
-            border-color: var(--rose);
-            box-shadow: 0 0 0 3px rgba(181,131,141,0.1);
-        }
-        .busca-wrap .busca-icon {
-            position: absolute;
-            left: 11px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--rose);
-            font-size: 0.75rem;
-        }
-
-        /* ============================================================
-           VITRINE — GRID DE CARDS RETANGULARES (BORDAS ROSE)
-           ============================================================ */
-        .vitrine {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 1rem 1.5rem 4rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
-            gap: 1.3rem;
-        }
-        .robo-card {
-            background: var(--white);
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--rose-border);
-            box-shadow: var(--shadow-sm);
-            padding: 1.4rem;
-            display: flex;
-            flex-direction: column;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        .robo-card:hover {
-            border-color: var(--rose);
-            box-shadow: var(--shadow-rose);
-            transform: translateY(-3px);
-        }
-        .robo-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 3px;
-            background: linear-gradient(90deg, var(--rose), var(--gold), var(--rose-light));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.45s ease;
-        }
-        .robo-card:hover::before { transform: scaleX(1); }
-        .robo-card .card-top {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.7rem;
-            margin-bottom: 0.7rem;
-        }
-        .robo-card .card-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: var(--radius-sm);
-            background: var(--rose-surface);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            border: 1px solid var(--rose-border);
-        }
-        .robo-card .card-icon i { color: var(--rose-dark); font-size: 1.2rem; }
-        .robo-card .card-titulos { flex: 1; }
-        .robo-card h3 {
-            font-family: var(--font-display);
-            font-size: 0.95rem;
-            color: var(--primary);
-            margin-bottom: 2px;
-            letter-spacing: 0.5px;
-            line-height: 1.3;
-        }
-        .robo-card .card-tipo {
-            font-family: var(--font-accent);
-            color: var(--text-muted);
-            font-size: 0.62rem;
-            text-transform: uppercase;
-            letter-spacing: 1.8px;
-        }
-        .robo-card .card-desc {
-            font-size: 0.76rem;
-            color: var(--text-light);
-            line-height: 1.5;
-            flex: 1;
-            margin-bottom: 0.8rem;
-        }
-        .robo-card .card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem;
-            margin-bottom: 0.8rem;
-        }
-        .robo-tag {
-            padding: 2px 9px;
-            border-radius: var(--radius-sm);
-            font-size: 0.58rem;
-            font-family: var(--font-accent);
-            letter-spacing: 0.5px;
-            background: var(--rose-surface);
-            border: 1px solid var(--rose-border);
-            color: var(--rose-dark);
-            white-space: nowrap;
-        }
-        .robo-tag.facil { background: var(--success-bg); border-color: rgba(46,125,50,0.2); color: var(--success); }
-        .robo-tag.medio { background: var(--warning-bg); border-color: rgba(230,81,0,0.2); color: var(--warning); }
-        .robo-tag.avancado { background: var(--critical-bg); border-color: rgba(198,40,40,0.2); color: var(--critical); }
-        .robo-tag.especialista { background: rgba(10,49,71,0.05); border-color: rgba(10,49,71,0.2); color: var(--primary); font-weight: 700; }
-        .robo-tag i { margin-right: 2px; }
-
-        .robo-card .card-footer {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            margin-top: auto;
-        }
-        .robo-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 9px 16px;
-            background: var(--primary);
-            color: var(--white);
-            border: none;
-            border-radius: var(--radius-sm);
-            font-family: var(--font-accent);
-            font-size: 0.68rem;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-decoration: none;
-            transition: var(--transition);
-            flex: 1;
-            text-align: center;
-        }
-        .robo-btn:hover {
-            background: var(--rose-dark);
-            box-shadow: var(--shadow-rose);
-        }
-        .robo-btn-outline {
-            background: transparent;
-            border: 1px solid var(--rose-border);
-            color: var(--rose-dark);
-            flex: 0;
-            padding: 9px 10px;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.7rem;
-        }
-        .robo-btn-outline:hover { background: var(--rose-surface); border-color: var(--rose); }
-
-        /* Subtítulo informativo sob cada card */
-        .card-update-note {
-            margin-top: 0.35rem;
-            font-size: 0.52rem;
-            color: var(--text-muted);
-            font-family: var(--font-accent);
-            letter-spacing: 0.4px;
-            text-align: right;
-            font-style: italic;
-        }
-
-        /* ============================================================
-           SEÇÕES TEMÁTICAS (HUMANOIDES, QUADRÚPEDES, ETC.)
-           ============================================================ */
-        .section-title {
-            max-width: 1300px;
-            margin: 1.5rem auto 0.5rem;
-            padding: 0 1.5rem;
-            font-family: var(--font-display);
-            font-size: 1rem;
-            color: var(--rose-dark);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-        .section-title i { color: var(--gold); font-size: 0.85rem; }
-        .section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, var(--rose-border), transparent);
-            margin-left: 0.8rem;
-        }
-
-        /* ============================================================
-           ESTADO VAZIO
-           ============================================================ */
-        .vazio {
-            text-align: center;
-            padding: 4rem 2rem;
-            grid-column: 1 / -1;
-        }
-        .vazio i { font-size: 3.5rem; color: var(--rose); margin-bottom: 1rem; opacity: 0.35; }
-        .vazio h3 { font-family: var(--font-display); color: var(--primary); margin-bottom: 0.3rem; }
-        .vazio p { color: var(--text-muted); font-size: 0.8rem; }
-
-        /* ============================================================
-           FOOTER
-           ============================================================ */
-        .footer {
-            background: var(--primary);
-            color: rgba(255,255,255,0.5);
-            text-align: center;
-            padding: 2.5rem 1.5rem;
-            font-size: 0.62rem;
-            font-family: var(--font-accent);
-            letter-spacing: 1px;
-            margin-top: 2rem;
-            border-top: 3px solid var(--rose);
-        }
-        .footer strong { color: var(--rose-light); }
-        .footer a { color: var(--gold); text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
-
-        @media (max-width: 768px) {
-            .header { padding: 2rem 1rem 1.5rem; }
-            .header h1 { font-size: 1.2rem; }
-            .header-stats { gap: 1.2rem; }
-            .vitrine { grid-template-columns: 1fr; padding: 0.8rem; }
-            .filtros-bar { padding: 0.5rem 0.8rem; }
-            .filtros-inner { flex-direction: column; align-items: stretch; }
-            .busca-wrap { margin-left: 0; width: 100%; }
-        }
+        @keyframes fadeCard{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
     </style>
 </head>
 <body>
 
-    <!-- ==================== HEADER ==================== -->
+<!-- ==================== CATÁLOGO ==================== -->
+<div id="paginaCatalogo">
     <header class="header">
         <div class="header-content">
             <i class="fas fa-robot header-icon"></i>
             <h1>Idenza <span class="gold">Robotics</span> Academy</h1>
-            <p class="subtitle">Vitrine Luxuosa de Robôs Open Source · Materiais Reais · Passo a Passo Atualizado</p>
-            <div class="header-stats" id="headerStats">
-                <div class="header-stat"><div class="stat-value" id="totalRobos">—</div><div class="stat-label">Robôs</div></div>
-                <div class="header-stat"><div class="stat-value" id="totalPecas">—</div><div class="stat-label">Peças</div></div>
-                <div class="header-stat"><div class="stat-value" id="totalCodigo">—</div><div class="stat-label">Linhas de Código</div></div>
-                <div class="header-stat"><div class="stat-value" id="totalPassos">—</div><div class="stat-label">Passos</div></div>
-            </div>
+            <p class="subtitle">Vitrine de Robôs Open Source · Materiais Reais · Passo a Passo Atualizado</p>
+            <div class="header-stats" id="headerStats"></div>
         </div>
     </header>
-
-    <!-- ==================== FILTROS ==================== -->
     <div class="filtros-bar">
         <div class="filtros-inner">
-            <span style="font-family:var(--font-accent);font-size:0.65rem;color:var(--rose-dark);letter-spacing:1px;white-space:nowrap;">Filtrar por:</span>
+            <span style="font-family:var(--font-accent);font-size:0.62rem;color:var(--rose-dark);letter-spacing:1px">Filtrar:</span>
             <button class="filtro-chip active gold-active" data-filtro="todos">Todos</button>
             <button class="filtro-chip" data-filtro="fácil">Fácil</button>
             <button class="filtro-chip" data-filtro="médio">Médio</button>
@@ -489,181 +201,338 @@
             <button class="filtro-chip" data-tipo="rover">Rovers</button>
             <button class="filtro-chip" data-tipo="quadrupede">Quadrúpedes</button>
             <button class="filtro-chip" data-tipo="drone">Drones</button>
-            <div class="busca-wrap">
-                <i class="fas fa-search busca-icon"></i>
-                <input type="text" id="buscaInput" placeholder="Buscar robô por nome, tipo, peça...">
-            </div>
+            <div class="busca-wrap"><i class="fas fa-search busca-icon"></i><input type="text" id="buscaInput" placeholder="Buscar robô..."></div>
         </div>
     </div>
-
-    <!-- ==================== VITRINE ==================== -->
-    <main>
-        <div class="vitrine" id="vitrineRobos"></div>
-    </main>
-
-    <!-- ==================== FOOTER ==================== -->
-    <footer class="footer">
-        <strong>Idenza Robotics Academy™</strong> — Materiais atualizados até Maio de 2026 · Preços baseados no mercado brasileiro e internacional.<br>
-        <a href="mailto:contato@idenzarobotics.com">contato@idenzarobotics.com</a> &nbsp;|&nbsp;
-        © 2026 Idenza Robotics Intelligence S.A. &nbsp;|&nbsp; Build v6.0.0
+    <main class="vitrine" id="vitrineRobos"></main>
+    <footer class="projeto-footer" style="margin-top:0">
+        <strong>Idenza Robotics Academy™</strong> — Materiais atualizados até Maio de 2026<br>© 2026 Idenza Robotics Intelligence S.A.
     </footer>
+</div>
 
-    <script src="projetos/data/robos-database.js"></script>
-    <script>
-        (function() {
-            const robos = window.IDENZA_ROBOS_DATABASE || [];
-            const vitrine = document.getElementById('vitrineRobos');
-            const buscaInput = document.getElementById('buscaInput');
-            let filtroDificuldade = 'todos';
-            let filtroTipo = 'todos';
-            let buscaTexto = '';
+<!-- ==================== PÁGINA DE DETALHES ==================== -->
+<div class="pagina-detalhe" id="paginaDetalhe">
+    <header class="detalhe-header">
+        <div class="detalhe-header-inner">
+            <div class="breadcrumb"><a onclick="voltarCatalogo()"><i class="fas fa-home"></i> Catálogo</a><i class="fas fa-chevron-right"></i><span id="breadNome">—</span></div>
+            <h1 id="detNome">—</h1>
+            <p class="subtipo" id="detTipo">—</p>
+            <div class="detalhe-meta">
+                <span><i class="fas fa-signal"></i> <strong id="detDificuldade">—</strong></span>
+                <span><i class="fas fa-clock"></i> <strong id="detTempo">—</strong></span>
+                <span><i class="fas fa-dollar-sign"></i> <strong id="detCusto">—</strong></span>
+                <span><i class="fas fa-cubes"></i> <strong id="detPecas">—</strong></span>
+            </div>
+        </div>
+    </header>
+    <div class="detalhe-layout">
+        <nav class="detalhe-sidebar" id="detalheSidebar">
+            <div class="detalhe-sidebar-inner">
+                <h4>Navegar</h4>
+                <a href="#detSobre"><i class="fas fa-info-circle"></i> Sobre</a>
+                <a href="#detAprender"><i class="fas fa-graduation-cap"></i> Aprender</a>
+                <a href="#detMateriais"><i class="fas fa-shopping-cart"></i> Materiais</a>
+                <a href="#detPassos"><i class="fas fa-list-ol"></i> Passos</a>
+                <a href="#detCodigo"><i class="fas fa-code"></i> Código</a>
+                <a href="#detDicas"><i class="fas fa-lightbulb"></i> Dicas</a>
+                <div class="progress-mini">Progresso<div class="progress-bar"><div class="progress-fill" id="detProgress" style="width:0%"></div></div></div>
+            </div>
+        </nav>
+        <main class="detalhe-conteudo" id="detConteudo"></main>
+    </div>
+    <footer class="projeto-footer"><strong>Idenza Robotics Academy™</strong> — Projeto Open Source · Construa seu próprio robô<br>© 2026 Idenza Robotics Intelligence S.A.</footer>
+</div>
 
-            // Estatísticas
-            const totalPecas = robos.reduce((s, r) => s + (r.pecas||0), 0);
-            const totalPassos = robos.reduce((s, r) => s + (r.passos?.length||0), 0);
-            const totalLinhas = robos.reduce((s, r) => {
-                if (!r.codigoFonte) return s;
-                return s + Object.values(r.codigoFonte).reduce((ss, c) => ss + (c?.split('\n')?.length||0), 0);
-            }, 0);
-            document.getElementById('totalRobos').textContent = robos.length;
-            document.getElementById('totalPecas').textContent = totalPecas;
-            document.getElementById('totalCodigo').textContent = totalLinhas.toLocaleString();
-            document.getElementById('totalPassos').textContent = totalPassos;
+<script>
+// ============================================================
+// BANCO DE DADOS COMPLETO — 12 ROBÔS
+// ============================================================
+const ROBOS = [
+    {id:"otto-diy",nome:"Otto DIY",tipo:"Robô Humanoide Bípede",dificuldade:"fácil",custo:"$60",tempo:"8 horas",pecas:15,impressao3d:true,arquivos3D:"https://www.thingiverse.com/thing:1568652",comunidade:"https://www.ottodiy.com/",github:"https://github.com/OttoDIY/",descricao:"Otto é um robô humanoide open source que anda sobre duas pernas, dança, evita obstáculos com sensor ultrassônico e emite sons. Totalmente impresso em 3D e controlado por Arduino Nano. Mais de 100.000 pessoas já construíram.",aprendizado:["Montagem de robô humanoide articulado com 4 servos","Programação de servomotores com biblioteca Servo.h","Calibração de marcha bípede","Uso de sensor ultrassônico HC-SR04","Comunicação Bluetooth HC-05","Impressão 3D de peças estruturais"],preRequisitos:["Nenhum — ideal para primeira montagem"],bom:[{item:"Arduino Nano",qtd:1,preco:"$8",funcao:"Cérebro do robô"},{item:"Micro Servo MG90S 9g",qtd:4,preco:"$3",funcao:"Articulações: quadris e joelhos"},{item:"HC-SR04 Ultrassônico",qtd:1,preco:"$3",funcao:"Olhos — detecta obstáculos"},{item:"Buzzer 5V",qtd:1,preco:"$1",funcao:"Sons e melodias"},{item:"HC-05 Bluetooth",qtd:1,preco:"$5",funcao:"Controle via celular"},{item:"Bateria LiPo 7.4V 500mAh",qtd:1,preco:"$10",funcao:"Alimentação (~30 min)"},{item:"Regulador Step-Down 5V",qtd:1,preco:"$2",funcao:"Estabilizar tensão"},{item:"Filamento PLA",qtd:1,preco:"$15",funcao:"Corpo impresso (~200g)"},{item:"Parafusos M2/M3",qtd:20,preco:"$2",funcao:"Fixação"},{item:"Jumpers Fêmea-Fêmea",qtd:10,preco:"$1",funcao:"Conexões"},{item:"Chave Liga/Desliga",qtd:1,preco:"$1",funcao:"Interruptor"}],ferramentas:["Impressora 3D","Chave Phillips","Alicate","Arduino IDE"],passos:[{numero:1,titulo:"Imprimir Peças 3D",descricao:"Baixe os STL gratuitos. Imprima cabeça, tronco (2 metades), 2 pernas (coxa+tíbia), 2 pés. PLA 20% infill. ~4 horas de impressão."},{numero:2,titulo:"Calibrar Servos (ANTES de montar)",descricao:"Carregue 'calibrar_servos.ino' no Arduino. Centralize os 4 servos em 90°. CRÍTICO: montar sem calibrar quebra as peças.",codigo:"calibrar_servos.ino"},{numero:3,titulo:"Montar Pernas",descricao:"2 servos por perna: quadril (frente/trás) e joelho (lateral). Use parafusos M2. Sem folgas."},{numero:4,titulo:"Montar Tronco e Cabeça",descricao:"Junte as metades do tronco. Fixe servos do quadril. Encaixe a cabeça. Passe fios pelos canais."},{numero:5,titulo:"Instalar Arduino e Sensores",descricao:"Arduino no peito. HC-SR04 nos olhos. Buzzer no peito. HC-05 atrás."},{numero:6,titulo:"Ligações Elétricas",descricao:"Siga o diagrama. Use jumpers fêmea-fêmea. ORGANIZE os fios com abraçadeiras.",codigo:"diagrama_ligacoes.txt"},{numero:7,titulo:"Carregar Firmware",descricao:"Abra OttoDIY.ino na Arduino IDE. Placa: Arduino Nano, processador: ATmega328P (Old Bootloader). Upload."},{numero:8,titulo:"Calibrar Marcha",descricao:"Ajuste valores TRIM até o robô ficar em pé. Teste: andar, virar, dançar."},{numero:9,titulo:"Conectar ao Celular",descricao:"App 'Otto DIY' → parear HC-05 → pilotar remotamente!"}],codigoFonte:{"calibrar_servos.ino":`#include <Servo.h>
+Servo qe,je,qd,jd;
+void setup(){
+  qe.attach(2);je.attach(3);qd.attach(4);jd.attach(5);
+  qe.write(90);je.write(90);qd.write(90);jd.write(90);
+  Serial.begin(9600);
+  Serial.println("SERVOS EM 90 GRAUS — MONTE AS PERNAS AGORA");
+}
+void loop(){}`,"diagrama_ligacoes.txt":`LIGACOES OTTO DIY
+=================
+PINO 2 -> Servo Quadril Esq
+PINO 3 -> Servo Joelho Esq
+PINO 4 -> Servo Quadril Dir
+PINO 5 -> Servo Joelho Dir
+PINO 8 -> Buzzer
+PINO 9 -> HC-SR04 TRIG
+PINO 10 -> HC-SR04 ECHO
+PINO 0 -> HC-05 RX
+PINO 1 -> HC-05 TX
+Bateria -> Regulador 5V -> Arduino 5V
+TODOS GNDs JUNTOS`},dicas:["Se cair para frente: aumente TRIM do quadril","Bateria fraca = movimentos lentos","Comece com passos de 500ms e reduza","Fixe jumpers com cola quente"]},
+    {id:"mini-braco-robotico",nome:"Mini Braço Robótico 4 Eixos",tipo:"Braço Robótico Articulado",dificuldade:"fácil",custo:"$40",tempo:"6 horas",pecas:12,impressao3d:true,arquivos3D:"https://www.thingiverse.com/thing:30163",descricao:"Braço robótico de mesa com base giratória, ombro, cotovelo e garra. Controlado por Arduino Uno e 4 servos. Programe sequências de pick-and-place.",aprendizado:["Montagem de braço articulado","Controle de 4 servos simultâneos","Programação de sequências pick-and-place","Uso de potenciômetros para controle manual"],preRequisitos:["Arduino básico"],bom:[{item:"Arduino Uno R3",qtd:1,preco:"$10",funcao:"Controlador"},{item:"Servo MG996R",qtd:2,preco:"$8",funcao:"Base e ombro (força)"},{item:"Servo SG90",qtd:2,preco:"$2",funcao:"Cotovelo e garra"},{item:"Potenciômetro 10K",qtd:4,preco:"$1",funcao:"Controle manual"},{item:"Fonte 5V 3A",qtd:1,preco:"$8",funcao:"Alimentação"},{item:"Filamento PLA",qtd:1,preco:"$12",funcao:"Peças (~150g)"},{item:"Parafusos M3",qtd:16,preco:"$2",funcao:"Fixação"},{item:"Jumpers e Breadboard",qtd:1,preco:"$5",funcao:"Conexões"}],ferramentas:["Impressora 3D","Chave Phillips","Arduino IDE"],passos:[{numero:1,titulo:"Imprimir Peças",descricao:"Base giratória, braço inferior, braço superior, garra (2 dedos), suportes. PLA 25% infill."},{numero:2,titulo:"Montar Base",descricao:"Servo MG996R na base para rotação horizontal (180°)."},{numero:3,titulo:"Ombro e Cotovelo",descricao:"MG996R no ombro, SG90 no cotovelo. Movimento livre."},{numero:4,titulo:"Garra",descricao:"SG90 abre/fecha. Borrachinha nos dedos para aderência."},{numero:5,titulo:"Ligações",descricao:"Servos: Base→9, Ombro→10, Cotovelo→11, Garra→6. Potenciômetros→A0-A3. Fonte externa 5V 3A."},{numero:6,titulo:"Programar",descricao:"Carregue braco_controle.ino. Potenciômetros movem cada eixo. Botão no pino 2 executa sequência automática.",codigo:"braco_controle.ino"}],codigoFonte:{"braco_controle.ino":`#include <Servo.h>
+Servo base,ombro,cotovelo,garra;
+#define BOTAO 2
+void setup(){
+  base.attach(9);ombro.attach(10);cotovelo.attach(11);garra.attach(6);
+  pinMode(BOTAO,INPUT_PULLUP);
+  base.write(90);ombro.write(90);cotovelo.write(90);garra.write(90);
+}
+void loop(){
+  base.write(map(analogRead(A0),0,1023,0,180));
+  ombro.write(map(analogRead(A1),0,1023,0,180));
+  cotovelo.write(map(analogRead(A2),0,1023,0,180));
+  garra.write(map(analogRead(A3),0,1023,45,135));
+  if(digitalRead(BOTAO)==LOW){garra.write(120);delay(500);ombro.write(60);delay(1000);garra.write(70);delay(500);ombro.write(120);delay(1000);base.write(30);delay(1000);garra.write(120);delay(500);base.write(90);ombro.write(90);garra.write(90);delay(1000);}
+  delay(15);
+}`},dicas:["Fonte externa obrigatória — Arduino não fornece corrente suficiente","MG996R consome até 2A em stall","Adicione capacitores 100μF se houver tremor"]},
+    {id:"carrinho-arduino",nome:"Carrinho Arduino",tipo:"Robô Diferencial sobre Rodas",dificuldade:"fácil",custo:"$45",tempo:"5 horas",pecas:10,impressao3d:false,descricao:"Robô de 2 rodas com tração diferencial. Controle por Bluetooth (celular) ou segue linhas automaticamente. Ideal para aprender controle de motores e sensores.",aprendizado:["Montagem de chassi diferencial","Controle de motores DC com L298N","Programação de movimentos","Sensor TCRT5000 para seguir linha","Bluetooth HC-05"],preRequisitos:["Nenhum"],bom:[{item:"Arduino Uno R3",qtd:1,preco:"$10",funcao:"Controlador"},{item:"Driver L298N",qtd:1,preco:"$6",funcao:"Ponte H 2 motores"},{item:"Motor DC 3-6V com roda",qtd:2,preco:"$8",funcao:"Tração"},{item:"Rodízio giratório",qtd:1,preco:"$3",funcao:"Apoio"},{item:"TCRT5000",qtd:2,preco:"$2",funcao:"Segue linha"},{item:"HC-05 Bluetooth",qtd:1,preco:"$5",funcao:"Controle remoto"},{item:"Suporte 6 pilhas AA",qtd:1,preco:"$2",funcao:"Alimentação"},{item:"Chassi acrílico",qtd:1,preco:"$5",funcao:"Estrutura"},{item:"Jumpers/parafusos",qtd:20,preco:"$2",funcao:"Conexões"}],ferramentas:["Chave de fenda","Alicate","Arduino IDE"],passos:[{numero:1,titulo:"Montar Chassi",descricao:"Motores com rodas atrás. Rodízio na frente."},{numero:2,titulo:"Conectar L298N",descricao:"Motores→OUT1-4. IN1→5,IN2→6,IN3→9,IN4→10. Alimentar com 6 pilhas AA no +12V."},{numero:3,titulo:"Sensor de Linha",descricao:"2 TCRT5000 na frente, apontando para baixo. Saídas→A0,A1."},{numero:4,titulo:"Bluetooth",descricao:"HC-05: RX→TX(0),TX→RX(1). Desconecte ao fazer upload."},{numero:5,titulo:"Programar",descricao:"Comandos: F=frente,B=ré,L=esquerda,R=direita,S=parar,A=modo automático.",codigo:"carrinho.ino"}],codigoFonte:{"carrinho.ino":`#define IN1 5
+#define IN2 6
+#define IN3 9
+#define IN4 10
+#define SE A0
+#define SD A1
+char cmd='S';bool aut=false;
+void setup(){pinMode(IN1,OUTPUT);pinMode(IN2,OUTPUT);pinMode(IN3,OUTPUT);pinMode(IN4,OUTPUT);Serial.begin(9600);parar();}
+void loop(){if(Serial.available()){cmd=Serial.read();if(cmd=='A')aut=!aut;}if(aut){int e=analogRead(SE),d=analogRead(SD);if(e>500&&d>500)frente();else if(e<500&&d>500)esq();else if(e>500&&d<500)dir();else parar();}else{switch(cmd){case'F':frente();break;case'B':re();break;case'L':esq();break;case'R':dir();break;case'S':parar();break;}}}
+void frente(){digitalWrite(IN1,1);digitalWrite(IN2,0);digitalWrite(IN3,1);digitalWrite(IN4,0);}
+void re(){digitalWrite(IN1,0);digitalWrite(IN2,1);digitalWrite(IN3,0);digitalWrite(IN4,1);}
+void esq(){digitalWrite(IN1,0);digitalWrite(IN2,1);digitalWrite(IN3,1);digitalWrite(IN4,0);}
+void dir(){digitalWrite(IN1,1);digitalWrite(IN2,0);digitalWrite(IN3,0);digitalWrite(IN4,1);}
+void parar(){digitalWrite(IN1,0);digitalWrite(IN2,0);digitalWrite(IN3,0);digitalWrite(IN4,0);}`},dicas:["L298N esquenta — não toque","Use fita preta em superfície branca para seguir linha","Pilhas duram ~2h"]},
+    {id:"esp32-cam-rover",nome:"ESP32-CAM Rover",tipo:"Rover com Câmera WiFi",dificuldade:"médio",custo:"$70",tempo:"10 horas",pecas:14,impressao3d:true,descricao:"Robô explorador com câmera que transmite vídeo ao vivo via WiFi. Você pilota vendo o que o robô vê. Ideal para exploração e inspeção.",aprendizado:["Streaming de vídeo JPEG via WiFi","Câmera OV2640 no ESP32-CAM","Servidor web embutido","Controle por página web responsiva"],preRequisitos:["Arduino básico","Noções de WiFi"],bom:[{item:"ESP32-CAM",qtd:1,preco:"$12",funcao:"Cérebro+câmera+WiFi"},{item:"FTDI USB-TTL",qtd:1,preco:"$5",funcao:"Programador"},{item:"L298N",qtd:1,preco:"$6",funcao:"Driver motores"},{item:"Motor DC com roda",qtd:2,preco:"$8",funcao:"Tração"},{item:"Rodízio",qtd:1,preco:"$3",funcao:"Apoio"},{item:"LEDs brancos",qtd:2,preco:"$1",funcao:"Iluminação"},{item:"Bateria LiPo 7.4V 1000mAh",qtd:1,preco:"$12",funcao:"Alimentação"},{item:"Regulador LM2596",qtd:1,preco:"$3",funcao:"7.4V→5V"},{item:"Filamento PLA",qtd:1,preco:"$10",funcao:"Chassi"},{item:"Jumpers/parafusos",qtd:20,preco:"$3",funcao:"Conexões"}],ferramentas:["Impressora 3D","Ferro de solda","Arduino IDE"],passos:[{numero:1,titulo:"Imprimir Chassi",descricao:"Base com espaço para bateria, L298N e ESP32-CAM. Suporte articulado para câmera."},{numero:2,titulo:"Motores e Rodas",descricao:"Fixar motores com rodas atrás. Rodízio na frente."},{numero:3,titulo:"Conectar L298N",descricao:"IN1→D12,IN2→D13,IN3→D14,IN4→D15. Bateria no +12V. Saída 5V→ESP32-CAM."},{numero:4,titulo:"Gravar ESP32-CAM",descricao:"FTDI: TX→RX,RX→TX. GPIO0→GND. Pressione RST. Upload na IDE (placa: AI Thinker ESP32-CAM).",codigo:"esp32_rover.ino"},{numero:5,titulo:"Testar",descricao:"Ligue. WiFi: IdenzaRover, senha: 12345678. Navegador→192.168.4.1. Vídeo ao vivo!"}],codigoFonte:{"esp32_rover.ino":`#include "esp_camera.h"
+#include <WiFi.h>
+#include <WebServer.h>
+const char*ssid="IdenzaRover",*pw="12345678";
+WebServer s(80);
+#define MA1 12,MA2 13,MB1 14,MB2 15,LED 4
+void setup(){Serial.begin(115200);pinMode(MA1,OUTPUT);pinMode(MA2,OUTPUT);pinMode(MB1,OUTPUT);pinMode(MB2,OUTPUT);pinMode(LED,OUTPUT);parar();
+camera_config_t c;c.ledc_channel=LEDC_CHANNEL_0;c.ledc_timer=LEDC_TIMER_0;c.pin_d0=5;c.pin_d1=18;c.pin_d2=19;c.pin_d3=21;c.pin_d4=36;c.pin_d5=39;c.pin_d6=34;c.pin_d7=35;c.pin_xclk=0;c.pin_pclk=22;c.pin_vsync=25;c.pin_href=23;c.pin_sccb_sda=26;c.pin_sccb_scl=27;c.pin_pwdn=32;c.pin_reset=-1;c.xclk_freq_hz=20000000;c.pixel_format=PIXFORMAT_JPEG;c.frame_size=FRAMESIZE_VGA;c.jpeg_quality=12;c.fb_count=1;esp_camera_init(&c);
+WiFi.softAP(ssid,pw);
+s.on("/",[](){s.send(200,"text/html",R"(<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1.0"><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1a1a1a;color:#fff;text-align:center;font-family:Arial}h1{color:#D4AF37;padding:10px}img{width:100%;max-width:640px;border-radius:10px}.btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-width:300px;margin:15px auto}button{padding:12px;border:none;border-radius:10px;font-size:1.2rem;cursor:pointer;background:#333;color:#fff}button:active{background:#D4AF37}</style></head><body><h1>Idenza Rover</h1><img src="/stream"><div class="btns"><button onclick="fetch('/esq')">⬅️</button><button onclick="fetch('/frente')">⬆️</button><button onclick="fetch('/dir')">➡️</button><button onclick="fetch('/tras')">⬇️</button><button onclick="fetch('/parar')" style="background:#c62828">🛑</button></div><button onclick="fetch('/led')" style="margin:10px;background:#B8860B">💡Luz</button></body></html>)");});
+s.on("/stream",[](){camera_fb_t*fb=esp_camera_fb_get();if(!fb){s.send(500,"text/plain","Erro");return;}s.send_P(200,"image/jpeg",(const char*)fb->buf,fb->len);esp_camera_fb_return(fb);});
+s.on("/frente",[](){digitalWrite(MA1,1);digitalWrite(MA2,0);digitalWrite(MB1,1);digitalWrite(MB2,0);s.send(200);});
+s.on("/tras",[](){digitalWrite(MA1,0);digitalWrite(MA2,1);digitalWrite(MB1,0);digitalWrite(MB2,1);s.send(200);});
+s.on("/esq",[](){digitalWrite(MA1,0);digitalWrite(MA2,1);digitalWrite(MB1,1);digitalWrite(MB2,0);s.send(200);});
+s.on("/dir",[](){digitalWrite(MA1,1);digitalWrite(MA2,0);digitalWrite(MB1,0);digitalWrite(MB2,1);s.send(200);});
+s.on("/parar",[](){parar();s.send(200);});
+s.on("/led",[](){digitalWrite(LED,!digitalRead(LED));s.send(200);});
+s.begin();}
+void loop(){s.handleClient();}
+void parar(){digitalWrite(MA1,0);digitalWrite(MA2,0);digitalWrite(MB1,0);digitalWrite(MB2,0);}`},dicas:["Se travar: reduza para FRAMESIZE_QVGA","ESP32-CAM esquenta — normal","Alcance WiFi ~30m"]},
+    {id:"mini-quadrupede",nome:"Mini Quadrúpede",tipo:"Robô Cachorro 4 Patas",dificuldade:"médio",custo:"$90",tempo:"15 horas",pecas:18,impressao3d:true,descricao:"Robô de 4 patas com 8 servos que caminha como cachorro. Marcha trot: patas diagonais opostas se movem juntas. Controlado por Arduino Mega e PCA9685.",aprendizado:["Marcha quadrúpede (trot gait)","Controle de 8 servos via PCA9685","Cinemática inversa simples","Sensor ultrassônico para desvio"],preRequisitos:["Arduino intermediário","Experiência com servos"],bom:[{item:"Arduino Mega 2560",qtd:1,preco:"$12",funcao:"Cérebro"},{item:"Servo MG996R",qtd:8,preco:"$6",funcao:"2 por pata"},{item:"PCA9685",qtd:1,preco:"$5",funcao:"Driver 16 servos I²C"},{item:"HC-SR04",qtd:1,preco:"$3",funcao:"Olhos"},{item:"Bateria LiPo 7.4V 2200mAh",qtd:1,preco:"$18",funcao:"Alimentação"},{item:"Regulador 5V 5A",qtd:1,preco:"$5",funcao:"Potência"},{item:"Filamento PLA",qtd:1,preco:"$18",funcao:"Corpo+patas"},{item:"Parafusos/capacitores",qtd:34,preco:"$4",funcao:"Fixação+filtro"}],ferramentas:["Impressora 3D","Chave Allen","Multímetro","Arduino IDE"],passos:[{numero:1,titulo:"Imprimir Peças",descricao:"Corpo, 4 coxas, 4 tíbias, cabeça. PLA 30% infill. ~8h."},{numero:2,titulo:"Montar Patas",descricao:"2 servos por pata: ombro (frente/trás) + joelho (cima/baixo)."},{numero:3,titulo:"PCA9685",descricao:"SDA→20,SCL→21. Canais 0-7 para os 8 servos."},{numero:4,titulo:"Alimentação",descricao:"Bateria→Regulador 5V 5A→PCA9685. Capacitores 100μF de filtro."},{numero:5,titulo:"Firmware",descricao:"Marcha trot: pernas 0+2 sobem enquanto 1+3 no chão, alternando.",codigo:"quadrupede.ino"}],codigoFonte:{"quadrupede.ino":`#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
+Adafruit_PWMServoDriver pwm=Adafruit_PWMServoDriver();
+struct P{int co,jo,cb,jb;}p[4]={{0,1,90,90},{2,3,90,90},{4,5,90,90},{6,7,90,90}};
+#define H 30
+#define L 20
+#define D 100
+#define TR 22
+#define EC 23
+void setup(){pwm.begin();pwm.setPWMFreq(60);pinMode(TR,OUTPUT);pinMode(EC,INPUT);pos();delay(1000);}
+void loop(){medir()>20?andar(1):virar(2);}
+void pos(){for(int i=0;i<4;i++){mv(i,'c',p[i].cb);mv(i,'j',p[i].jb);}}
+void andar(int c){for(int z=0;z<c;z++){for(int i:{0,2})mv(i,'j',p[i].jb+H);delay(D);for(int i:{0,2})mv(i,'c',p[i].cb+L);delay(D);for(int i:{0,2})mv(i,'j',p[i].jb);delay(D);for(int i:{1,3})mv(i,'j',p[i].jb+H);delay(D);for(int i:{1,3})mv(i,'c',p[i].cb-L);delay(D);for(int i:{1,3})mv(i,'j',p[i].jb);delay(D);}}
+void virar(int c){for(int z=0;z<c;z++){for(int i=0;i<4;i++)mv(i,'c',p[i].cb+(i<2?30:-30));delay(D*3);pos();}}
+void mv(int i,char j,int a){a=constrain(a,0,180);int pl=map(a,0,180,102,512);int cn=j=='c'?p[i].co:p[i].jo;pwm.setPWM(cn,0,pl);}
+float medir(){digitalWrite(TR,0);delayMicroseconds(2);digitalWrite(TR,1);delayMicroseconds(10);digitalWrite(TR,0);return pulseIn(EC,1,30000)*0.034/2;}`},dicas:["Fonte 5A é MÍNIMA para 8 MG996R","Comece com STEP_DELAY=200ms","Borrachinhas nos pés melhoram tração"]},
+    {id:"braco-visao-opencv",nome:"Braço Robótico com Visão",tipo:"Braço Articulado + OpenCV",dificuldade:"médio",custo:"$150",tempo:"20 horas",pecas:20,impressao3d:true,descricao:"Braço 4 eixos com câmera USB e OpenCV. Detecta objetos por cor (HSV), calcula posição e faz pick-and-place automático.",aprendizado:["Python+OpenCV+Arduino via Serial","Detecção de cor HSV","Cinemática inversa simples","Pipeline pick-and-place completo"],preRequisitos:["Python básico","Arduino básico"],bom:[{item:"Arduino Uno",qtd:1,preco:"$10",funcao:"Controle servos"},{item:"Servo MG996R",qtd:3,preco:"$8",funcao:"Base,ombro,cotovelo"},{item:"Servo SG90",qtd:1,preco:"$2",funcao:"Garra"},{item:"Webcam USB",qtd:1,preco:"$15",funcao:"Visão"},{item:"Fonte 5V 5A",qtd:1,preco:"$10",funcao:"Alimentação"},{item:"PLA+objetos coloridos",qtd:1,preco:"$20",funcao:"Estrutura+alvos"}],ferramentas:["Impressora 3D","Python 3 + OpenCV","Arduino IDE"],passos:[{numero:1,titulo:"Montar Braço",descricao:"Conforme robô #2. Fixe webcam acima da área de trabalho."},{numero:2,titulo:"Instalar OpenCV",descricao:"pip install opencv-python numpy pyserial"},{numero:3,titulo:"Firmware Arduino",descricao:"Recebe comandos Serial: BASE,OMBRO,COTOVELO,GARRA",codigo:"braco_serial.ino"},{numero:4,titulo:"Calibrar Cor HSV",descricao:"Execute calibrar_cor.py. Ajuste trackbars até isolar o objeto. Anote valores."},{numero:5,titulo:"Executar",descricao:"python pick_place_visao.py — coloque objetos coloridos e veja a mágica!"}],codigoFonte:{"braco_serial.ino":`#include <Servo.h>
+Servo b,o,c,g;
+void setup(){Serial.begin(115200);b.attach(9);o.attach(10);c.attach(11);g.attach(6);b.write(90);o.write(90);c.write(90);g.write(90);}
+void loop(){if(Serial.available()){String cmd=Serial.readStringUntil('\\n');int B=cmd.substring(0,cmd.indexOf(',')).toInt();cmd=cmd.substring(cmd.indexOf(',')+1);int O=cmd.substring(0,cmd.indexOf(',')).toInt();cmd=cmd.substring(cmd.indexOf(',')+1);int C=cmd.substring(0,cmd.indexOf(',')).toInt();int G=cmd.substring(cmd.indexOf(',')+1).toInt();b.write(constrain(B,0,180));o.write(constrain(O,0,180));c.write(constrain(C,0,180));g.write(constrain(G,45,135));Serial.println("OK");}}`,"pick_place_visao.py":`import cv2,numpy as np,serial,time
+ard=serial.Serial('COM3',115200,timeout=1)
+time.sleep(2)
+L=np.array([0,120,70]);U=np.array([10,255,255])
+cap=cv2.VideoCapture(0)
+def en(b,o,c,g):ard.write(f"{b},{o},{c},{g}\\n".encode());time.sleep(0.5)
+def pp():en(90,90,90,90);time.sleep(1);en(90,120,60,120);time.sleep(1);en(90,120,60,60);time.sleep(0.5);en(90,60,120,60);time.sleep(1);en(30,60,120,60);time.sleep(1);en(30,60,120,120);time.sleep(0.5);en(90,90,90,90)
+while True:
+ r,f=cap.read()
+ if not r:break
+ h=cv2.cvtColor(f,cv2.COLOR_BGR2HSV)
+ m=cv2.inRange(h,L,U)
+ cs,_=cv2.findContours(m,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+ for ct in cs:
+  if cv2.contourArea(ct)>500:
+   M=cv2.moments(ct)
+   if M["m00"]>0:pp()
+ cv2.imshow("Idenza",f)
+ if cv2.waitKey(1)&0xFF==ord('q'):break
+cap.release();cv2.destroyAllWindows();ard.close()`},dicas:["Iluminação uniforme é crítica","Use objetos vermelhos, azuis ou verdes puros","Calibre HSV com o objeto na posição real"]},
+    {id:"turtlebot3-diy",nome:"TurtleBot 3 DIY",tipo:"Robô Diferencial ROS 2 + SLAM",dificuldade:"avançado",custo:"$400",tempo:"30 horas",pecas:25,impressao3d:true,comunidade:"https://emanual.robotis.com/docs/en/platform/turtlebot3/",github:"https://github.com/ROBOTIS-GIT/turtlebot3",descricao:"Robô oficial de ensino de ROS 2 usado em universidades. Raspberry Pi 5 + LiDAR 360° + ROS 2 Jazzy. Faz SLAM e navegação autônoma.",aprendizado:["ROS 2 Jazzy completo","SLAM com slam_toolbox","Navegação autônoma com Nav2","Integração LiDAR+câmera+IMU"],preRequisitos:["Ubuntu 24.04","Python intermediário","Linux terminal"],bom:[{item:"Raspberry Pi 5 8GB",qtd:1,preco:"$80",funcao:"Computador ROS 2"},{item:"OpenCR 1.0",qtd:1,preco:"$120",funcao:"Controle motores+IMU"},{item:"RPLidar A1M8",qtd:1,preco:"$100",funcao:"Mapeamento 360°"},{item:"RPi Camera Module 3",qtd:1,preco:"$25",funcao:"Visão"},{item:"Dynamixel XL430",qtd:2,preco:"$50",funcao:"Motores inteligentes"},{item:"Rodas+rodízios",qtd:4,preco:"$18",funcao:"Locomoção"},{item:"Bateria LiPo 11.1V 3Ah",qtd:1,preco:"$30",funcao:"~2h operação"},{item:"Placas acrílicas",qtd:3,preco:"$20",funcao:"Chassi"},{item:"SD 64GB",qtd:1,preco:"$10",funcao:"Ubuntu+ROS 2"}],ferramentas:["PC com Ubuntu 24.04","Monitor/teclado p/ setup","Cabo Ethernet"],passos:[{numero:1,titulo:"Montar Hardware",descricao:"3 camadas: base(motores), meio(OpenCR+bateria), topo(Pi+LiDAR+câmera)."},{numero:2,titulo:"Instalar ROS 2 Jazzy",descricao:"Ubuntu 24.04 Server no SD. Instale ROS 2 Jazzy e pacotes TurtleBot3.",codigo:"install_ros2.sh"},{numero:3,titulo:"Configurar OpenCR",descricao:"Firmware TurtleBot3 no OpenCR. Configure Dynamixels. Teste sensores."},{numero:4,titulo:"SLAM",descricao:"ros2 launch turtlebot3_cartographer cartographer.launch.py. Pilote o robô para mapear."},{numero:5,titulo:"Navegação Autônoma",descricao:"Com mapa salvo: ros2 launch turtlebot3_navigation2 navigation2.launch.py. Envie goals no RViz2!"}],codigoFonte:{"install_ros2.sh":`sudo apt update && sudo apt upgrade -y
+sudo apt install -y curl software-properties-common
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list
+sudo apt update && sudo apt install -y ros-jazzy-desktop python3-colcon-common-extensions
+sudo apt install -y ros-jazzy-turtlebot3* ros-jazzy-slam-toolbox ros-jazzy-navigation2 ros-jazzy-cartographer
+echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
+mkdir -p ~/tb3_ws/src && cd ~/tb3_ws/src && git clone -b jazzy https://github.com/ROBOTIS-GIT/turtlebot3.git
+cd ~/tb3_ws && colcon build --symlink-install
+echo "source ~/tb3_ws/install/setup.bash" >> ~/.bashrc
+echo "export TURTLEBOT3_MODEL=burger" >> ~/.bashrc`},dicas:["Use --symlink-install para evitar rebuilds","LiDAR deve estar nivelado","Bateria<11V causa odometria ruim"]},
+    {id:"drone-arduino",nome:"Drone Arduino",tipo:"Quadricóptero com Arduino",dificuldade:"avançado",custo:"$200",tempo:"25 horas",pecas:30,impressao3d:true,comunidade:"https://ardupilot.org/",descricao:"Drone quadricóptero do zero. Arduino Nano + MPU6050 + controle PID. Voo estabilizado real. Ensina controle de voo, filtragem de sensores e eletrônica de potência.",aprendizado:["Controle PID para voo","Fusão sensorial MPU6050","Filtro complementar","Calibração de ESCs"],preRequisitos:["Arduino intermediário","Solda","Eletrônica de potência"],bom:[{item:"Arduino Nano",qtd:1,preco:"$8",funcao:"Controlador de voo"},{item:"MPU6050",qtd:1,preco:"$5",funcao:"Giroscópio+acelerômetro"},{item:"Motor Brushless 2204 2300KV",qtd:4,preco:"$10",funcao:"Propulsão"},{item:"ESC 30A SimonK",qtd:4,preco:"$8",funcao:"Controla motores"},{item:"Hélices 5030",qtd:8,preco:"$2",funcao:"CW/CCW pares"},{item:"Frame 250mm",qtd:1,preco:"$15",funcao:"Chassi"},{item:"Bateria 3S 2200mAh 30C",qtd:1,preco:"$22",funcao:"~8min voo"},{item:"Rádio 4CH+receptor",qtd:1,preco:"$40",funcao:"Controle remoto"},{item:"PDB+XT60+fios",qtd:1,preco:"$10",funcao:"Distribuição"}],ferramentas:["Ferro de solda 60W","Multímetro","Área aberta para teste"],passos:[{numero:1,titulo:"Montar Frame",descricao:"Motores nos braços. PDB no centro. Fios ORGANIZADOS."},{numero:2,titulo:"Soldar ESCs",descricao:"3 fios motor→ESC. ESCs→PDB. Conector XT60→PDB."},{numero:3,titulo:"Arduino+MPU6050",descricao:"MPU6050: SDA→A4,SCL→A5. Posicione NA HORIZONTAL."},{numero:4,titulo:"Conectar ESCs e Receptor",descricao:"ESCs→3,5,6,9. Receptor→A0-A3."},{numero:5,titulo:"Calibrar ESCs (SEM hélices!)",descricao:"Throttle max→liga→beeps→throttle min→beeps.",codigo:"calibrar_escs.ino"},{numero:6,titulo:"Firmware de Voo",descricao:"PID estabiliza. Teste COM SEGURANÇA. Throttle lento. 30cm do chão.",codigo:"drone_voo.ino"}],codigoFonte:{"calibrar_escs.ino":`#include <Servo.h>
+Servo e1,e2,e3,e4;
+void setup(){e1.attach(3,1000,2000);e2.attach(5,1000,2000);e3.attach(6,1000,2000);e4.attach(9,1000,2000);e1.writeMicroseconds(2000);e2.writeMicroseconds(2000);e3.writeMicroseconds(2000);e4.writeMicroseconds(2000);delay(5000);e1.writeMicroseconds(1000);e2.writeMicroseconds(1000);e3.writeMicroseconds(1000);e4.writeMicroseconds(1000);}
+void loop(){}`,"drone_voo.ino":`#include <Wire.h>
+#include <MPU6050.h>
+#include <Servo.h>
+MPU6050 m;Servo m1,m2,m3,m4;
+float R=0,P=0,Y=0,Kp=1.2,Ki=0.005,Kd=0.8,iR=0,iP=0,iY=0,lR=0,lP=0,lY=0;
+unsigned long lt=0;volatile int T=0,r=0,p=0,y=0;
+void setup(){Wire.begin();m.initialize();m1.attach(3,1000,2000);m2.attach(5,1000,2000);m3.attach(6,1000,2000);m4.attach(9,1000,2000);m1.writeMicroseconds(1000);m2.writeMicroseconds(1000);m3.writeMicroseconds(1000);m4.writeMicroseconds(1000);pinMode(2,INPUT);attachInterrupt(0,ler,CHANGE);lt=millis();}
+void loop(){unsigned long n=millis();float dt=(n-lt)/1000.0;if(dt<0.002)return;lt=n;int16_t ax,ay,az,gx,gy,gz;m.getMotion6(&ax,&ay,&az,&gx,&gy,&gz);float aR=atan2(ay,az)*180/PI,aP=atan2(-ax,sqrt(ay*ay+az*az))*180/PI;R=0.98*(R+gx/131.0*dt)+0.02*aR;P=0.98*(P+gy/131.0*dt)+0.02*aP;Y+=gz/131.0*dt;float eR=r-R,eP=p-P,eY=y-Y;iR+=eR*dt;iP+=eP*dt;iY+=eY*dt;float dR=(eR-lR)/dt,dP=(eP-lP)/dt,dY=(eY-lY)/dt;lR=eR;lP=eP;lY=eY;float pR=Kp*eR+Ki*iR+Kd*dR,pP=Kp*eP+Ki*iP+Kd*dP,pY=Kp*eY+Ki*iY+Kd*dY;int M1=constrain(T+pR-pP-pY,1000,2000),M2=constrain(T-pR+pP-pY,1000,2000),M3=constrain(T+pR+pP+pY,1000,2000),M4=constrain(T-pR-pP+pY,1000,2000);m1.writeMicroseconds(M1);m2.writeMicroseconds(M2);m3.writeMicroseconds(M3);m4.writeMicroseconds(M4);}
+void ler(){T=pulseIn(A2,HIGH);r=map(pulseIn(A0,HIGH),1000,2000,-30,30);p=map(pulseIn(A1,HIGH),1000,2000,-30,30);y=map(pulseIn(A3,HIGH),1000,2000,-30,30);}`},dicas:["⚠️ SEGURANÇA: área aberta, sem pessoas","Calibre SEM hélices","PID precisa de ajuste por drone","Pouse com 3.7V por célula"]},
+    {id:"hexapod",nome:"Hexapod",tipo:"Robô 6 Pernas 18 Servos",dificuldade:"avançado",custo:"$180",tempo:"30 horas",pecas:35,impressao3d:true,descricao:"Robô de 6 pernas com 18 servos. Marcha tripodal como insetos. Anda, vira e dança. O projeto mais impressionante da robótica DIY.",aprendizado:["Marcha tripodal","18 servos via 2 PCA9685","Cinemática multi-pernas","Movimentos complexos"],preRequisitos:["Arduino intermediário","Múltiplos servos"],bom:[{item:"Arduino Mega",qtd:1,preco:"$12",funcao:"Cérebro"},{item:"PCA9685",qtd:2,preco:"$5",funcao:"Driver 18 servos"},{item:"Servo MG996R",qtd:18,preco:"$6",funcao:"3 por perna×6"},{item:"Bateria 7.4V 5Ah",qtd:1,preco:"$30",funcao:"~25min"},{item:"Regulador 5V 10A",qtd:1,preco:"$12",funcao:"Potência"},{item:"PLA 2 rolos",qtd:2,preco:"$25",funcao:"Todas peças"},{item:"Parafusos+capacitores",qtd:66,preco:"$8",funcao:"Fixação+filtro"}],ferramentas:["Impressora 3D (~15h!)","Chave Allen","Multímetro"],passos:[{numero:1,titulo:"Imprimir Tudo",descricao:"6 pernas × 3 peças + corpo. ~15h impressão."},{numero:2,titulo:"Montar Pernas",descricao:"3 servos/pata: base, meio, ponta."},{numero:3,titulo:"PCA9685",descricao:"2 drivers: 0x40 e 0x41. 9 servos cada."},{numero:4,titulo:"Firmware Marcha",descricao:"Tripodal: 3 pernas no chão, 3 no ar alternando.",codigo:"hexapod.ino"}],codigoFonte:{"hexapod.ino":`#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
+Adafruit_PWMServoDriver p1(0x40),p2(0x41);
+struct P{int c,f,t,cc,fc,tc;}p[6]={{0,1,2,90,90,90},{3,4,5,90,90,90},{6,7,8,90,90,90},{0,1,2,90,90,90},{3,4,5,90,90,90},{6,7,8,90,90,90}};
+void setup(){p1.begin();p2.begin();p1.setPWMFreq(60);p2.setPWMFreq(60);pos();delay(2000);}
+void loop(){andar(5);delay(1000);virar(3);delay(1000);}
+void pos(){for(int i=0;i<6;i++){mv(i,'c',p[i].cc);mv(i,'f',p[i].fc);mv(i,'t',p[i].tc);}}
+void andar(int ps){for(int pp=0;pp<ps;pp++){for(int i:{0,2,4})mv(i,'t',p[i].tc-40);delay(80);for(int i:{0,2,4})mv(i,'c',p[i].cc+25);delay(80);for(int i:{0,2,4})mv(i,'t',p[i].tc);delay(80);for(int i:{1,3,5})mv(i,'t',p[i].tc-40);delay(80);for(int i:{1,3,5})mv(i,'c',p[i].cc-25);delay(80);for(int i:{1,3,5})mv(i,'t',p[i].tc);delay(80);}}
+void virar(int ps){for(int pp=0;pp<ps;pp++){for(int i=0;i<6;i++)mv(i,'c',p[i].cc+(i<3?30:-30));delay(240);pos();}}
+void mv(int i,char j,int a){a=constrain(a,0,180);int pl=map(a,0,180,102,512),cn=j=='c'?p[i].c:j=='f'?p[i].f:p[i].t;if(i<3)p1.setPWM(cn,0,pl);else p2.setPWM(cn,0,pl);}`},dicas:["Fonte 10A é MÍNIMA","Imprima pernas extras","54 fios — use abraçadeiras"]},
+    {id:"telepresenca",nome:"Robô de Telepresença",tipo:"Robô Móvel com Tablet",dificuldade:"avançado",custo:"$350",tempo:"25 horas",pecas:20,impressao3d:true,descricao:"Robô sobre rodas com suporte para tablet. Videochamada enquanto pilota remotamente via WiFi. Ideal para visitar lugares à distância.",aprendizado:["Streaming de vídeo WebRTC","Servidor Flask no Raspberry Pi","Controle remoto via página web","Ponte H para motores DC"],preRequisitos:["Linux básico","WiFi","Python básico"],bom:[{item:"Raspberry Pi 5 4GB",qtd:1,preco:"$60",funcao:"Computador"},{item:"Webcam USB HD",qtd:1,preco:"$25",funcao:"Câmera"},{item:"Tablet/celular",qtd:1,preco:"$100",funcao:"Display"},{item:"L298N",qtd:1,preco:"$6",funcao:"Driver motores"},{item:"Motor DC 12V c/ encoder",qtd:2,preco:"$20",funcao:"Tração"},{item:"Rodas 80mm",qtd:2,preco:"$10",funcao:"Rodas grandes"},{item:"Bateria 12V 5Ah",qtd:1,preco:"$35",funcao:"Alimentação"},{item:"Power bank 5V 10Ah",qtd:1,preco:"$20",funcao:"Alimentar Pi"},{item:"PLA+suporte",qtd:1,preco:"$15",funcao:"Estrutura"}],ferramentas:["Impressora 3D","SSH","Python"],passos:[{numero:1,titulo:"Chassi e Suporte",descricao:"Base + suporte tablet articulado."},{numero:2,titulo:"Motores e Eletrônica",descricao:"L298N→GPIOs do Pi."},{numero:3,titulo:"Configurar Pi",descricao:"Raspberry Pi OS. Instalar Flask+OpenCV.",codigo:"setup.sh"},{numero:4,titulo:"Servidor Web",descricao:"Script Python com streaming+controles. Acesse pelo navegador.",codigo:"server.py"}],codigoFonte:{"server.py":`from flask import Flask,Response
+import cv2,RPi.GPIO as G
+app=Flask(__name__)
+IN1,IN2,IN3,IN4=17,18,22,23
+G.setmode(G.BCM)
+for p in[IN1,IN2,IN3,IN4]:G.setup(p,G.OUT);G.output(p,0)
+cam=cv2.VideoCapture(0)
+def gen():
+ while True:
+  s,f=cam.read()
+  if not s:break
+  _,b=cv2.imencode('.jpg',f)
+  yield(b'--frame\\r\\nContent-Type: image/jpeg\\r\\n\\r\\n'+b.tobytes()+b'\\r\\n')
+@app.route('/video')
+def vid():return Response(gen(),mimetype='multipart/x-mixed-replace; boundary=frame')
+@app.route('/frente')
+def f():G.output(IN1,1);G.output(IN2,0);G.output(IN3,1);G.output(IN4,0);return'OK'
+@app.route('/tras')
+def t():G.output(IN1,0);G.output(IN2,1);G.output(IN3,0);G.output(IN4,1);return'OK'
+@app.route('/esq')
+def e():G.output(IN1,0);G.output(IN2,1);G.output(IN3,1);G.output(IN4,0);return'OK'
+@app.route('/dir')
+def d():G.output(IN1,1);G.output(IN2,0);G.output(IN3,0);G.output(IN4,1);return'OK'
+@app.route('/parar')
+def p():G.output(IN1,0);G.output(IN2,0);G.output(IN3,0);G.output(IN4,0);return'OK'
+if __name__=='__main__':app.run(host='0.0.0.0',port=80)`},dicas:["Tablet Android antigo funciona bem","Power bank 10Ah dura ~4h","VPN (Tailscale) para acesso externo"]},
+    {id:"mao-robotica",nome:"Mão Robótica 5 Dedos",tipo:"Prótese Robótica Impressa 3D",dificuldade:"especialista",custo:"$120",tempo:"20 horas",pecas:25,impressao3d:true,descricao:"Mão robótica completa com 5 dedos articulados por tendões de nylon. Cada dedo dobra e estica. Faz gestos como paz, joia e OK.",aprendizado:["Mecanismo de tendões","Controle de 5 servos","Impressão 3D avançada (TPU flexível)","Controle de força de agarre"],preRequisitos:["Arduino intermediário","Impressão 3D avançada"],bom:[{item:"Arduino Uno",qtd:1,preco:"$10",funcao:"Controlador"},{item:"Servo MG996R",qtd:5,preco:"$6",funcao:"1 por dedo"},{item:"Nylon 0.5mm",qtd:1,preco:"$5",funcao:"Tendões"},{item:"Elásticos ortodônticos",qtd:20,preco:"$3",funcao:"Retorno"},{item:"TPU flexível",qtd:1,preco:"$20",funcao:"Juntas"},{item:"PLA rígido",qtd:1,preco:"$12",funcao:"Falanges"},{item:"Fonte 5V 5A",qtd:1,preco:"$10",funcao:"Alimentação"}],ferramentas:["Impressora 3D (TPU)","Alicate ponta fina","Isqueiro (selar nylon)"],passos:[{numero:1,titulo:"Imprimir",descricao:"5 dedos × 3 falanges + palma. PLA rígido + TPU nas juntas."},{numero:2,titulo:"Montar Dedos",descricao:"Nylon por dentro. Servo puxa (flexão). Elástico retorna (extensão)."},{numero:3,titulo:"Servos na Base",descricao:"5 MG996R no antebraço. Polias nos chifres para enrolar nylon."},{numero:4,titulo:"Programar Gestos",descricao:"Pinos 3,5,6,9,10. Comandos: 1=Abrir,2=Fechar,3=Paz,4=Joia,5=OK.",codigo:"mao.ino"}],codigoFonte:{"mao.ino":`#include <Servo.h>
+Servo d[5];int pi[5]={3,5,6,9,10};
+void setup(){Serial.begin(9600);for(int i=0;i<5;i++){d[i].attach(pi[i]);d[i].write(0);}}
+void loop(){if(Serial.available()){char c=Serial.read();if(c=='1')for(int i=0;i<5;i++)d[i].write(0);if(c=='2')for(int i=0;i<5;i++)d[i].write(180);if(c=='3'){d[0].write(180);d[3].write(180);d[4].write(180);}if(c=='4'){for(int i=1;i<5;i++)d[i].write(180);}if(c=='5'){d[0].write(90);d[1].write(90);}}}`},dicas:["Nylon bem tensionado","TPU nas juntas para suavidade","Lubrifique com graxa de silicone"]},
+    {id:"inmoov-braco",nome:"InMoov — Braço Humanoide",tipo:"Braço Robótico Tamanho Real",dificuldade:"especialista",custo:"$500",tempo:"60 horas",pecas:40,impressao3d:true,comunidade:"https://inmoov.fr/",github:"https://github.com/InMoov",descricao:"Parte do InMoov — o primeiro humanoide open source em tamanho real. Braço com ombro, cotovelo, punho e mão de 5 dedos funcionais. Reproduz movimentos humanos.",aprendizado:["Robótica em escala humana","Servos de alta potência (20kg·cm)","Mecanismo de tendões completo","Cinemática de braço humano (7 DOF)"],preRequisitos:["Robótica avançada","Impressão 3D experiente","Eletrônica de potência"],bom:[{item:"Arduino Mega",qtd:2,preco:"$12",funcao:"Braço + mão"},{item:"Servo Hitec HS-805BB",qtd:3,preco:"$35",funcao:"Ombro+cotovelo"},{item:"Servo MG996R",qtd:5,preco:"$6",funcao:"Punho+dedos"},{item:"Nylon 1mm",qtd:1,preco:"$8",funcao:"Tendões"},{item:"PLA 4 rolos",qtd:4,preco:"$15",funcao:"~3kg de peças"},{item:"Fonte ATX 12V 30A",qtd:1,preco:"$40",funcao:"Alimentação"},{item:"Rolamentos 8mm",qtd:10,preco:"$15",funcao:"Articulações"},{item:"Parafusos variados",qtd:100,preco:"$10",funcao:"Fixação"}],ferramentas:["Impressora 3D","Chave Allen","Ferro de solda 80W","Paciência — leva semanas"],passos:[{numero:1,titulo:"Imprimir (~40h)",descricao:"Ombro, braço, antebraço, punho, palma, 5 dedos (3 falanges cada)."},{numero:2,titulo:"Ombro",descricao:"2 HS-805BB: movimento vertical+horizontal. Rolamentos obrigatórios."},{numero:3,titulo:"Cotovelo e Antebraço",descricao:"1 HS-805BB. MG996R para punho (rotação+flexão)."},{numero:4,titulo:"Mão",descricao:"5 dedos com tendões de nylon. 1 MG996R por dedo na palma."},{numero:5,titulo:"Eletrônica",descricao:"2 Arduino Mega. Fonte ATX 30A. 8 servos no total."},{numero:6,titulo:"Programar",descricao:"Acenar, apontar, pegar objetos.",codigo:"inmoov.ino"}],codigoFonte:{"inmoov.ino":`#include <Servo.h>
+Servo ov,oh,co,pr,pf,d[5];int pd[5]={3,5,6,9,10};
+void setup(){ov.attach(22);oh.attach(23);co.attach(24);pr.attach(25);pf.attach(26);for(int i=0;i<5;i++)d[i].attach(pd[i]);repouso();}
+void repouso(){ov.write(90);oh.write(90);co.write(90);pr.write(90);pf.write(90);for(int i=0;i<5;i++)d[i].write(0);}
+void acenar(){for(int i=0;i<3;i++){ov.write(45);delay(500);ov.write(135);delay(500);}ov.write(90);}
+void apontar(){for(int i=1;i<5;i++)d[i].write(180);d[1].write(0);delay(2000);repouso();}
+void loop(){if(Serial.available()){char c=Serial.read();if(c=='A')acenar();if(c=='P')apontar();if(c=='R')repouso();}}`},dicas:["HS-805BB consome 3A cada","Rolamentos ESSENCIAIS no ombro","Comece pela mão (mais complexa)","Projeto leva semanas"]}
+];
 
-            function getIcone(tipo) {
-                const t = tipo.toLowerCase();
-                if (t.includes('humanoide')) return 'fa-child';
-                if (t.includes('braço')) return 'fa-hand-holding';
-                if (t.includes('rover')||t.includes('carrinho')||t.includes('diferencial')) return 'fa-car-side';
-                if (t.includes('quadrúpede')||t.includes('hexapod')||t.includes('cachorro')) return 'fa-dog';
-                if (t.includes('drone')||t.includes('quadricóptero')) return 'fa-helicopter';
-                if (t.includes('telepresença')) return 'fa-video';
-                if (t.includes('mão')) return 'fa-hand-paper';
-                return 'fa-robot';
-            }
+// ============================================================
+// FUNÇÕES GLOBAIS
+// ============================================================
+function escapeHTML(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function getIcone(t){const t2=t.toLowerCase();if(t2.includes('humanoide'))return'fa-child';if(t2.includes('braço'))return'fa-hand-holding';if(t2.includes('rover')||t2.includes('carrinho')||t2.includes('diferencial'))return'fa-car-side';if(t2.includes('quadrúpede')||t2.includes('hexapod')||t2.includes('cachorro'))return'fa-dog';if(t2.includes('drone')||t2.includes('quadricóptero'))return'fa-helicopter';if(t2.includes('telepresença'))return'fa-video';if(t2.includes('mão'))return'fa-hand-paper';return'fa-robot'}
+function getTagClass(d){const m={'fácil':'facil','médio':'medio','avançado':'avancado','especialista':'especialista'};return m[d]||''}
+function getEmoji(d){const m={'fácil':'🟢','médio':'🟡','avançado':'🔴','especialista':'⚫'};return m[d]||''}
+function getCategoria(t){const t2=t.toLowerCase();if(t2.includes('humanoide'))return'humanoides';if(t2.includes('braço'))return'bracos';if(t2.includes('rover')||t2.includes('carrinho')||t2.includes('diferencial'))return'rovers';if(t2.includes('quadrúpede')||t2.includes('hexapod')||t2.includes('cachorro'))return'quadrupedes';if(t2.includes('drone')||t2.includes('quadricóptero'))return'drones';if(t2.includes('mão'))return'bracos';return'outros'}
 
-            function getTagClass(d) {
-                const m = { 'fácil':'facil','médio':'medio','avançado':'avancado','especialista':'especialista' };
-                return m[d]||'';
-            }
+// ============================================================
+// CATÁLOGO
+// ============================================================
+let filtroDificuldade='todos',filtroTipo='todos',buscaTexto='';
+const totalPecas=ROBOS.reduce((s,r)=>s+(r.pecas||0),0);
+const totalPassos=ROBOS.reduce((s,r)=>s+(r.passos?.length||0),0);
+const totalLinhas=ROBOS.reduce((s,r)=>{if(!r.codigoFonte)return s;return s+Object.values(r.codigoFonte).reduce((ss,c)=>ss+(c?.split('\n')?.length||0),0)},0);
+document.getElementById('headerStats').innerHTML=`
+<div class="header-stat"><div class="stat-value">${ROBOS.length}</div><div class="stat-label">Robôs</div></div>
+<div class="header-stat"><div class="stat-value">${totalPecas}</div><div class="stat-label">Peças</div></div>
+<div class="header-stat"><div class="stat-value">${totalLinhas.toLocaleString()}</div><div class="stat-label">Linhas de Código</div></div>
+<div class="header-stat"><div class="stat-value">${totalPassos}</div><div class="stat-label">Passos</div></div>`;
 
-            function getEmoji(d) {
-                const m = { 'fácil':'🟢','médio':'🟡','avançado':'🔴','especialista':'⚫' };
-                return m[d]||'';
-            }
+function renderCatalogo(){
+    let filtrados=[...ROBOS];
+    if(filtroDificuldade!=='todos')filtrados=filtrados.filter(r=>r.dificuldade===filtroDificuldade);
+    if(filtroTipo!=='todos')filtrados=filtrados.filter(r=>getCategoria(r.tipo)===filtroTipo);
+    if(buscaTexto.trim()){const q=buscaTexto.toLowerCase().trim();filtrados=filtrados.filter(r=>r.nome.toLowerCase().includes(q)||r.tipo.toLowerCase().includes(q)||r.descricao.toLowerCase().includes(q))}
+    const v=document.getElementById('vitrineRobos');
+    if(filtrados.length===0){v.innerHTML=`<div class="vazio"><i class="fas fa-search"></i><h3>Nenhum robô</h3></div>`;return}
+    const grupos={humanoides:[],bracos:[],rovers:[],quadrupedes:[],drones:[],outros:[]};
+    filtrados.forEach(r=>grupos[getCategoria(r.tipo)].push(r));
+    const nomes={humanoides:'👤 Humanoides',bracos:'🦾 Braços & Mãos',rovers:'🚗 Rovers',quadrupedes:'🐾 Quadrúpedes',drones:'🚁 Drones',outros:'📦 Outros'};
+    let h='';
+    Object.entries(grupos).forEach(([g,lista])=>{if(lista.length===0)return;h+=`<div class="section-title"><i class="fas fa-layer-group"></i> ${nomes[g]}</div>`;lista.forEach((r,i)=>{h+=`
+    <div class="robo-card" style="animation:fadeCard 0.4s ease both;animation-delay:${i*30}ms" onclick="abrirDetalhe('${r.id}')">
+        <div class="card-top"><div class="card-icon"><i class="fas ${getIcone(r.tipo)}"></i></div><div class="card-titulos"><h3>${r.nome}</h3><p class="card-tipo">${r.tipo}</p></div></div>
+        <p class="card-desc">${r.descricao.substring(0,130)}...</p>
+        <div class="card-tags"><span class="robo-tag ${getTagClass(r.dificuldade)}">${getEmoji(r.dificuldade)} ${r.dificuldade.toUpperCase()}</span><span class="robo-tag"><i class="fas fa-clock"></i> ${r.tempo}</span><span class="robo-tag"><i class="fas fa-dollar-sign"></i> ${r.custo}</span><span class="robo-tag"><i class="fas fa-cubes"></i> ${r.pecas} peças</span>${r.impressao3d?'<span class="robo-tag"><i class="fas fa-cube"></i> Impressão 3D</span>':''}</div>
+        <div class="card-footer"><span class="robo-btn">Construir Este Robô</span></div>
+        <p class="card-update">📋 Materiais reais · Passo a passo · Atualizado Mai/2026</p>
+    </div>`})});
+    v.innerHTML=h;
+}
 
-            function getCategoriaTipo(tipo) {
-                const t = tipo.toLowerCase();
-                if (t.includes('humanoide')) return 'humanoides';
-                if (t.includes('braço')) return 'bracos';
-                if (t.includes('rover')||t.includes('carrinho')||t.includes('diferencial')) return 'rovers';
-                if (t.includes('quadrúpede')||t.includes('hexapod')||t.includes('cachorro')) return 'quadrupedes';
-                if (t.includes('drone')||t.includes('quadricóptero')) return 'drones';
-                if (t.includes('mão')) return 'bracos';
-                return 'outros';
-            }
+document.querySelectorAll('.filtro-chip[data-filtro]').forEach(b=>{b.addEventListener('click',function(){document.querySelectorAll('.filtro-chip[data-filtro]').forEach(x=>x.classList.remove('active','gold-active'));this.classList.add('active','gold-active');filtroDificuldade=this.dataset.filtro;filtroTipo='todos';document.querySelectorAll('.filtro-chip[data-tipo]').forEach(x=>x.classList.remove('active','gold-active'));renderCatalogo()})});
+document.querySelectorAll('.filtro-chip[data-tipo]').forEach(b=>{b.addEventListener('click',function(){document.querySelectorAll('.filtro-chip[data-tipo]').forEach(x=>x.classList.remove('active','gold-active'));this.classList.add('active','gold-active');filtroTipo=this.dataset.tipo;filtroDificuldade='todos';document.querySelectorAll('.filtro-chip[data-filtro]').forEach(x=>x.classList.remove('active','gold-active'));renderCatalogo()})});
+document.getElementById('buscaInput').addEventListener('input',function(){buscaTexto=this.value;renderCatalogo()});
+renderCatalogo();
 
-            function agruparPorCategoria(lista) {
-                const grupos = { humanoides:[], bracos:[], rovers:[], quadrupedes:[], drones:[], outros:[] };
-                lista.forEach(r => {
-                    const cat = getCategoriaTipo(r.tipo);
-                    grupos[cat].push(r);
-                });
-                return grupos;
-            }
+// ============================================================
+// PÁGINA DE DETALHES
+// ============================================================
+function abrirDetalhe(id){
+    const r=ROBOS.find(x=>x.id===id);if(!r)return;
+    document.getElementById('paginaCatalogo').style.display='none';
+    document.getElementById('paginaDetalhe').classList.add('ativa');
+    document.getElementById('breadNome').textContent=r.nome;
+    document.getElementById('detNome').textContent=r.nome;
+    document.getElementById('detTipo').textContent=r.tipo;
+    document.getElementById('detDificuldade').textContent=r.dificuldade.toUpperCase();
+    document.getElementById('detTempo').textContent=r.tempo;
+    document.getElementById('detCusto').textContent=r.custo;
+    document.getElementById('detPecas').textContent=r.pecas;
+    window.scrollTo(0,0);
 
-            function renderizar() {
-                let filtrados = [...robos];
-                if (filtroDificuldade !== 'todos') filtrados = filtrados.filter(r => r.dificuldade === filtroDificuldade);
-                if (filtroTipo !== 'todos') {
-                    filtrados = filtrados.filter(r => getCategoriaTipo(r.tipo) === filtroTipo);
-                }
-                if (buscaTexto.trim()) {
-                    const q = buscaTexto.toLowerCase().trim();
-                    filtrados = filtrados.filter(r => r.nome.toLowerCase().includes(q) || r.tipo.toLowerCase().includes(q) || r.descricao.toLowerCase().includes(q));
-                }
+    let h='';
+    h+=`<section class="panel" id="detSobre"><div class="panel-header"><i class="fas fa-robot"></i><h2>Sobre este Robô</h2></div><p style="font-size:0.8rem">${r.descricao}</p>${r.impressao3d?`<div class="alert-prereq" style="margin-top:0.8rem;background:rgba(10,49,71,0.04);border-left-color:var(--primary)"><i class="fas fa-cube"></i><div><strong>Requer impressão 3D.</strong> ${r.arquivos3D?`<br><a href="${r.arquivos3D}" target="_blank" style="color:var(--gold-dark);font-size:0.7rem">Baixar STL gratuitos <i class="fas fa-external-link-alt"></i></a>`:''}</div></div>`:''}</section>`;
 
-                if (filtrados.length === 0) {
-                    vitrine.innerHTML = `<div class="vazio"><i class="fas fa-search"></i><h3>Nenhum robô encontrado</h3><p>Ajuste os filtros ou limpe a busca.</p></div>`;
-                    return;
-                }
+    if(r.aprendizado){h+=`<section class="panel" id="detAprender"><div class="panel-header"><i class="fas fa-graduation-cap"></i><h2>O Que Você Vai Aprender</h2><span class="badge">${r.aprendizado.length} habilidades</span></div><ul class="learning-list">${r.aprendizado.map(a=>`<li><i class="fas fa-check-circle"></i> ${a}</li>`).join('')}</ul></section>`}
+    if(r.preRequisitos&&r.preRequisitos.length>0){h+=`<section class="panel"><div class="panel-header"><i class="fas fa-clipboard-check"></i><h2>Pré-Requisitos</h2></div>${r.preRequisitos.map(p=>`<div class="alert-prereq"><i class="fas fa-exclamation-triangle"></i><div>${p}</div></div>`).join('')}</section>`}
+    if(r.bom&&r.bom.length>0){h+=`<section class="panel" id="detMateriais"><div class="panel-header"><i class="fas fa-shopping-cart"></i><h2>Lista de Materiais</h2><span class="badge">${r.bom.length} itens</span></div><table class="bom-table"><thead><tr><th>Item</th><th>Qtd</th><th>Preço</th><th>Função</th></tr></thead><tbody>${r.bom.map(i=>`<tr><td class="item-nome">${i.item}</td><td style="text-align:center">${i.qtd}</td><td class="item-preco">${i.preco}</td><td style="font-size:0.68rem;color:var(--text-muted)">${i.funcao}</td></tr>`).join('')}</tbody></table></section>`}
+    if(r.ferramentas&&r.ferramentas.length>0){h+=`<section class="panel"><div class="panel-header"><i class="fas fa-tools"></i><h2>Ferramentas</h2></div><ul class="learning-list">${r.ferramentas.map(f=>`<li><i class="fas fa-wrench"></i> ${f}</li>`).join('')}</ul></section>`}
+    if(r.passos&&r.passos.length>0){h+=`<section class="panel" id="detPassos"><div class="panel-header"><i class="fas fa-list-ol"></i><h2>Passo a Passo</h2><span class="badge">${r.passos.length} passos</span></div><div class="timeline">${r.passos.map((p,i)=>`<div class="timeline-step" data-step="${i}" onclick="marcarPasso(this)"><div class="step-marker">${p.numero||i+1}</div><h4>${p.titulo}</h4><p>${p.descricao}</p>${p.codigo?`<span style="display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:4px 10px;background:var(--rose-surface);border-radius:20px;font-size:0.62rem;font-family:var(--font-mono);color:var(--rose-dark);cursor:pointer" onclick="event.stopPropagation();document.getElementById('detCodigo').scrollIntoView({behavior:'smooth'})"><i class="fas fa-code"></i> ${p.codigo}</span>`:''}</div>`).join('')}</div></section>`}
+    if(r.codigoFonte&&Object.keys(r.codigoFonte).length>0){h+=`<section class="panel" id="detCodigo"><div class="panel-header"><i class="fas fa-code"></i><h2>Código-Fonte</h2><span class="badge">${Object.keys(r.codigoFonte).length} arquivos</span></div>${Object.entries(r.codigoFonte).map(([n,c])=>{const ext=n.split('.').pop();const lang={py:'Python',ino:'Arduino C++',cpp:'C++',sh:'Bash',txt:'Texto',js:'JavaScript'};return`<div style="margin:0.5rem 0"><h4 style="font-family:var(--font-display);font-size:0.72rem;color:var(--primary);margin-bottom:0.3rem"><i class="fas fa-file-code"></i> ${n}</h4><div class="code-block"><div class="code-block-header"><span class="code-lang">${lang[ext]||ext.toUpperCase()}</span><button class="copy-btn" onclick="copiarCodigo(this)"><i class="fas fa-copy"></i> Copiar</button></div><pre><code>${escapeHTML(c)}</code></pre></div></div>`}).join('')}</section>`}
+    if(r.dicas&&r.dicas.length>0){h+=`<section class="panel" id="detDicas"><div class="panel-header"><i class="fas fa-lightbulb"></i><h2>Dicas</h2></div><div class="tips-grid">${r.dicas.map(d=>`<div class="tip-card"><i class="fas fa-lightbulb"></i><span>${d}</span></div>`).join('')}</div></section>`}
+    if(r.comunidade||r.github){h+=`<section class="panel"><div class="panel-header"><i class="fas fa-users"></i><h2>Comunidade</h2></div><div style="display:flex;gap:1rem;flex-wrap:wrap;font-size:0.75rem">${r.comunidade?`<a href="${r.comunidade}" target="_blank" style="color:var(--gold-dark)"><i class="fas fa-globe"></i> Site Oficial</a>`:''}${r.github?`<a href="${r.github}" target="_blank" style="color:var(--gold-dark)"><i class="fab fa-github"></i> GitHub</a>`:''}</div></section>`}
 
-                const grupos = agruparPorCategoria(filtrados);
-                const nomesGrupos = {
-                    humanoides: '👤 Humanoides',
-                    bracos: '🦾 Braços & Mãos',
-                    rovers: '🚗 Rovers & Carrinhos',
-                    quadrupedes: '🐾 Quadrúpedes & Hexapods',
-                    drones: '🚁 Drones',
-                    outros: '📦 Outros'
-                };
+    document.getElementById('detConteudo').innerHTML=h;
+    document.getElementById('detProgress').style.width='0%';
+}
 
-                let html = '';
-                Object.entries(grupos).forEach(([grupo, lista]) => {
-                    if (lista.length === 0) return;
-                    html += `<div style="grid-column:1/-1;" class="section-title"><i class="fas fa-layer-group"></i> ${nomesGrupos[grupo]}</div>`;
-                    lista.forEach((robo, idx) => {
-                        html += `
-                        <div class="robo-card" style="animation: fadeCard 0.4s ease both; animation-delay:${idx*40}ms;">
-                            <div class="card-top">
-                                <div class="card-icon"><i class="fas ${getIcone(robo.tipo)}"></i></div>
-                                <div class="card-titulos">
-                                    <h3>${robo.nome}</h3>
-                                    <p class="card-tipo">${robo.tipo}</p>
-                                </div>
-                            </div>
-                            <p class="card-desc">${robo.descricao.substring(0,140)}...</p>
-                            <div class="card-tags">
-                                <span class="robo-tag ${getTagClass(robo.dificuldade)}">${getEmoji(robo.dificuldade)} ${robo.dificuldade.toUpperCase()}</span>
-                                <span class="robo-tag"><i class="fas fa-clock"></i> ${robo.tempo}</span>
-                                <span class="robo-tag"><i class="fas fa-dollar-sign"></i> ${robo.custo}</span>
-                                <span class="robo-tag"><i class="fas fa-cubes"></i> ${robo.pecas} peças</span>
-                                ${robo.impressao3d ? '<span class="robo-tag"><i class="fas fa-cube"></i> Impressão 3D</span>' : ''}
-                            </div>
-                            <div class="card-footer">
-                                <a href="projetos/template.html?id=${robo.id}" target="_blank" class="robo-btn">
-                                    <i class="fas fa-external-link-alt"></i> Construir Este Robô
-                                </a>
-                            </div>
-                            <p class="card-update-note">📋 Materiais reais · Passo a passo completo · Atualizado Mai/2026</p>
-                        </div>`;
-                    });
-                });
+function voltarCatalogo(){
+    document.getElementById('paginaDetalhe').classList.remove('ativa');
+    document.getElementById('paginaCatalogo').style.display='';
+    window.scrollTo(0,0);
+}
 
-                vitrine.innerHTML = html;
-            }
+function marcarPasso(el){
+    el.classList.toggle('completed');
+    const m=el.querySelector('.step-marker');
+    if(el.classList.contains('completed')){m.innerHTML='<i class="fas fa-check"></i>'}else{const n=el.dataset.step;m.textContent=n?parseInt(n)+1:''}
+    const total=document.querySelectorAll('.timeline-step').length;
+    const comp=document.querySelectorAll('.timeline-step.completed').length;
+    document.getElementById('detProgress').style.width=(total>0?Math.round(comp/total*100):0)+'%';
+}
 
-            // Eventos filtros
-            document.querySelectorAll('.filtro-chip[data-filtro]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filtro-chip[data-filtro]').forEach(b => { b.classList.remove('active','gold-active'); });
-                    this.classList.add('active','gold-active');
-                    filtroDificuldade = this.dataset.filtro;
-                    filtroTipo = 'todos';
-                    document.querySelectorAll('.filtro-chip[data-tipo]').forEach(b => b.classList.remove('active','gold-active'));
-                    renderizar();
-                });
-            });
-            document.querySelectorAll('.filtro-chip[data-tipo]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filtro-chip[data-tipo]').forEach(b => { b.classList.remove('active','gold-active'); });
-                    this.classList.add('active','gold-active');
-                    filtroTipo = this.dataset.tipo;
-                    filtroDificuldade = 'todos';
-                    document.querySelectorAll('.filtro-chip[data-filtro]').forEach(b => b.classList.remove('active','gold-active'));
-                    renderizar();
-                });
-            });
-            buscaInput.addEventListener('input', function() {
-                buscaTexto = this.value;
-                renderizar();
-            });
+function copiarCodigo(btn){
+    const code=btn.closest('.code-block').querySelector('code').textContent;
+    navigator.clipboard.writeText(code).then(()=>{btn.classList.add('copiado');btn.innerHTML='<i class="fas fa-check"></i> Copiado!';setTimeout(()=>{btn.classList.remove('copiado');btn.innerHTML='<i class="fas fa-copy"></i> Copiar'},2000)});
+}
 
-            renderizar();
-        })();
-    </script>
-    <style>
-        @keyframes fadeCard { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-    </style>
+// Scroll spy sidebar
+window.addEventListener('scroll',()=>{const links=document.querySelectorAll('.detalhe-sidebar a');let cur='';document.querySelectorAll('section[id]').forEach(s=>{if(s.getBoundingClientRect().top<150)cur=s.id});links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+cur))},{passive:true});
+</script>
 </body>
 </html>
