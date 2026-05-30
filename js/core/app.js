@@ -1,526 +1,723 @@
-/* ============================================================
-   NEXUS ROBOTICS ACADEMY v6.0
-   ARQUIVO: js/core/app.js
-   DESCRIÇÃO: Inicializador do sistema — temas, Service Worker,
-              bootstrap, eventos globais e ciclo de vida
-   ============================================================ */
+/**
+ * ============================================================
+ * IDENZA ROBOTICS ACADEMY — APLICAÇÃO PRINCIPAL
+ * ============================================================
+ * 
+ * Inicializador central do ecossistema Idenza Robotics Academy.
+ * Gerencia:
+ * - Inicialização do sistema
+ * - Gerenciamento de temas
+ * - Carregamento de módulos
+ * - Partículas de fundo
+ * - Loading screen
+ * - Configuração global
+ * 
+ * @namespace IdenzaApp
+ * @version 6.0.0
+ * @license Proprietária — Idenza Robotics Intelligence S.A.
+ * ============================================================
+ */
 
-class NexusApp {
-  constructor() {
-    this.version = '6.0.0';
-    this.buildDate = '2026-05-30';
-    this.state = {
-      theme: 'luxury',        // luxury | dark | high-contrast | print
-      sidebarOpen: false,
-      currentModule: 'dashboard',
-      user: null,
-      loading: false,
-      toastQueue: [],
-    };
+const IdenzaApp = {
+    // ============================================================
+    // CONFIGURAÇÃO PADRÃO
+    // ============================================================
+    config: {
+        appName: 'Idenza Robotics Academy',
+        appVersion: '6.0.0',
+        buildDate: '2026',
+        defaultModule: 'dashboard',
+        defaultTheme: 'luxury',
+        rosBridgeUrl: 'ws://localhost:9090',
+        mqttBrokerUrl: 'ws://localhost:9001',
+        language: 'pt-BR',
+        animationsEnabled: true,
+        particlesEnabled: true,
+        debug: false,
+    },
 
-    this.modules = new Map();
-    this.eventBus = new NexusEventBus();
-    this.router = null;
-    this.stateManager = null;
+    // ============================================================
+    // ESTADO GLOBAL
+    // ============================================================
+    state: {
+        currentModule: null,
+        currentTheme: null,
+        isMenuOpen: false,
+        isSidebarOpen: false,
+        isModalOpen: false,
+        isSearchOpen: false,
+        isLoaded: false,
+        rosConnected: false,
+        mqttConnected: false,
+        systemStatus: 'initializing',
+    },
 
-    // Singleton
-    if (NexusApp.instance) return NexusApp.instance;
-    NexusApp.instance = this;
-  }
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    init(userConfig = {}) {
+        // Merge de configurações
+        this.config = { ...this.config, ...userConfig };
+        this.state.currentTheme = this.config.defaultTheme;
+        this.state.currentModule = this.config.defaultModule;
 
-  /**
-   * Inicializa o sistema completo
-   */
-  async init() {
-    console.log(`%c🚀 Nexus Robotics Academy v${this.version} %ciniciando...`,
-      'color: #D4AF37; font-size: 1.2em; font-weight: bold;',
-      'color: #aaa;');
+        this.log('🚀 Inicializando Idenza Robotics Academy v' + this.config.appVersion);
+        this.log('📦 Configuração:', this.config);
 
-    this._showBootSequence();
-    this._loadSavedTheme();
-    this._initCoreModules();
-    this._registerGlobalEvents();
-    this._initServiceWorker();
-    this._startLuxuryParticles();
-    this._initKeyboardShortcuts();
-    this._checkSystemStatus();
+        // Sequência de inicialização
+        this.initTheme();
+        this.initParticles();
+        this.initNavigation();
+        this.initSearch();
+        this.initSidebar();
+        this.initKeyboardShortcuts();
+        this.loadModule(this.state.currentModule);
+        this.updateSystemStatus('operational');
+        this.hideLoadingScreen();
 
-    console.log(`%c✅ Sistema pronto em ${performance.now().toFixed(0)}ms`,
-      'color: #2e7d32; font-weight: bold;');
-  }
+        this.state.isLoaded = true;
+        this.log('✅ Idenza Robotics Academy inicializada com sucesso');
+        this.emitEvent('idenza:ready', { config: this.config, state: this.state });
+    },
 
-  /**
-   * Sequência de boot visual
-   */
-  _showBootSequence() {
-    const bootOverlay = document.createElement('div');
-    bootOverlay.className = 'boot-overlay';
-    bootOverlay.innerHTML = `
-      <div class="boot-logo">
-        <i class="fas fa-robot"></i>
-        <span>NEXUS ROBOTICS</span>
-      </div>
-      <div class="boot-progress">
-        <div class="boot-bar"></div>
-      </div>
-    `;
-    document.body.appendChild(bootOverlay);
+    // ============================================================
+    // TEMA
+    // ============================================================
+    initTheme() {
+        const savedTheme = this.getStorage('idenza_theme') || this.config.defaultTheme;
+        this.setTheme(savedTheme);
 
-    setTimeout(() => {
-      bootOverlay.classList.add('fade-out');
-      setTimeout(() => bootOverlay.remove(), 500);
-    }, 1200);
-  }
-
-  /**
-   * Carrega tema salvo ou usa padrão
-   */
-  _loadSavedTheme() {
-    const saved = localStorage.getItem('nexus-theme') || 'luxury';
-    this.setTheme(saved);
-  }
-
-  /**
-   * Define o tema ativo
-   */
-  setTheme(themeName) {
-    const validThemes = ['luxury', 'dark', 'high-contrast', 'print'];
-    if (!validThemes.includes(themeName)) themeName = 'luxury';
-
-    // Remove temas anteriores
-    document.documentElement.classList.remove(
-      'theme-luxury', 'theme-dark', 'theme-high-contrast', 'theme-print'
-    );
-
-    // Aplica novo tema
-    document.documentElement.classList.add(`theme-${themeName}`);
-    this.state.theme = themeName;
-    localStorage.setItem('nexus-theme', themeName);
-
-    // Dispara evento
-    this.eventBus.emit('theme:changed', { theme: themeName });
-
-    // Atualiza ícone do theme switcher se existir
-    const themeIcon = document.getElementById('theme-icon');
-    if (themeIcon) {
-      const icons = {
-        'luxury': 'fa-sun',
-        'dark': 'fa-moon',
-        'high-contrast': 'fa-adjust',
-        'print': 'fa-print',
-      };
-      themeIcon.className = `fas ${icons[themeName] || 'fa-sun'}`;
-    }
-  }
-
-  /**
-   * Inicializa módulos core
-   */
-  _initCoreModules() {
-    // State Manager
-    if (typeof NexusStateManager !== 'undefined') {
-      this.stateManager = new NexusStateManager(this);
-      this.stateManager.init();
-    }
-
-    // Router
-    if (typeof NexusRouter !== 'undefined') {
-      this.router = new NexusRouter(this);
-      this.router.init();
-    }
-
-    // Registra módulos de UI
-    this._initUIModules();
-  }
-
-  /**
-   * Inicializa componentes de UI
-   */
-  _initUIModules() {
-    // Sidebar toggle
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const sidebar = document.getElementById('sidebar');
-    if (sidebarToggle && sidebar) {
-      sidebarToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        document.querySelector('.main-content')?.classList.toggle('collapsed');
-        this.eventBus.emit('sidebar:toggled', {
-          collapsed: sidebar.classList.contains('collapsed')
+        // Event listeners nos botões de tema
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                this.setTheme(theme);
+                this.setStorage('idenza_theme', theme);
+            });
         });
-      });
-    }
 
-    // Mobile menu
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('navMenu');
-    const mobileOverlay = document.getElementById('mobileOverlay');
-    if (hamburger && navMenu) {
-      hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('open');
-        mobileOverlay?.classList.toggle('active');
-        document.body.classList.toggle('has-scroll-locked');
-      });
+        this.log('🎨 Tema inicializado:', savedTheme);
+    },
 
-      mobileOverlay?.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('open');
-        mobileOverlay.classList.remove('active');
-        document.body.classList.remove('has-scroll-locked');
-      });
-    }
+    setTheme(theme) {
+        // Atualiza data-theme no html
+        document.documentElement.setAttribute('data-theme', theme);
+        this.state.currentTheme = theme;
 
-    // Theme switcher
-    const themeBtns = document.querySelectorAll('[data-theme]');
-    themeBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        this.setTheme(btn.dataset.theme);
-      });
-    });
-
-    // Header scroll effect
-    window.addEventListener('scroll', () => {
-      const header = document.querySelector('.header');
-      if (header) {
-        header.classList.toggle('scrolled', window.scrollY > 20);
-      }
-    }, { passive: true });
-
-    // Close modals on Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        this.closeAllModals();
-      }
-    });
-  }
-
-  /**
-   * Eventos globais
-   */
-  _registerGlobalEvents() {
-    // Resize handler
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        this.eventBus.emit('window:resized', {
-          width: window.innerWidth,
-          height: window.innerHeight,
+        // Atualiza botões de tema
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.theme === theme);
         });
-      }, 250);
-    }, { passive: true });
 
-    // Online/Offline
-    window.addEventListener('online', () => {
-      this.showToast('Conexão restaurada', 'success', 'fa-wifi');
-    });
-    window.addEventListener('offline', () => {
-      this.showToast('Modo offline ativado', 'warning', 'fa-wifi');
-    });
+        // Atualiza stylesheet de tema (se existir)
+        const themeStylesheet = document.getElementById('theme-stylesheet');
+        if (themeStylesheet) {
+            themeStylesheet.href = `css/themes/theme-${theme}.css`;
+        }
 
-    // Erros não capturados
-    window.addEventListener('error', (e) => {
-      console.error('Erro global:', e.error);
-      this.showToast('Ocorreu um erro inesperado', 'critical', 'fa-exclamation-circle');
-    });
+        this.emitEvent('idenza:themeChanged', { theme });
+    },
 
-    // Promessas não tratadas
-    window.addEventListener('unhandledrejection', (e) => {
-      console.error('Promise rejeitada:', e.reason);
-    });
-  }
+    getCurrentTheme() {
+        return this.state.currentTheme;
+    },
 
-  /**
-   * Service Worker para PWA
-   */
-  _initServiceWorker() {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('📦 SW registrado:', reg.scope))
-        .catch(err => console.warn('SW falhou:', err));
-    }
-  }
+    // ============================================================
+    // PARTÍCULAS DE FUNDO (LUXURY)
+    // ============================================================
+    initParticles() {
+        if (!this.config.particlesEnabled) return;
 
-  /**
-   * Partículas de luxo no fundo
-   */
-  _startLuxuryParticles() {
-    const container = document.querySelector('.luxury-particles');
-    if (!container) return;
+        const container = document.getElementById('particlesContainer');
+        if (!container) return;
 
-    // Garante que existem pelo menos 8 partículas
-    const currentCount = container.querySelectorAll('.luxury-particle').length;
-    for (let i = currentCount; i < 8; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'luxury-particle';
-      particle.style.setProperty('--duration', `${15 + Math.random() * 15}s`);
-      particle.style.setProperty('--delay', `-${Math.random() * 15}s`);
-      particle.style.left = `${Math.random() * 90}%`;
-      particle.style.width = particle.style.height = `${40 + Math.random() * 120}px`;
-      container.appendChild(particle);
-    }
-  }
+        // Verifica preferência de movimento reduzido
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+            container.innerHTML = '';
+            return;
+        }
 
-  /**
-   * Atalhos de teclado
-   */
-  _initKeyboardShortcuts() {
-    document.addEventListener('keydown', (e) => {
-      // Ctrl+K = busca global
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        this.openGlobalSearch();
-      }
+        // Gera partículas
+        const particleCount = 8;
+        let particlesHTML = '';
 
-      // Ctrl+B = toggle sidebar
-      if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
-        e.preventDefault();
-        document.getElementById('sidebar-toggle')?.click();
-      }
+        for (let i = 0; i < particleCount; i++) {
+            const size = this.randomBetween(40, 150);
+            const left = this.randomBetween(0, 90);
+            const duration = this.randomBetween(16, 25);
+            const delay = this.randomBetween(0, 15);
+            const type = i % 3 === 0 ? 'floatLuxurySlow' : 'floatLuxury';
 
-      // Ctrl+Shift+T = alterna tema
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
-        e.preventDefault();
-        const themes = ['luxury', 'dark', 'high-contrast'];
-        const currentIndex = themes.indexOf(this.state.theme);
-        const next = themes[(currentIndex + 1) % themes.length];
-        this.setTheme(next);
-      }
-    });
-  }
+            particlesHTML += `
+                <div class="luxury-particle" 
+                     style="
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${left}%;
+                        animation: ${type} ${duration}s infinite linear;
+                        animation-delay: -${delay}s;
+                     "
+                     aria-hidden="true">
+                </div>
+            `;
+        }
 
-  /**
-   * Verifica status do sistema
-   */
-  _checkSystemStatus() {
-    // Simula verificação de conexão com ROS
-    const rosConnected = Math.random() > 0.3;
-    const mqttConnected = Math.random() > 0.2;
+        container.innerHTML = particlesHTML;
+        this.log('✨ Partículas de fundo geradas:', particleCount);
+    },
 
-    this.eventBus.emit('system:status', {
-      ros: rosConnected,
-      mqtt: mqttConnected,
-      memory: performance.memory?.usedJSHeapSize || 0,
-      online: navigator.onLine,
-    });
+    // ============================================================
+    // NAVEGAÇÃO
+    // ============================================================
+    initNavigation() {
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
 
-    if (!rosConnected) {
-      setTimeout(() => {
-        this.showToast('ROS Master não detectado — modo simulação', 'warning', 'fa-exclamation-triangle');
-      }, 2000);
-    }
-  }
+        // Toggle menu mobile
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                this.state.isMenuOpen = !this.state.isMenuOpen;
+                hamburger.classList.toggle('active', this.state.isMenuOpen);
+                navMenu.classList.toggle('open', this.state.isMenuOpen);
+                hamburger.setAttribute('aria-expanded', this.state.isMenuOpen);
+            });
+        }
 
-  /**
-   * Abre busca global (Ctrl+K)
-   */
-  openGlobalSearch() {
-    // Remove busca existente
-    document.querySelector('.global-search-overlay')?.remove();
+        // Links de navegação
+        document.querySelectorAll('.nav-link[data-module]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const module = link.dataset.module;
+                this.loadModule(module);
+                this.closeMenu();
+            });
+        });
 
-    const overlay = document.createElement('div');
-    overlay.className = 'global-search-overlay';
-    overlay.innerHTML = `
-      <div class="global-search-modal">
-        <div class="global-search-input-wrapper">
-          <i class="fas fa-search"></i>
-          <input type="text" class="global-search-input" placeholder="Buscar produtos, projetos, cursos..." autofocus>
-          <kbd>ESC</kbd>
-        </div>
-        <div class="global-search-results"></div>
-      </div>
-    `;
-    document.body.appendChild(overlay);
+        // Fecha menu ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (this.state.isMenuOpen && 
+                !e.target.closest('.nav-menu') && 
+                !e.target.closest('.hamburger')) {
+                this.closeMenu();
+            }
+        });
 
-    const input = overlay.querySelector('.global-search-input');
-    const results = overlay.querySelector('.global-search-results');
+        // Fecha menu com tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.state.isMenuOpen) {
+                this.closeMenu();
+            }
+        });
 
-    input.addEventListener('input', () => {
-      const query = input.value.trim();
-      if (query.length < 2) {
-        results.innerHTML = '<p class="search-hint">Digite pelo menos 2 caracteres...</p>';
-        return;
-      }
+        this.log('🧭 Navegação inicializada');
+    },
 
-      // Busca nos catálogos
-      const found = this._searchAll(query);
-      results.innerHTML = found.length > 0
-        ? found.slice(0, 10).map(item => `
-            <div class="search-result-item" data-id="${item.id}">
-              <i class="fas ${item.icon || 'fa-cube'}"></i>
-              <div>
-                <strong>${item.name || item.title}</strong>
-                <small>${item.category || item.type || ''}</small>
-              </div>
-              <span class="search-result-badge">${item.level || item.difficulty || ''}</span>
+    closeMenu() {
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+        
+        if (hamburger && navMenu) {
+            this.state.isMenuOpen = false;
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+        }
+    },
+
+    // ============================================================
+    // CARREGAMENTO DE MÓDULOS
+    // ============================================================
+    loadModule(moduleName) {
+        if (this.state.currentModule === moduleName && this.state.isLoaded) {
+            return; // Já está no módulo
+        }
+
+        this.log('📦 Carregando módulo:', moduleName);
+        this.state.currentModule = moduleName;
+
+        // Atualiza navegação ativa
+        document.querySelectorAll('.nav-link[data-module]').forEach(link => {
+            link.classList.toggle('active', link.dataset.module === moduleName);
+        });
+
+        // Atualiza URL (hash)
+        window.location.hash = moduleName;
+
+        // Container do módulo
+        const container = document.getElementById('moduleContainer');
+        if (!container) return;
+
+        // Loading
+        container.innerHTML = `
+            <div class="module-loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Carregando módulo: <strong>${this.getModuleName(moduleName)}</strong></p>
+                <p class="loading-subtext">Idenza Robotics Academy</p>
             </div>
-          `).join('')
-        : '<p class="search-hint">Nenhum resultado encontrado.</p>';
-    });
+        `;
 
-    // Fecha no ESC ou clique fora
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) overlay.remove();
-    });
-    document.addEventListener('keydown', function closeOnEsc(e) {
-      if (e.key === 'Escape') {
-        overlay.remove();
-        document.removeEventListener('keydown', closeOnEsc);
-      }
-    });
-  }
+        // Simula carregamento (em produção, seria fetch do HTML parcial ou inicialização do módulo JS)
+        setTimeout(() => {
+            this.renderModule(moduleName, container);
+        }, 400);
+    },
 
-  /**
-   * Busca em todos os catálogos
-   */
-  _searchAll(query) {
-    const results = [];
+    getModuleName(moduleId) {
+        const names = {
+            'dashboard': 'Dashboard de Diagnóstico',
+            'academy': 'Idenza Academy — Cursos',
+            'portfolio': 'Portfólio de Projetos',
+            'products': 'Catálogo de Produtos',
+            'guides': 'Guias e Tutoriais',
+            'diagnostics': 'Ferramenta de Diagnóstico',
+            'simulator': 'Simulador de Falhas',
+            'marketplace': 'Loja Idenza — Kits',
+        };
+        return names[moduleId] || moduleId;
+    },
 
-    if (typeof NEXUS_PRODUCTS_CATALOG !== 'undefined') {
-      const allProducts = [
-        ...NEXUS_PRODUCTS_CATALOG.microcontrollers,
-        ...NEXUS_PRODUCTS_CATALOG.sbcs,
-        ...NEXUS_PRODUCTS_CATALOG.robots,
-        ...NEXUS_PRODUCTS_CATALOG.actuators,
-        ...NEXUS_PRODUCTS_CATALOG.kits,
-      ];
-      results.push(...allProducts.filter(p =>
-        p.name?.toLowerCase().includes(query.toLowerCase())
-      ).map(p => ({ ...p, icon: 'fa-microchip', category: p.manufacturer })));
-    }
+    renderModule(moduleName, container) {
+        // Tenta chamar o inicializador do módulo específico
+        const moduleInitName = `init${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}`;
+        
+        if (typeof IdenzaModules !== 'undefined' && typeof IdenzaModules[moduleInitName] === 'function') {
+            IdenzaModules[moduleInitName](container);
+        } else {
+            // Fallback: renderiza placeholder
+            container.innerHTML = `
+                <div class="panel panel-full animate-fade-in">
+                    <div class="panel-header">
+                        <i class="fas fa-cube"></i>
+                        <h2>${this.getModuleName(moduleName)}</h2>
+                        <span class="badge badge-info">IDENZA</span>
+                    </div>
+                    <div class="empty-state">
+                        <i class="fas fa-tools"></i>
+                        <h3>Módulo em Construção</h3>
+                        <p>O módulo <strong>${this.getModuleName(moduleName)}</strong> está sendo preparado pela equipe Idenza Robotics.</p>
+                        <p class="text-muted" style="font-size: var(--text-xs);">Volte em breve para novidades.</p>
+                    </div>
+                </div>
+            `;
+        }
 
-    if (typeof NEXUS_PROJECTS_DATABASE !== 'undefined') {
-      const allProjects = [
-        ...NEXUS_PROJECTS_DATABASE.beginner,
-        ...NEXUS_PROJECTS_DATABASE.intermediate,
-        ...NEXUS_PROJECTS_DATABASE.advanced,
-        ...NEXUS_PROJECTS_DATABASE.specialist,
-      ];
-      results.push(...allProjects.filter(p =>
-        p.title?.toLowerCase().includes(query.toLowerCase())
-      ).map(p => ({ ...p, icon: p.icon, category: p.category })));
-    }
+        this.emitEvent('idenza:moduleLoaded', { module: moduleName });
+    },
 
-    return results;
-  }
+    // ============================================================
+    // BUSCA GLOBAL
+    // ============================================================
+    initSearch() {
+        const searchOverlay = document.getElementById('searchOverlay');
+        const searchInput = document.getElementById('globalSearchInput');
 
-  /**
-   * Sistema de Toast
-   */
-  showToast(message, type = 'info', icon = 'fa-info-circle') {
-    const container = document.querySelector('.toast-container') || this._createToastContainer();
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `
-      <i class="fas ${icon}"></i>
-      <div class="toast-body">
-        <div class="toast-title">${type.toUpperCase()}</div>
-        <div class="toast-message">${message}</div>
-      </div>
-      <span class="toast-close">&times;</span>
-    `;
+        if (!searchOverlay || !searchInput) return;
 
-    // Fechar no clique
-    toast.querySelector('.toast-close').addEventListener('click', () => {
-      toast.classList.add('removing');
-      setTimeout(() => toast.remove(), 300);
-    });
+        // Abrir busca
+        const openSearch = () => {
+            this.state.isSearchOpen = true;
+            searchOverlay.setAttribute('aria-hidden', 'false');
+            searchOverlay.style.display = 'flex';
+            setTimeout(() => {
+                searchOverlay.style.opacity = '1';
+                searchInput.focus();
+            }, 10);
+            document.body.classList.add('no-scroll');
+        };
 
-    container.appendChild(toast);
+        // Fechar busca
+        const closeSearch = () => {
+            this.state.isSearchOpen = false;
+            searchOverlay.setAttribute('aria-hidden', 'true');
+            searchOverlay.style.opacity = '0';
+            setTimeout(() => {
+                searchOverlay.style.display = 'none';
+            }, 300);
+            document.body.classList.remove('no-scroll');
+            searchInput.value = '';
+            document.getElementById('searchResults').innerHTML = '';
+        };
 
-    // Auto-remover após 5 segundos
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.classList.add('removing');
-        setTimeout(() => toast.remove(), 300);
-      }
-    }, 5000);
-  }
+        // Eventos
+        searchOverlay.addEventListener('click', (e) => {
+            if (e.target === searchOverlay) closeSearch();
+        });
 
-  _createToastContainer() {
-    const container = document.createElement('div');
-    container.className = 'toast-container';
-    document.body.appendChild(container);
-    return container;
-  }
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeSearch();
+        });
 
-  /**
-   * Fecha todos os modais
-   */
-  closeAllModals() {
-    document.querySelectorAll('.modal.active').forEach(modal => {
-      modal.classList.remove('active');
-    });
-    document.querySelectorAll('.overlay.active').forEach(overlay => {
-      overlay.classList.remove('active');
-    });
-  }
+        searchInput.addEventListener('input', this.debounce(() => {
+            const query = searchInput.value.trim();
+            this.performSearch(query);
+        }, 300));
 
-  /**
-   * Registra um módulo
-   */
-  registerModule(name, moduleInstance) {
-    this.modules.set(name, moduleInstance);
-  }
+        // Expõe funções globalmente
+        window.openIdenzaSearch = openSearch;
+        window.closeIdenzaSearch = closeSearch;
 
-  /**
-   * Obtém um módulo
-   */
-  getModule(name) {
-    return this.modules.get(name);
-  }
-}
+        this.log('🔍 Busca global inicializada');
+    },
 
-// ==========================================
-// EVENT BUS (Padrão Observer)
-// ==========================================
-class NexusEventBus {
-  constructor() {
-    this.listeners = new Map();
-  }
+    performSearch(query) {
+        const resultsContainer = document.getElementById('searchResults');
+        if (!resultsContainer) return;
 
-  on(event, callback) {
-    if (!this.listeners.has(event)) {
-      this.listeners.set(event, new Set());
-    }
-    this.listeners.get(event).add(callback);
-    return () => this.off(event, callback); // Retorna unsubscribe
-  }
+        if (query.length < 2) {
+            resultsContainer.innerHTML = '';
+            return;
+        }
 
-  off(event, callback) {
-    this.listeners.get(event)?.delete(callback);
-  }
+        // Busca nos catálogos
+        let results = [];
+        const catalog = window.IDENZA_PRODUCTS_CATALOG;
 
-  emit(event, data) {
-    this.listeners.get(event)?.forEach(cb => {
-      try { cb(data); } catch (e) { console.error(`Erro no evento ${event}:`, e); }
-    });
-  }
+        if (catalog) {
+            // Busca em todas as categorias
+            const categories = ['microcontrollers', 'sbcs', 'robots', 'kits'];
+            
+            categories.forEach(cat => {
+                if (catalog[cat]) {
+                    catalog[cat].forEach(item => {
+                        if (item.name.toLowerCase().includes(query.toLowerCase()) ||
+                            item.description?.toLowerCase().includes(query.toLowerCase()) ||
+                            item.manufacturer?.toLowerCase().includes(query.toLowerCase())) {
+                            results.push({
+                                ...item,
+                                category: cat,
+                            });
+                        }
+                    });
+                }
+            });
+        }
 
-  once(event, callback) {
-    const wrapper = (data) => {
-      callback(data);
-      this.off(event, wrapper);
-    };
-    this.on(event, wrapper);
-  }
-}
+        // Renderiza resultados
+        if (results.length === 0) {
+            resultsContainer.innerHTML = `
+                <div class="empty-state" style="padding: var(--space-6);">
+                    <i class="fas fa-search"></i>
+                    <p>Nenhum resultado para "${query}"</p>
+                    <p class="text-muted">Tente outro termo de busca.</p>
+                </div>
+            `;
+        } else {
+            resultsContainer.innerHTML = results.slice(0, 10).map(item => `
+                <div class="search-result-item" onclick="IdenzaApp.loadModule('products')">
+                    <i class="fas fa-microchip"></i>
+                    <div>
+                        <strong>${item.name}</strong>
+                        <small>${item.manufacturer} — ${item.price}</small>
+                    </div>
+                    <span class="badge badge-gold">${item.category}</span>
+                </div>
+            `).join('');
+        }
+    },
 
-// ==========================================
-// INICIALIZAÇÃO AUTOMÁTICA
-// ==========================================
+    // ============================================================
+    // SIDEBAR
+    // ============================================================
+    initSidebar() {
+        // Links de acesso rápido
+        document.querySelectorAll('.sidebar-menu a[data-action]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = link.dataset.action;
+                this.handleSidebarAction(action);
+            });
+        });
+
+        this.log('📋 Sidebar inicializada');
+    },
+
+    handleSidebarAction(action) {
+        switch (action) {
+            case 'quick-connect-ros':
+                this.connectROS();
+                break;
+            case 'quick-connect-mqtt':
+                this.connectMQTT();
+                break;
+            case 'quick-terminal':
+                this.loadModule('terminal');
+                break;
+            case 'quick-export':
+                this.exportReport();
+                break;
+            default:
+                this.log('⚠️ Ação desconhecida:', action);
+        }
+    },
+
+    // ============================================================
+    // INTEGRAÇÕES (STUBS)
+    // ============================================================
+    connectROS() {
+        this.showToast('Conectando ao ROS...', 'info');
+        // Será implementado quando ros-bridge.js estiver pronto
+        setTimeout(() => {
+            this.state.rosConnected = true;
+            this.updateROSStatus('connected');
+            this.showToast('ROS conectado com sucesso!', 'success');
+        }, 1500);
+    },
+
+    connectMQTT() {
+        this.showToast('Conectando ao broker MQTT...', 'info');
+        // Será implementado quando mqtt-client.js estiver pronto
+        setTimeout(() => {
+            this.state.mqttConnected = true;
+            this.updateMQTTStatus('connected');
+            this.showToast('MQTT conectado com sucesso!', 'success');
+        }, 1200);
+    },
+
+    exportReport() {
+        this.showToast('Gerando relatório PDF...', 'info');
+        setTimeout(() => {
+            this.showToast('Relatório exportado com sucesso!', 'success');
+        }, 2000);
+    },
+
+    // ============================================================
+    // ATUALIZAÇÃO DE STATUS
+    // ============================================================
+    updateSystemStatus(status) {
+        this.state.systemStatus = status;
+        const dot = document.getElementById('systemStatusDot');
+        const label = document.getElementById('systemStatusLabel');
+
+        if (dot && label) {
+            dot.className = 'status-dot';
+            switch (status) {
+                case 'operational':
+                    dot.classList.add('status-dot-active');
+                    label.textContent = 'Idenza: Operacional';
+                    break;
+                case 'degraded':
+                    dot.classList.add('status-dot-warning');
+                    label.textContent = 'Idenza: Degradado';
+                    break;
+                case 'critical':
+                    dot.classList.add('status-dot-critical');
+                    label.textContent = 'Idenza: Crítico';
+                    break;
+                default:
+                    dot.classList.add('status-dot-inactive');
+                    label.textContent = 'Idenza: ' + status;
+            }
+        }
+    },
+
+    updateROSStatus(status) {
+        const dot = document.getElementById('rosStatusDot');
+        const label = document.getElementById('rosStatusLabel');
+        if (dot && label) {
+            dot.className = 'status-dot';
+            if (status === 'connected') {
+                dot.classList.add('status-dot-ros');
+                label.textContent = 'ROS: Conectado';
+            } else {
+                dot.classList.add('status-dot-inactive');
+                label.textContent = 'ROS: Desconectado';
+            }
+        }
+    },
+
+    updateMQTTStatus(status) {
+        const dot = document.getElementById('mqttStatusDot');
+        const label = document.getElementById('mqttStatusLabel');
+        if (dot && label) {
+            dot.className = 'status-dot';
+            if (status === 'connected') {
+                dot.classList.add('status-dot-active');
+                label.textContent = 'MQTT: Conectado';
+            } else {
+                dot.classList.add('status-dot-inactive');
+                label.textContent = 'MQTT: Desconectado';
+            }
+        }
+    },
+
+    // ============================================================
+    // LOADING SCREEN
+    // ============================================================
+    hideLoadingScreen() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.add('hidden');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 500);
+        }
+    },
+
+    showLoadingScreen(message = 'Carregando...') {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.querySelector('.loading-text').textContent = message;
+            overlay.style.display = 'flex';
+            overlay.classList.remove('hidden');
+        }
+    },
+
+    // ============================================================
+    // TOASTS (NOTIFICAÇÕES)
+    // ============================================================
+    showToast(message, type = 'info', duration = 4000) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const icons = {
+            success: 'fa-check-circle',
+            warning: 'fa-exclamation-triangle',
+            critical: 'fa-times-circle',
+            info: 'fa-info-circle',
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type} animate-slide-in-right`;
+        toast.innerHTML = `
+            <div class="toast-icon"><i class="fas ${icons[type] || icons.info}"></i></div>
+            <div class="toast-content">
+                <div class="toast-title">${type === 'critical' ? 'Erro' : type === 'warning' ? 'Atenção' : type === 'success' ? 'Sucesso' : 'Informação'}</div>
+                <div class="toast-message">${message}</div>
+            </div>
+            <button class="toast-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        container.appendChild(toast);
+
+        // Auto-remove
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    },
+
+    // ============================================================
+    // TECLAS DE ATALHO
+    // ============================================================
+    initKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+K = Busca global
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                if (typeof window.openIdenzaSearch === 'function') {
+                    window.openIdenzaSearch();
+                }
+            }
+
+            // Ctrl+Shift+T = Trocar tema
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
+                e.preventDefault();
+                const themes = ['luxury', 'dark', 'high-contrast'];
+                const currentIndex = themes.indexOf(this.state.currentTheme);
+                const nextTheme = themes[(currentIndex + 1) % themes.length];
+                this.setTheme(nextTheme);
+                this.setStorage('idenza_theme', nextTheme);
+                this.showToast(`Tema alterado para: ${nextTheme}`, 'info', 2000);
+            }
+
+            // Ctrl+Shift+D = Dashboard
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+                e.preventDefault();
+                this.loadModule('dashboard');
+            }
+        });
+
+        this.log('⌨️ Atalhos de teclado inicializados');
+    },
+
+    // ============================================================
+    // UTILITÁRIOS
+    // ============================================================
+    log(...args) {
+        if (this.config.debug) {
+            console.log('[Idenza]', ...args);
+        }
+    },
+
+    emitEvent(name, detail = {}) {
+        const event = new CustomEvent(name, { detail });
+        document.dispatchEvent(event);
+        this.log('📡 Evento emitido:', name, detail);
+    },
+
+    randomBetween(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    },
+
+    // ============================================================
+    // STORAGE (LOCALSTORAGE)
+    // ============================================================
+    setStorage(key, value) {
+        try {
+            localStorage.setItem(`idenza_${key}`, JSON.stringify(value));
+        } catch (e) {
+            this.log('⚠️ Erro ao salvar em localStorage:', e);
+        }
+    },
+
+    getStorage(key, defaultValue = null) {
+        try {
+            const item = localStorage.getItem(`idenza_${key}`);
+            return item ? JSON.parse(item) : defaultValue;
+        } catch (e) {
+            return defaultValue;
+        }
+    },
+
+    removeStorage(key) {
+        localStorage.removeItem(`idenza_${key}`);
+    },
+
+    // ============================================================
+    // DESTRUIÇÃO (LIMPEZA)
+    // ============================================================
+    destroy() {
+        this.log('🛑 Encerrando Idenza Robotics Academy...');
+        this.state.isLoaded = false;
+        this.emitEvent('idenza:destroy');
+        // Limpa partículas
+        const container = document.getElementById('particlesContainer');
+        if (container) container.innerHTML = '';
+        // Limpa observers, timers, etc.
+    },
+};
+
+// ============================================================
+// INICIALIZAÇÃO AUTOMÁTICA AO CARREGAR A PÁGINA
+// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  window.nexusApp = new NexusApp();
-  window.nexusApp.init();
-
-  // Disponibiliza globalmente
-  window.NexusEventBus = NexusEventBus;
+    // Expõe a aplicação globalmente
+    window.IdenzaApp = IdenzaApp;
+    
+    // Inicializa com configurações padrão
+    IdenzaApp.init({
+        debug: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
+    });
 });
 
-// Exportação
-export { NexusApp, NexusEventBus };
-
-/* ============================================================
-   FIM DO ARQUIVO: js/core/app.js
-   PRÓXIMO: js/core/router.js
-   ============================================================ */
+// ============================================================
+// EXPORTAÇÃO PARA MÓDULOS (SE USAR BUNDLER)
+// ============================================================
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = IdenzaApp;
+}
