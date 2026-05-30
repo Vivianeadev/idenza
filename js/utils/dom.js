@@ -397,4 +397,99 @@ const IdenzaDOM = {
         if (typeof element === 'string') element = this.$(element);
         if (element) {
             element.scrollIntoView({
-                behavior: options.smooth !== false ? '
+                behavior: options.smooth !== false ? 'smooth' : 'auto',
+                block: options.block || 'start',
+                ...options,
+            });
+        }
+    },
+
+    // ============================================================
+    // CSS
+    // ============================================================
+    
+    css(element, styles) {
+        if (typeof element === 'string') element = this.$(element);
+        if (element) Object.assign(element.style, styles);
+    },
+
+    getStyle(element, property) {
+        if (typeof element === 'string') element = this.$(element);
+        return element ? getComputedStyle(element).getPropertyValue(property) : null;
+    },
+
+    // ============================================================
+    // UTILITÁRIOS GERAIS
+    // ============================================================
+    
+    closest(element, selector) {
+        if (typeof element === 'string') element = this.$(element);
+        return element ? element.closest(selector) : null;
+    },
+
+    parent(element) {
+        if (typeof element === 'string') element = this.$(element);
+        return element ? element.parentNode : null;
+    },
+
+    children(element) {
+        if (typeof element === 'string') element = this.$(element);
+        return element ? Array.from(element.children) : [];
+    },
+
+    siblings(element) {
+        if (typeof element === 'string') element = this.$(element);
+        if (!element || !element.parentNode) return [];
+        return Array.from(element.parentNode.children).filter(child => child !== element);
+    },
+
+    next(element) {
+        if (typeof element === 'string') element = this.$(element);
+        return element ? element.nextElementSibling : null;
+    },
+
+    prev(element) {
+        if (typeof element === 'string') element = this.$(element);
+        return element ? element.previousElementSibling : null;
+    },
+
+    isElement(obj) {
+        return obj instanceof Element || obj instanceof HTMLElement;
+    },
+
+    // ============================================================
+    // ACESSIBILIDADE
+    // ============================================================
+    
+    focus(element) {
+        if (typeof element === 'string') element = this.$(element);
+        if (element && typeof element.focus === 'function') {
+            element.focus();
+        }
+    },
+
+    blur(element) {
+        if (typeof element === 'string') element = this.$(element);
+        if (element && typeof element.blur === 'function') {
+            element.blur();
+        }
+    },
+
+    getFocusableElements(parent = document) {
+        if (typeof parent === 'string') parent = this.$(parent);
+        if (!parent) return [];
+
+        return Array.from(parent.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        ));
+    },
+};
+
+// ============================================================
+// EXPORTAÇÃO
+// ============================================================
+window.IdenzaDOM = IdenzaDOM;
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = IdenzaDOM;
+}
