@@ -1,377 +1,316 @@
-/* ============================================================
-   NEXUS ROBOTICS ACADEMY v6.0
-   ARQUIVO: js/modules/diagnostics.js
-   DESCRIÇÃO: Motor de diagnóstico — cadeia causal, análise de
-              falhas, correlação de eventos e logs em tempo real
-   ============================================================ */
+/**
+ * ============================================================
+ * IDENZA ROBOTICS ACADEMY — MÓDULO DIAGNÓSTICO AVANÇADO
+ * ============================================================
+ * 
+ * Ferramenta interativa de diagnóstico de falhas:
+ * - Checklist de verificação passo a passo
+ * - Simulador de cenários de falha
+ * - Score de diagnóstico
+ * - Recomendações inteligentes
+ * - Histórico de diagnósticos
+ * 
+ * @module Diagnostics
+ * @version 6.0.0
+ * @license Proprietária — Idenza Robotics Intelligence S.A.
+ * ============================================================
+ */
 
-class NexusDiagnostics {
-  constructor(app) {
-    this.app = app;
-    this.state = {
-      nodes: [],
-      sensors: [],
-      logs: [],
-      errors: [],
-      warnings: [],
-      protectiveStop: false,
-      conveyorSpeed: 0,
-      gpuTemp: 45.0,
-      visionOnline: true,
-      lastUpdate: null,
-      rootCause: null,
-      riskLevel: 'low',
-    };
+const IdenzaDiagnostics = {
+    config: {},
 
-    this.subscribers = new Set();
-    this.logRetention = 500; // Máximo de logs na memória
-    this.updateInterval = null;
-  }
+    state: {
+        currentChecklist: null,
+        checksCompleted: 0,
+        totalChecks: 0,
+        score: 0,
+        history: [],
+    },
 
-  /**
-   * Inicializa o módulo de diagnóstico
-   */
-  init() {
-    this._initNodes();
-    this._initSensors();
-    this._startSimulation();
+    // ============================================================
+    // CENÁRIOS DE DIAGNÓSTICO
+    // ============================================================
+    _scenarios: [
+        {
+            id: 'scenario-gpu-overheat',
+            title: 'Superaquecimento da GPU',
+            description: 'O robô parou com protective stop. A GPU está a 47.2°C e o pipeline de visão falhou 3 vezes.',
+            symptoms: ['Protective stop ativo', 'Vision pipeline offline', 'GPU > 45°C', 'USB buffer overflow'],
+            correctRootCause: 'thermal',
+            checklist: [
+                { id: 'check-temp', question: 'Verificar temperatura da GPU (IOT-ENV-001)', expected: '>45°C', hint: 'Cheque o sensor térmico no dashboard' },
+                { id: 'check-fans', question: 'Inspecionar ventoinhas do computador de bordo', expected: 'Paradas ou lentas', hint: 'Abra o gabinete e verifique visualmente' },
+                { id: 'check-logs', question: 'Analisar logs de erro do vision_pipeline', expected: 'SIGSEGV + GPU memory fail', hint: 'Veja o Event Stream no dashboard' },
+                { id: 'check-usb', question: 'Verificar buffer overflow USB da câmera', expected: 'Frames perdidos > 10', hint: 'Logs mostram "USB buffer overflow"' },
+                { id: 'root-cause', question: 'Identificar a causa raiz', expected: 'Superaquecimento da GPU', hint: 'O superaquecimento causou falha em cascata' },
+            ],
+            actionPlan: [
+                'Parar a esteira imediatamente',
+                'Desligar o computador de bordo',
+                'Verificar e limpar ventoinhas',
+                'Aguardar 10 minutos para resfriamento',
+                'Verificar se a temperatura baixou para <40°C',
+                'Religar o sistema e monitorar',
+            ],
+        },
+        {
+            id: 'scenario-sensor-failure',
+            title: 'Falha no Sensor de Temperatura',
+            description: 'O sensor IOT-ENV-001 está reportando dados intermitentes com 34% de perda de pacotes e latência de 12 segundos.',
+            symptoms: ['Latência alta (12s)', 'Perda de pacotes 34%', 'Dados inconsistentes'],
+            correctRootCause: 'connectivity',
+            checklist: [
+                { id: 'check-signal', question: 'Verificar intensidade do sinal WiFi do sensor', expected: '< -80 dBm', hint: 'Use um analisador WiFi' },
+                { id: 'check-battery', question: 'Verificar nível da bateria do sensor', expected: '< 20%', hint: 'Bateria fraca causa transmissão irregular' },
+                { id: 'check-interference', question: 'Verificar interferência no canal WiFi', expected: 'Canal congestionado', hint: 'Muitos dispositivos no mesmo canal' },
+                { id: 'root-cause', question: 'Identificar a causa raiz', expected: 'Má conectividade WiFi', hint: 'Sinal fraco ou bateria fraca' },
+            ],
+            actionPlan: [
+                'Aproximar o sensor do roteador',
+                'Trocar a bateria do sensor',
+                'Mudar o canal WiFi do roteador',
+                'Adicionar um repetidor WiFi',
+                'Considerar usar LoRa para longo alcance',
+            ],
+        },
+    ],
 
-    // Atualiza estado global
-    if (this.app?.stateManager) {
-      this.app.stateManager.watch('diagnostics.*', (data) => {
-        Object.assign(this.state, data);
-        this._notifySubscribers();
-      });
-    }
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    init(container) {
+        this.state.history = IdenzaStorage.get('diagnostics_history') || [];
 
-    console.log('🔍 Módulo de Diagnóstico inicializado');
-  }
+        this._render(container);
+        this._bindEvents();
 
-  /**
-   * Inicializa nós ROS
-   */
-  _initNodes() {
-    this.state.nodes = [
-      { name: '/ur_driver',            status: 'active',  cpu: 12, mem: 340, restartCount: 0, critical: true },
-      { name: '/gripper_controller',   status: 'active',  cpu: 3,  mem: 85,  restartCount: 0, critical: false },
-      { name: '/camera_depth',         status: 'active',  cpu: 18, mem: 520, restartCount: 0, critical: true },
-      { name: '/vision_pipeline',      status: 'failed',  cpu: 0,  mem: 0,   restartCount: 3, critical: true,
-        error: 'SIGSEGV — GPU memory allocation failed after 3 restarts' },
-      { name: '/conveyor_bridge',      status: 'active',  cpu: 5,  mem: 120, restartCount: 0, critical: false },
-      { name: '/safety_monitor',       status: 'active',  cpu: 2,  mem: 65,  restartCount: 0, critical: true },
-      { name: '/move_group',           status: 'active',  cpu: 8,  mem: 410, restartCount: 0, critical: false },
-      { name: '/data_logger',          status: 'active',  cpu: 1,  mem: 45,  restartCount: 0, critical: false },
-    ];
-  }
+        if (IdenzaApp && IdenzaApp.config.debug) {
+            console.log('[IdenzaDiagnostics] Ferramenta de diagnóstico inicializada');
+        }
+    },
 
-  /**
-   * Inicializa sensores IoT
-   */
-  _initSensors() {
-    this.state.sensors = [
-      { id: 'IOT-CONV-001', type: 'Encoder Esteira',    status: 'active',    lastTx: '0.1s', value: '2.3 m/s', battery: 92 },
-      { id: 'IOT-CONV-002', type: 'Sensor Presença',     status: 'active',    lastTx: '0.5s', value: 'OBJETO', battery: 88 },
-      { id: 'IOT-CONV-003', type: 'Atuador Parada',      status: 'active',    lastTx: '0.3s', value: 'ARMADO', battery: 95 },
-      { id: 'IOT-ENV-001',  type: 'Temp. GPU',           status: 'degraded',  lastTx: '12.4s', value: '47.2°C',
-        packetLoss: 34, latency: '12.4s' },
-      { id: 'IOT-ENV-002',  type: 'Umidade',             status: 'active',    lastTx: '0.6s', value: '58% RH', battery: 90 },
-      { id: 'IOT-GATEWAY-01', type: 'Gateway MQTT',      status: 'active',    lastTx: '0.1s', value: 'OK', battery: 100 },
-    ];
-  }
+    // ============================================================
+    // RENDERIZAÇÃO
+    // ============================================================
+    _render(container) {
+        container.innerHTML = `
+            <div class="diagnostics-page animate-fade-in">
+                <div class="panel panel-full">
+                    <div class="panel-header">
+                        <i class="fas fa-stethoscope"></i>
+                        <h2>🔍 Ferramenta de Diagnóstico Avançado</h2>
+                        <span class="badge badge-info">${this._scenarios.length} CENÁRIOS</span>
+                    </div>
+                    <p class="tiny-hint">Treine suas habilidades de diagnóstico com cenários reais de falha em sistemas robóticos. Siga o checklist, identifique a causa raiz e receba sua pontuação.</p>
+                </div>
 
-  /**
-   * Inicia simulação de dados (modo offline)
-   */
-  _startSimulation() {
-    // Logs iniciais
-    const initialLogs = [
-      { timestamp: '14:30:01', level: 'INFO',  message: 'System health: ALL NODES OK', source: 'system' },
-      { timestamp: '14:30:25', level: 'INFO',  message: 'Cycle #47 completed — 12 peças processadas', source: '/ur_driver' },
-      { timestamp: '14:31:48', level: 'WARN',  message: 'USB buffer overflow — 12 frames perdidos', source: '/camera_depth' },
-      { timestamp: '14:32:02', level: 'WARN',  message: 'USB buffer overflow — 28 frames perdidos', source: '/camera_depth' },
-      { timestamp: '14:32:17', level: 'ERROR', message: 'SIGSEGV at 0x7f8b2c004000 — segmentation fault', source: '/vision_pipeline' },
-      { timestamp: '14:32:19', level: 'ERROR', message: 'Restart #1 falhou: GPU memory allocation error', source: '/vision_pipeline' },
-      { timestamp: '14:32:23', level: 'ERROR', message: 'Restart #2 falhou: GPU memory exhausted', source: '/vision_pipeline' },
-      { timestamp: '14:32:27', level: 'ERROR', message: 'Restart #3 falhou: GPU memory critical', source: '/vision_pipeline' },
-      { timestamp: '14:32:35', level: 'WARN',  message: 'Conveyor speed anomaly: 2.3 m/s (limite: 1.5 m/s)', source: '/conveyor_bridge' },
-      { timestamp: '14:33:10', level: 'ERROR', message: 'PROTECTIVE STOP ENGAGED — Safety monitor triggered', source: '/safety_monitor' },
-    ];
+                <!-- Seleção de Cenário -->
+                <div class="grid-cards" style="margin-top:var(--space-4);" id="scenarioGrid">
+                    ${this._scenarios.map((scenario, index) => `
+                        <div class="card card-accent-top animate-fade-in-up" style="animation-delay:${index * 100}ms">
+                            <div class="card-icon">
+                                <i class="fas fa-bug"></i>
+                            </div>
+                            <h4 class="card-title">${scenario.title}</h4>
+                            <p class="card-text">${scenario.description.substring(0, 100)}...</p>
+                            <div class="project-meta">
+                                ${scenario.symptoms.slice(0, 2).map(s => `<span class="tag tag-warning">${s}</span>`).join('')}
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-sm btn-gold" onclick="IdenzaDiagnostics.startScenario('${scenario.id}')">
+                                    <i class="fas fa-play"></i> Iniciar Diagnóstico
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
 
-    this.state.logs = [...initialLogs];
-    this.state.errors = initialLogs.filter(l => l.level === 'ERROR');
-    this.state.warnings = initialLogs.filter(l => l.level === 'WARN');
-    this.state.protectiveStop = true;
-    this.state.conveyorSpeed = 2.3;
-    this.state.gpuTemp = 47.2;
-    this.state.visionOnline = false;
-    this.state.lastUpdate = new Date().toISOString();
+                <!-- Histórico -->
+                ${this.state.history.length > 0 ? `
+                    <div class="panel panel-full" style="margin-top:var(--space-6);">
+                        <div class="panel-header">
+                            <i class="fas fa-history"></i>
+                            <h2>Histórico de Diagnósticos</h2>
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead><tr><th>Cenário</th><th>Data</th><th>Score</th><th>Causa Raiz</th></tr></thead>
+                                <tbody>
+                                    ${this.state.history.slice(-5).reverse().map(h => `
+                                        <tr>
+                                            <td>${h.scenarioTitle}</td>
+                                            <td>${IdenzaFormat.date(h.date)}</td>
+                                            <td>${h.score}%</td>
+                                            <td><span class="badge ${h.correct ? 'badge-success' : 'badge-critical'}">${h.correct ? '✅ Correta' : '❌ Incorreta'}</span></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    },
 
-    // Análise de causa raiz
-    this._analyzeRootCause();
+    // ============================================================
+    // INICIAR CENÁRIO
+    // ============================================================
+    startScenario(scenarioId) {
+        const scenario = this._scenarios.find(s => s.id === scenarioId);
+        if (!scenario) return;
 
-    // Atualiza a cada 3 segundos (simula novos dados)
-    this.updateInterval = setInterval(() => {
-      this._simulateNewData();
-    }, 3000);
+        this.state.currentChecklist = scenario;
+        this.state.checksCompleted = 0;
+        this.state.totalChecks = scenario.checklist.length;
+        this.state.score = 0;
 
-    this._notifySubscribers();
-  }
+        IdenzaModal.open({
+            title: `Diagnóstico: ${scenario.title}`,
+            size: 'lg',
+            content: `
+                <div class="diagnostic-scenario">
+                    <div class="alert alert-warning">
+                        <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="alert-content">
+                            <div class="alert-title">Cenário Ativo</div>
+                            <div class="alert-message">${scenario.description}</div>
+                        </div>
+                    </div>
 
-  /**
-   * Simula novos dados chegando
-   */
-  _simulateNewData() {
-    // Simula flutuação de temperatura
-    const tempDelta = (Math.random() - 0.4) * 0.5;
-    this.state.gpuTemp = Math.max(44, Math.min(48, this.state.gpuTemp + tempDelta));
+                    <h4>Sintomas Reportados:</h4>
+                    <div class="tag-list" style="margin-bottom:var(--space-4);">
+                        ${scenario.symptoms.map(s => `<span class="tag tag-warning">${s}</span>`).join('')}
+                    </div>
 
-    // Adiciona log periódico
-    const now = new Date();
-    const timestamp = now.toTimeString().slice(0, 8);
+                    <h4>Checklist de Diagnóstico (${this.state.totalChecks} passos):</h4>
+                    <div class="diagnostic-checklist" id="diagnosticChecklist">
+                        ${scenario.checklist.map((check, index) => `
+                            <div class="diagnostic-check-item" id="checkItem${index}">
+                                <div class="check-header">
+                                    <span class="check-number">${index + 1}</span>
+                                    <div class="check-question">
+                                        <strong>${check.question}</strong>
+                                        ${check.hint ? `<p class="tiny-hint">💡 Dica: ${check.hint}</p>` : ''}
+                                    </div>
+                                </div>
+                                <div class="check-answer" id="checkAnswer${index}">
+                                    <input type="text" class="form-input" placeholder="Sua resposta..." id="answerInput${index}">
+                                    <button class="btn btn-sm btn-outline" onclick="IdenzaDiagnostics.checkAnswer(${index})">
+                                        Verificar
+                                    </button>
+                                    <span class="check-result" id="checkResult${index}"></span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
 
-    if (Math.random() > 0.7) {
-      this.addLog({
-        timestamp,
-        level: 'INFO',
-        message: `GPU temperature: ${this.state.gpuTemp.toFixed(1)}°C`,
-        source: '/safety_monitor',
-      });
-    }
+                    <div class="diagnostic-score" id="diagnosticScore" style="display:none;margin-top:var(--space-4);text-align:center;">
+                        <h3 id="scoreTitle"></h3>
+                        <div class="score-value" id="scoreValue" style="font-size:3rem;color:var(--gold-primary);"></div>
+                        <div id="scoreMessage"></div>
+                        ${scenario.actionPlan ? `
+                            <div style="margin-top:var(--space-4);text-align:left;">
+                                <h4>📋 Plano de Ação Recomendado:</h4>
+                                <ol class="list-numbered">
+                                    ${scenario.actionPlan.map(a => `<li>${a}</li>`).join('')}
+                                </ol>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `,
+        });
+    },
 
-    this.state.lastUpdate = now.toISOString();
-    this._notifySubscribers();
-  }
+    checkAnswer(index) {
+        const scenario = this.state.currentChecklist;
+        if (!scenario) return;
 
-  /**
-   * Análise de causa raiz
-   */
-  _analyzeRootCause() {
-    const chain = [
-      {
-        step: 1,
-        trigger: 'Sensor IOT-ENV-001 reportou 47.2°C (degradado, 34% perda de pacotes)',
-        effect: 'GPU operando acima do limite térmico recomendado (45°C)',
-        type: 'trigger',
-      },
-      {
-        step: 2,
-        trigger: 'GPU superaquecida (>45°C)',
-        effect: 'Memory allocation errors nos buffers de frame da câmera',
-        type: 'cascade',
-      },
-      {
-        step: 3,
-        trigger: 'USB buffer overflow — perda de 28 frames',
-        effect: 'Pipeline de visão recebe dados corrompidos',
-        type: 'cascade',
-      },
-      {
-        step: 4,
-        trigger: 'Dados corrompidos causam segmentation fault (SIGSEGV)',
-        effect: 'Node /vision_pipeline crash',
-        type: 'failure',
-      },
-      {
-        step: 5,
-        trigger: '3 tentativas de restart falham (GPU ainda quente)',
-        effect: 'Sistema de visão offline permanentemente',
-        type: 'failure',
-      },
-      {
-        step: 6,
-        trigger: 'Sem visão + esteira em sobrevelocidade (2.3 m/s)',
-        effect: 'Safety monitor detecta condição insegura',
-        type: 'cascade',
-      },
-      {
-        step: 7,
-        trigger: 'Condição insegura confirmada',
-        effect: 'PROTECTIVE STOP — UR10e parado, esteira parada',
-        type: 'result',
-      },
-    ];
+        const input = document.getElementById(`answerInput${index}`);
+        const result = document.getElementById(`checkResult${index}`);
+        const userAnswer = input?.value.trim().toLowerCase();
+        const expectedAnswer = scenario.checklist[index].expected.toLowerCase();
 
-    this.state.rootCause = {
-      primary: 'Superaquecimento da GPU (47.2°C) — Sistema de refrigeração insuficiente',
-      secondary: [
-        'Sensor IOT-ENV-001 com perda de 34% dos pacotes — possível interferência WiFi',
-        'Esteira operando 53% acima do limite (2.3 m/s vs 1.5 m/s) — controlador com drift',
-      ],
-      chain,
-      recommendations: [
-        { priority: 'critical', action: 'Parar esteira imediatamente', command: 'rosservice call /conveyor/stop' },
-        { priority: 'high', action: 'Verificar ventoinhas e fluxo de ar da GPU', command: 'sensors | grep fan' },
-        { priority: 'high', action: 'Aguardar GPU resfriar abaixo de 40°C (est. 8 min)', command: null },
-        { priority: 'medium', action: 'Investigar controlador da esteira — recalibrar PID', command: null },
-        { priority: 'medium', action: 'Reposicionar sensor IOT-ENV-001 ou trocar canal WiFi', command: null },
-        { priority: 'low', action: 'Após resfriamento, restart do /vision_pipeline', command: 'ros2 lifecycle set /vision_pipeline configure' },
-      ],
-      riskLevel: 'high',
-    };
+        if (!userAnswer) return;
 
-    this.state.riskLevel = 'high';
-  }
+        const isCorrect = userAnswer.includes(expectedAnswer) || expectedAnswer.includes(userAnswer);
 
-  /**
-   * Adiciona um log
-   */
-  addLog(logEntry) {
-    const entry = {
-      timestamp: logEntry.timestamp || new Date().toTimeString().slice(0, 8),
-      level: logEntry.level || 'INFO',
-      message: logEntry.message,
-      source: logEntry.source || 'unknown',
-    };
+        if (result) {
+            result.innerHTML = isCorrect ? 
+                '<span style="color:var(--color-success);"><i class="fas fa-check-circle"></i> Correto!</span>' :
+                `<span style="color:var(--color-critical);"><i class="fas fa-times-circle"></i> Incorreto. Esperado: "${scenario.checklist[index].expected}"</span>`;
+        }
 
-    this.state.logs.unshift(entry);
+        // Desabilita input
+        if (input) input.disabled = true;
 
-    if (entry.level === 'ERROR') {
-      this.state.errors.unshift(entry);
-    } else if (entry.level === 'WARN') {
-      this.state.warnings.unshift(entry);
-    }
+        this.state.checksCompleted++;
 
-    // Limita retenção de logs
-    if (this.state.logs.length > this.logRetention) {
-      this.state.logs.length = this.logRetention;
-    }
-    if (this.state.errors.length > 100) this.state.errors.length = 100;
-    if (this.state.warnings.length > 100) this.state.warnings.length = 100;
+        // Verifica se completou todos
+        if (this.state.checksCompleted >= this.state.totalChecks) {
+            this._finishDiagnostic();
+        }
+    },
 
-    // Se for erro crítico, reanalisa
-    if (entry.level === 'ERROR') {
-      this._analyzeRootCause();
-    }
+    _finishDiagnostic() {
+        const scenario = this.state.currentChecklist;
+        const allInputs = document.querySelectorAll('.check-answer input');
+        
+        // Calcula score
+        let correctAnswers = 0;
+        allInputs.forEach(input => {
+            if (input.disabled) {
+                const resultEl = input.parentElement.querySelector('.check-result');
+                if (resultEl?.textContent.includes('Correto')) {
+                    correctAnswers++;
+                }
+            }
+        });
 
-    this._notifySubscribers();
-  }
+        this.state.score = Math.round((correctAnswers / this.state.totalChecks) * 100);
 
-  /**
-   * Reinicia um node (simulado)
-   */
-  restartNode(nodeName) {
-    const node = this.state.nodes.find(n => n.name === nodeName);
-    if (!node) return false;
+        // Mostra resultado
+        const scoreDiv = document.getElementById('diagnosticScore');
+        const scoreTitle = document.getElementById('scoreTitle');
+        const scoreValue = document.getElementById('scoreValue');
+        const scoreMessage = document.getElementById('scoreMessage');
 
-    if (node.name === '/vision_pipeline' && this.state.gpuTemp > 42) {
-      this.addLog({
-        level: 'WARN',
-        message: `Cannot restart ${nodeName}: GPU temperature still high (${this.state.gpuTemp.toFixed(1)}°C)`,
-        source: '/safety_monitor',
-      });
-      return false;
-    }
+        if (scoreDiv) scoreDiv.style.display = 'block';
+        if (scoreTitle) scoreTitle.textContent = this.state.score >= 80 ? '🎉 Diagnóstico Concluído!' : '📚 Continue Praticando';
+        if (scoreValue) scoreValue.textContent = `${this.state.score}%`;
+        if (scoreMessage) {
+            scoreMessage.innerHTML = this.state.score >= 80 ?
+                '<p style="color:var(--color-success);">Excelente! Você identificou a causa raiz corretamente.</p>' :
+                '<p style="color:var(--color-warning);">Revise os passos incorretos e tente novamente.</p>';
+        }
 
-    node.status = 'active';
-    node.cpu = 5 + Math.random() * 15;
-    node.mem = 200 + Math.random() * 400;
-    node.restartCount++;
+        // Salva no histórico
+        const record = {
+            scenarioId: scenario.id,
+            scenarioTitle: scenario.title,
+            score: this.state.score,
+            correct: this.state.score >= 80,
+            date: new Date().toISOString(),
+        };
 
-    this.addLog({
-      level: 'INFO',
-      message: `Node ${nodeName} restarted successfully (attempt #${node.restartCount})`,
-      source: '/system',
-    });
+        this.state.history.push(record);
+        IdenzaStorage.set('diagnostics_history', this.state.history);
+        IdenzaEvents.emit('idenza:diagnosticCompleted', record);
+    },
 
-    if (node.name === '/vision_pipeline') {
-      this.state.visionOnline = true;
-    }
+    // ============================================================
+    // EVENTOS
+    // ============================================================
+    _bindEvents() {
+        // Nada específico — ações são via onclick nos botões
+    },
+};
 
-    this._notifySubscribers();
-    return true;
-  }
-
-  /**
-   * Para a esteira (simulado)
-   */
-  stopConveyor() {
-    this.state.conveyorSpeed = 0;
-    this.addLog({
-      level: 'INFO',
-      message: 'Conveyor stopped — speed: 0.0 m/s',
-      source: '/conveyor_bridge',
-    });
-    this._notifySubscribers();
-  }
-
-  /**
-   * Inscreve para receber atualizações
-   */
-  subscribe(callback) {
-    this.subscribers.add(callback);
-    // Envia estado atual imediatamente
-    callback(this.getState());
-    return () => this.subscribers.delete(callback);
-  }
-
-  /**
-   * Notifica todos os assinantes
-   */
-  _notifySubscribers() {
-    const state = this.getState();
-    this.subscribers.forEach(cb => {
-      try { cb(state); } catch (e) { console.error('Subscriber error:', e); }
-    });
-  }
-
-  /**
-   * Retorna snapshot do estado
-   */
-  getState() {
-    return {
-      nodes: [...this.state.nodes],
-      sensors: [...this.state.sensors],
-      logs: [...this.state.logs].slice(0, 50),
-      errors: [...this.state.errors],
-      warnings: [...this.state.warnings],
-      protectiveStop: this.state.protectiveStop,
-      conveyorSpeed: this.state.conveyorSpeed,
-      gpuTemp: this.state.gpuTemp,
-      visionOnline: this.state.visionOnline,
-      lastUpdate: this.state.lastUpdate,
-      rootCause: this.state.rootCause ? { ...this.state.rootCause } : null,
-      riskLevel: this.state.riskLevel,
-      summary: this.getSummary(),
-    };
-  }
-
-  /**
-   * Resumo executivo
-   */
-  getSummary() {
-    const failedNodes = this.state.nodes.filter(n => n.status === 'failed').length;
-    const degradedSensors = this.state.sensors.filter(s => s.status === 'degraded').length;
-    const totalErrors = this.state.errors.length;
-    const totalWarnings = this.state.warnings.length;
-
-    return {
-      failedNodes,
-      degradedSensors,
-      totalErrors,
-      totalWarnings,
-      protectiveStop: this.state.protectiveStop,
-      conveyorSpeed: this.state.conveyorSpeed,
-      gpuTemp: this.state.gpuTemp,
-      riskLevel: this.state.riskLevel,
-      statusText: failedNodes > 0 ? 'CRÍTICO' : degradedSensors > 0 ? 'DEGRADADO' : 'NOMINAL',
-    };
-  }
-
-  /**
-   * Destrói o módulo
-   */
-  destroy() {
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-    }
-    this.subscribers.clear();
-  }
+// ============================================================
+// REGISTRO NO SISTEMA DE MÓDULOS
+// ============================================================
+if (typeof IdenzaModules === 'undefined') {
+    window.IdenzaModules = {};
 }
-
-// Exportação
-export default NexusDiagnostics;
-
-/* ============================================================
-   FIM DO ARQUIVO: js/modules/diagnostics.js
-   PRÓXIMO: js/modules/portfolio.js
-   ============================================================ */
+IdenzaModules.initDiagnostics = (container) => IdenzaDiagnostics.init(container);
