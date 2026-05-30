@@ -1,379 +1,314 @@
 <!DOCTYPE html>
-<html lang="pt-BR" dir="ltr" class="theme-luxury">
+<html lang="pt-BR" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Nexus Robotics Academy v6.0 — Ecossistema completo de robótica, IoT e IA.">
+    <meta name="description" content="Nexus Robotics Academy — Ecossistema completo de aprendizado, diagnóstico e criação em robótica, IoT e inteligência artificial.">
     <meta name="theme-color" content="#0a3147">
-    <title>Nexus Robotics Academy v6.0 | ROS-IoT Sentinel</title>
+    <title>Idenza Robotics Academy | Diagnostic System & Robotics Academy v6.0</title>
 
-    <!-- CSS -->
+    <!-- ==================== CSS ==================== -->
+    <!-- Fundação -->
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/colors.css">
+
+    <!-- Design System -->
     <link rel="stylesheet" href="css/typography.css">
+    <link rel="stylesheet" href="css/colors.css">
     <link rel="stylesheet" href="css/grid.css">
+
+    <!-- Layout -->
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/themes/theme-luxury.css">
-    <link rel="stylesheet" href="css/themes/theme-dark.css" disabled>
-    <link rel="stylesheet" href="css/themes/theme-high-contrast.css" disabled>
-    <link rel="stylesheet" href="css/themes/theme-print.css" disabled>
 
-    <!-- Fontes -->
+    <!-- Tema (carregado dinamicamente, default: luxury) -->
+    <link rel="stylesheet" href="css/themes/theme-luxury.css" id="theme-stylesheet">
+
+    <!-- Responsivo (sempre por último) -->
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Fontes externas -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Marcellus&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <style>
-        /* Boot overlay */
-        .boot-overlay {
-            position: fixed; inset: 0; z-index: 99999;
-            background: #061d2b; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            transition: opacity 0.5s ease;
-        }
-        .boot-overlay.fade-out { opacity: 0; pointer-events: none; }
-        .boot-logo {
-            display: flex; flex-direction: column; align-items: center; gap: 1rem;
-            color: #D4AF37; font-family: 'Cinzel', serif; font-size: 1.5rem;
-            letter-spacing: 3px;
-        }
-        .boot-logo i { font-size: 4rem; }
-        .boot-progress {
-            width: 200px; height: 3px; background: rgba(212,175,55,0.2);
-            border-radius: 3px; margin-top: 2rem; overflow: hidden;
-        }
-        .boot-bar {
-            width: 0; height: 100%;
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
-            animation: bootProgress 1s ease forwards;
-        }
-        @keyframes bootProgress {
-            from { width: 0; } to { width: 100%; }
-        }
-    </style>
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-    <!-- Partículas -->
-    <div class="luxury-particles" aria-hidden="true">
-        <div class="luxury-particle"></div><div class="luxury-particle"></div>
-        <div class="luxury-particle"></div><div class="luxury-particle"></div>
-        <div class="luxury-particle"></div><div class="luxury-particle"></div>
-        <div class="luxury-particle"></div><div class="luxury-particle"></div>
+    <!-- ==================== PARTÍCULAS DE FUNDO ==================== -->
+    <div class="luxury-particles" id="particlesContainer" aria-hidden="true">
+        <!-- Gerado dinamicamente por js/core/app.js -->
     </div>
 
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
+    <!-- ==================== OVERLAY DE CARREGAMENTO ==================== -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-robot fa-spin"></i>
+            <p class="loading-text">Inicializando Nexus Robotics Academy...</p>
+        </div>
+    </div>
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="header" id="mainHeader">
+        <div class="nav-container">
+            <!-- Logo -->
             <div class="logo-area">
-                <i class="fas fa-robot logo-icon"></i>
-                <div>
-                    <div class="logo-text">Nexus Robotics</div>
-                    <div class="logo-tagline">Academy v6.0</div>
+                <a href="/" class="logo-link" aria-label="Nexus Robotics Academy — Página inicial">
+                    <div class="logo">
+                        <i class="fas fa-robot"></i>
+                        <span>Nexus Robotics</span>
+                    </div>
+                    <div class="logo-tagline">Academy & Diagnostic Engine v6.0</div>
+                </a>
+            </div>
+
+            <!-- Indicadores de status -->
+            <div class="header-status" id="headerStatus">
+                <div class="status-indicator">
+                    <span class="status-dot" id="systemStatusDot"></span>
+                    <span id="systemStatusLabel">Sistema: --</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot" id="rosStatusDot"></span>
+                    <span id="rosStatusLabel">ROS: Desconectado</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot" id="mqttStatusDot"></span>
+                    <span id="mqttStatusLabel">MQTT: Desconectado</span>
                 </div>
             </div>
 
-            <nav>
-                <ul class="nav-menu" id="navMenu">
-                    <li><a class="nav-link active" data-route="dashboard">Dashboard</a></li>
-                    <li><a class="nav-link" data-route="academy">Academy</a></li>
-                    <li><a class="nav-link" data-route="portfolio">Portfólio</a></li>
-                    <li><a class="nav-link" data-route="arduino">Arduino</a></li>
-                    <li><a class="nav-link" data-route="diagnostics">Diagnóstico</a></li>
+            <!-- Seletor de tema -->
+            <div class="theme-selector">
+                <button class="theme-btn" data-theme="luxury" aria-label="Tema Luxo" title="Tema Luxo">
+                    <i class="fas fa-crown"></i>
+                </button>
+                <button class="theme-btn" data-theme="dark" aria-label="Tema Escuro" title="Tema Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="theme-btn" data-theme="high-contrast" aria-label="Alto Contraste" title="Alto Contraste">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+
+            <!-- Menu mobile -->
+            <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Navegação principal -->
+            <nav class="nav-menu" id="navMenu" role="navigation" aria-label="Navegação principal">
+                <ul>
+                    <li><a href="#dashboard" data-module="dashboard" class="nav-link active">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                        <span class="nav-hint">diagnóstico</span>
+                    </a></li>
+                    <li><a href="#academy" data-module="academy" class="nav-link">
+                        <i class="fas fa-graduation-cap"></i> Academy
+                        <span class="nav-hint">cursos</span>
+                    </a></li>
+                    <li><a href="#portfolio" data-module="portfolio" class="nav-link">
+                        <i class="fas fa-briefcase"></i> Portfólio
+                        <span class="nav-hint">projetos</span>
+                    </a></li>
+                    <li><a href="#products" data-module="products" class="nav-link">
+                        <i class="fas fa-boxes"></i> Produtos
+                        <span class="nav-hint">catálogo</span>
+                    </a></li>
+                    <li><a href="#guides" data-module="guides" class="nav-link">
+                        <i class="fas fa-book"></i> Guias
+                        <span class="nav-hint">tutoriais</span>
+                    </a></li>
+                    <li><a href="#diagnostics" data-module="diagnostics" class="nav-link">
+                        <i class="fas fa-stethoscope"></i> Diagnóstico
+                        <span class="nav-hint">análise</span>
+                    </a></li>
+                    <li><a href="#simulator" data-module="simulator" class="nav-link">
+                        <i class="fas fa-flask"></i> Simulador
+                        <span class="nav-hint">treino</span>
+                    </a></li>
+                    <li><a href="#marketplace" data-module="marketplace" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i> Loja
+                        <span class="nav-hint">kits</span>
+                    </a></li>
                 </ul>
             </nav>
-
-            <div class="header-actions">
-                <button class="header-btn" id="btn-search" title="Buscar (Ctrl+K)"><i class="fas fa-search"></i></button>
-                <button class="header-btn" id="btn-theme" title="Alternar tema"><i class="fas fa-sun"></i></button>
-                <button class="header-btn" title="Notificações"><i class="fas fa-bell"></i></button>
-                <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
-            </div>
         </div>
     </header>
 
-    <!-- Conteúdo Principal -->
-    <main class="main-content" id="main-content">
-        <div id="module-content">
+    <!-- ==================== SIDEBAR (desktop) ==================== -->
+    <aside class="sidebar" id="sidebar" role="complementary" aria-label="Barra lateral">
+        <div class="sidebar-section">
+            <h3 class="sidebar-title"><i class="fas fa-clock"></i> Acesso Rápido</h3>
+            <ul class="sidebar-menu">
+                <li><a href="#" data-action="quick-connect-ros"><i class="fas fa-plug"></i> Conectar ROS</a></li>
+                <li><a href="#" data-action="quick-connect-mqtt"><i class="fas fa-wifi"></i> Conectar MQTT</a></li>
+                <li><a href="#" data-action="quick-terminal"><i class="fas fa-terminal"></i> Terminal SSH</a></li>
+                <li><a href="#" data-action="quick-export"><i class="fas fa-download"></i> Exportar Relatório</a></li>
+            </ul>
+        </div>
 
-            <!-- ========== DASHBOARD ========== -->
-            <div class="dashboard-grid">
+        <div class="sidebar-section">
+            <h3 class="sidebar-title"><i class="fas fa-fire"></i> Em Alta</h3>
+            <ul class="sidebar-menu" id="trendingTopics">
+                <li><a href="#academy/trilha-ros"><i class="fas fa-star"></i> ROS 2 para Iniciantes</a></li>
+                <li><a href="#academy/trilha-iot"><i class="fas fa-star"></i> IoT com ESP32</a></li>
+                <li><a href="#academy/trilha-ai"><i class="fas fa-star"></i> IA na Borda</a></li>
+            </ul>
+        </div>
 
-                <!-- System State Summary -->
-                <section class="card dashboard-full animate-fade-in-up">
-                    <div class="card-header">
-                        <i class="fas fa-heartbeat"></i>
-                        <h3>System State Summary</h3>
-                        <span class="badge badge-critical">CRITICAL</span>
-                    </div>
-                    <p class="text-tiny">Resumo em tempo real da integridade operacional.</p>
-                    <div class="row gap-4" style="margin-top:1rem;">
-                        <div class="col-3 col-sm-6 col-xs-12">
-                            <div class="state-card card-critical">
-                                <div class="value text-critical">1</div>
-                                <div class="label">Node Falho</div>
-                                <p class="text-tiny">vision_pipeline offline</p>
-                            </div>
-                        </div>
-                        <div class="col-3 col-sm-6 col-xs-12">
-                            <div class="state-card card-warning">
-                                <div class="value text-warning">1</div>
-                                <div class="label">Sensor Degradado</div>
-                                <p class="text-tiny">IOT-ENV-001 perda 34%</p>
-                            </div>
-                        </div>
-                        <div class="col-3 col-sm-6 col-xs-12">
-                            <div class="state-card card-critical">
-                                <div class="value text-critical">2.3 m/s</div>
-                                <div class="label">Velocidade Esteira</div>
-                                <p class="text-tiny">limite 1.5 m/s</p>
-                            </div>
-                        </div>
-                        <div class="col-3 col-sm-6 col-xs-12">
-                            <div class="state-card card-warning">
-                                <div class="value text-warning">47.2°C</div>
-                                <div class="label">Temperatura GPU</div>
-                                <p class="text-tiny">alerta &gt;45°C</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-critical" style="margin-top:1rem;padding:.8rem;border-radius:8px;border-left:4px solid var(--color-critical);">
-                        <strong class="text-critical">🛑 Protective Stop Ativo</strong>
-                        <p class="text-tiny">UR10e parado por segurança. Safety monitor detectou sobrevelocidade + ausência de visão.</p>
-                    </div>
-                </section>
+        <div class="sidebar-section">
+            <h3 class="sidebar-title"><i class="fas fa-certificate"></i> Certificações</h3>
+            <div class="sidebar-cert-progress">
+                <div class="cert-item">
+                    <span>Nexus IoT Fundamentals</span>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                </div>
+                <div class="cert-item">
+                    <span>Nexus ROS Associate</span>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                </div>
+                <div class="cert-item">
+                    <span>Nexus AI Robotics Pro</span>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+                </div>
+            </div>
+        </div>
+    </aside>
 
-                <!-- ROS Nodes -->
-                <section class="card animate-fade-in-up delay-100">
-                    <div class="card-header">
-                        <i class="fas fa-cubes"></i>
-                        <h3>ROS Nodes</h3>
-                        <span class="badge badge-critical">1 FALHO</span>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead><tr><th>Node</th><th>Status</th><th>CPU</th><th>MEM</th></tr></thead>
-                            <tbody>
-                                <tr><td>/ur_driver</td><td>✅ ATIVO</td><td>12%</td><td>340MB</td></tr>
-                                <tr><td>/gripper_controller</td><td>✅ ATIVO</td><td>3%</td><td>85MB</td></tr>
-                                <tr><td>/camera_depth</td><td>✅ ATIVO</td><td>18%</td><td>520MB</td></tr>
-                                <tr class="row-critical"><td>/vision_pipeline</td><td>❌ FALHOU</td><td>0%</td><td>0MB</td></tr>
-                                <tr><td>/conveyor_bridge</td><td>✅ ATIVO</td><td>5%</td><td>120MB</td></tr>
-                                <tr><td>/safety_monitor</td><td>✅ ATIVO</td><td>2%</td><td>65MB</td></tr>
-                                <tr><td>/move_group</td><td>✅ ATIVO</td><td>8%</td><td>410MB</td></tr>
-                                <tr><td>/data_logger</td><td>✅ ATIVO</td><td>1%</td><td>45MB</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="text-tiny text-critical" style="margin-top:4px;">⚠️ /vision_pipeline: SIGSEGV — 3 restarts falharam</p>
-                </section>
-
-                <!-- IoT Telemetry -->
-                <section class="card animate-fade-in-up delay-200">
-                    <div class="card-header">
-                        <i class="fas fa-microchip"></i>
-                        <h3>IoT Telemetry</h3>
-                        <span class="badge badge-warning">1 DEGRADADO</span>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead><tr><th>Dispositivo</th><th>Tipo</th><th>Status</th><th>Último TX</th></tr></thead>
-                            <tbody>
-                                <tr><td>IOT-CONV-001</td><td>Encoder</td><td>✅ ATIVO</td><td>0.1s</td></tr>
-                                <tr><td>IOT-CONV-002</td><td>Presença</td><td>✅ ATIVO</td><td>0.5s</td></tr>
-                                <tr><td>IOT-CONV-003</td><td>Atuador</td><td>✅ ATIVO</td><td>0.3s</td></tr>
-                                <tr class="row-warning"><td>IOT-ENV-001</td><td>Temp. GPU</td><td>⚠️ DEGRAD.</td><td>12.4s</td></tr>
-                                <tr><td>IOT-ENV-002</td><td>Umidade</td><td>✅ ATIVO</td><td>0.6s</td></tr>
-                                <tr><td>IOT-GATEWAY-01</td><td>Gateway</td><td>✅ ATIVO</td><td>0.1s</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="text-tiny text-warning" style="margin-top:4px;">⚠️ IOT-ENV-001: 34% perda | 🔴 Esteira: 2.3 m/s</p>
-                </section>
-
-                <!-- Event Stream -->
-                <section class="card dashboard-full animate-fade-in-up delay-300">
-                    <div class="card-header">
-                        <i class="fas fa-terminal"></i>
-                        <h3>Event Stream</h3>
-                        <span class="badge badge-critical">5 ERROS</span>
-                    </div>
-                    <div style="max-height:300px;overflow-y:auto;" class="scroll-styled">
-                        <div class="log-entry log-info"><span class="timestamp">14:30:01</span> INFO — System health: ALL NODES OK</div>
-                        <div class="log-entry log-info"><span class="timestamp">14:30:25</span> INFO — Cycle #47 completed</div>
-                        <div class="log-entry log-warn"><span class="timestamp">14:31:48</span> WARN — USB buffer overflow: 12 frames</div>
-                        <div class="log-entry log-warn"><span class="timestamp">14:32:02</span> WARN — USB buffer overflow: 28 frames</div>
-                        <div class="log-entry log-error"><span class="timestamp">14:32:17</span> ERROR — SIGSEGV at 0x7f8b2c004000</div>
-                        <div class="log-entry log-error"><span class="timestamp">14:32:19</span> ERROR — Restart #1: GPU memory fail</div>
-                        <div class="log-entry log-error"><span class="timestamp">14:32:23</span> ERROR — Restart #2: GPU memory fail</div>
-                        <div class="log-entry log-error"><span class="timestamp">14:32:27</span> ERROR — Restart #3: GPU memory fail</div>
-                        <div class="log-entry log-warn"><span class="timestamp">14:32:35</span> WARN — Conveyor speed: 2.3 m/s</div>
-                        <div class="log-entry log-error"><span class="timestamp">14:33:10</span> ERROR — PROTECTIVE STOP</div>
-                    </div>
-                </section>
-
-                <!-- Root Cause -->
-                <section class="card dashboard-full animate-fade-in-up delay-400">
-                    <div class="card-header">
-                        <i class="fas fa-search"></i>
-                        <h3>Root Cause Analysis</h3>
-                        <span class="badge badge-warning">TÉRMICA</span>
-                    </div>
-                    <div class="cause-chain">
-                        <div class="cause-step"><span class="step-label">🌡️ GATILHO</span> IOT-ENV-001: 47.2°C</div>
-                        <div class="cause-step"><span class="arrow">⬇</span></div>
-                        <div class="cause-step"><span class="step-label">🔥 EFEITO 1</span> GPU superaquece</div>
-                        <div class="cause-step"><span class="arrow">⬇</span></div>
-                        <div class="cause-step"><span class="step-label">📹 EFEITO 2</span> Câmera perde frames</div>
-                        <div class="cause-step"><span class="arrow">⬇</span></div>
-                        <div class="cause-step"><span class="step-label">💥 EFEITO 3</span> /vision_pipeline crash</div>
-                        <div class="cause-step"><span class="arrow">⬇</span></div>
-                        <div class="cause-step"><span class="step-label">🚫 EFEITO 4</span> 3 restarts falham</div>
-                        <div class="cause-step"><span class="arrow">⬇</span></div>
-                        <div class="cause-step"><span class="step-label">🛑 RESULTADO</span> PROTECTIVE STOP</div>
-                    </div>
-                </section>
-
-                <!-- Action Plan -->
-                <section class="card dashboard-full animate-fade-in-up delay-500">
-                    <div class="card-header">
-                        <i class="fas fa-list-ol"></i>
-                        <h3>Action Plan</h3>
-                        <span class="badge badge-critical">EXECUTAR EM ORDEM</span>
-                    </div>
-                    <div class="action-step priority-critical">
-                        <div class="action-number">1</div>
-                        <div class="action-content">
-                            <h4>🛑 Parar Esteira</h4>
-                            <p>Serviço /conveyor/stop — confirmar 0.0 m/s.</p>
-                            <span class="action-cmd">rosservice call /conveyor/stop</span>
-                        </div>
-                    </div>
-                    <div class="action-step priority-high">
-                        <div class="action-number">2</div>
-                        <div class="action-content">
-                            <h4>🌡️ Verificar Aquecimento</h4>
-                            <p>Inspecionar ventoinhas do computador de bordo.</p>
-                        </div>
-                    </div>
-                    <div class="action-step priority-high">
-                        <div class="action-number">3</div>
-                        <div class="action-content">
-                            <h4>⏳ Esperar Esfriar</h4>
-                            <p>5–10 min com ventilação. Monitorar até &lt;40°C.</p>
-                        </div>
-                    </div>
-                    <div class="action-step priority-medium">
-                        <div class="action-number">4</div>
-                        <div class="action-content">
-                            <h4>🔧 Examinar Esteira</h4>
-                            <p>Verificar controlador do motor antes de religar.</p>
-                        </div>
-                    </div>
-                </section>
-
-            </div><!-- /dashboard-grid -->
-        </div><!-- /module-content -->
+    <!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
+    <main class="main-content" id="mainContent" role="main">
+        <!-- Módulos carregados dinamicamente aqui -->
+        <div class="module-container" id="moduleContainer">
+            <!-- Conteúdo padrão: Dashboard -->
+            <div class="module-loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Carregando módulo...</p>
+            </div>
+        </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
+    <!-- ==================== MODAL CONTAINER ==================== -->
+    <div class="modal-overlay" id="modalOverlay" aria-hidden="true">
+        <div class="modal-container" id="modalContainer" role="dialog" aria-modal="true">
+            <button class="modal-close" id="modalClose" aria-label="Fechar modal">&times;</button>
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- ==================== TOAST CONTAINER ==================== -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer-main" role="contentinfo">
+        <div class="footer-gold-line" aria-hidden="true"></div>
         <div class="footer-content">
             <div class="footer-col">
-                <h4><i class="fas fa-book"></i> Navegação</h4>
+                <h4><i class="fas fa-book"></i> Nexus Robotics Academy</h4>
                 <ul>
-                    <li>Dashboard: Resumo do sistema</li>
-                    <li>Academy: 5 trilhas, 32 cursos</li>
-                    <li>Portfólio: 200+ projetos</li>
-                    <li>Atalhos: Ctrl+K busca, Ctrl+B sidebar</li>
+                    <li><strong>Versão:</strong> 6.0.0</li>
+                    <li><strong>Build:</strong> <span id="buildDate">--</span></li>
+                    <li><strong>Navegação:</strong> Use o menu superior ou a barra lateral.</li>
+                    <li><strong>Atalho:</strong> <kbd>Ctrl</kbd> + <kbd>K</kbd> para busca global</li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4><i class="fas fa-gavel"></i> Compliance</h4>
+                <h4><i class="fas fa-gavel"></i> Compliance & Legal</h4>
                 <ul>
-                    <li>Ferramenta diagnóstica — não é sistema de controle</li>
-                    <li>Toda ação requer intervenção humana</li>
-                    <li>ISO 13849-1 PLd | IEC 61508 SIL 2</li>
+                    <li><strong>Ferramenta Diagnóstica:</strong> NÃO é sistema de controle.</li>
+                    <li><strong>Nenhuma Ação Automática:</strong> Requer intervenção humana.</li>
+                    <li><strong>Safety:</strong> ISO 13849-1 PLd / IEC 61508 SIL 2</li>
+                    <li><strong>Conformidade:</strong> ISO 10218-1, ROS-Industrial</li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4><i class="fas fa-building"></i> Nexus Robotics</h4>
+                <h4><i class="fas fa-building"></i> Desenvolvedor</h4>
                 <ul>
-                    <li>ROS-IoT Sentinel™ v6.0</li>
-                    <li>Build: 2026-05-30</li>
-                    <li>compliance@nexus-robotics.com</li>
+                    <li><strong>Empresa:</strong> Nexus Robotics Intelligence S.A.</li>
+                    <li><strong>CNPJ:</strong> 47.891.236/0001-09</li>
+                    <li><strong>Produto:</strong> Nexus Robotics Academy™</li>
+                    <li><strong>Licença:</strong> Proprietária</li>
+                    <li><strong>Contato:</strong> <a href="mailto:compliance@nexus-robotics.com">compliance@nexus-robotics.com</a></li>
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom">
-            © 2026 Nexus Robotics Intelligence S.A. — Todos os direitos reservados.
+        <div class="footer-disclaimer">
+            <div class="legal-title">ISENÇÃO DE RESPONSABILIDADE</div>
+            <p>Este software é fornecido "como está", sem garantias de qualquer tipo, expressas ou implícitas. A Nexus Robotics Intelligence S.A. não se responsabiliza por danos diretos, indiretos, incidentais ou consequenciais resultantes do uso ou incapacidade de uso deste sistema.</p>
+            <p>As sugestões e planos de ação exibidos são recomendações geradas com base nos dados disponíveis. O operador humano é o único responsável por validar e executar qualquer ação no sistema físico.</p>
+            <p>© 2026 Nexus Robotics Intelligence S.A. Todos os direitos reservados. ROS® é marca registrada da Open Source Robotics Foundation.</p>
+        </div>
+        <div class="footer-copyright">
+            Build v6.0.0 — Nexus Robotics Intelligence S.A. — Compliance Tag: NR-COMP-2026-003
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <!-- Core -->
+    <script src="js/core/app.js"></script>
+    <script src="js/core/state.js"></script>
+    <script src="js/core/events.js"></script>
+    <script src="js/core/router.js"></script>
+
+    <!-- Data -->
     <script src="js/data/products-catalog.js"></script>
     <script src="js/data/projects-database.js"></script>
     <script src="js/data/courses-curriculum.js"></script>
     <script src="js/data/glossary.js"></script>
-    <script src="js/core/app.js"></script>
-    <script src="js/core/router.js"></script>
-    <script src="js/core/state.js"></script>
-    <script src="js/modules/diagnostics.js"></script>
-    <script src="js/modules/portfolio.js"></script>
-    <script src="js/modules/academy.js"></script>
+    <script src="js/data/api-mock.js"></script>
 
+    <!-- Components -->
+    <script src="js/components/navbar.js"></script>
+    <script src="js/components/sidebar.js"></script>
+    <script src="js/components/modal.js"></script>
+    <script src="js/components/tabs.js"></script>
+    <script src="js/components/accordion.js"></script>
+    <script src="js/components/table.js"></script>
+    <script src="js/components/chart.js"></script>
+    <script src="js/components/code-viewer.js"></script>
+    <script src="js/components/search.js"></script>
+    <script src="js/components/toast.js"></script>
+
+    <!-- Modules -->
+    <script src="js/modules/dashboard.js"></script>
+    <script src="js/modules/academy.js"></script>
+    <script src="js/modules/portfolio.js"></script>
+    <script src="js/modules/products.js"></script>
+    <script src="js/modules/guides.js"></script>
+    <script src="js/modules/diagnostics.js"></script>
+    <script src="js/modules/simulator.js"></script>
+    <script src="js/modules/marketplace.js"></script>
+    <script src="js/modules/certifier.js"></script>
+
+    <!-- Integrations -->
+    <script src="js/integrations/ros-bridge.js"></script>
+    <script src="js/integrations/mqtt-client.js"></script>
+    <script src="js/integrations/serial-monitor.js"></script>
+
+    <!-- Utils -->
+    <script src="js/utils/dom.js"></script>
+    <script src="js/utils/format.js"></script>
+    <script src="js/utils/validate.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/utils/i18n.js"></script>
+
+    <!-- Inicialização -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Boot
-            const app = new NexusApp();
-            app.init();
-
-            // Módulos
-            const diagnostics = new NexusDiagnostics(app);
-            diagnostics.init();
-            app.registerModule('diagnostics', diagnostics);
-
-            const portfolio = new NexusPortfolio(app);
-            portfolio.init();
-            app.registerModule('portfolio', portfolio);
-
-            const academy = new NexusAcademy(app);
-            academy.init();
-            app.registerModule('academy', academy);
-
-            // Router
-            const router = new NexusRouter(app);
-            router.init();
-            app.router = router;
-
-            // Navegação por data-route
-            document.querySelectorAll('[data-route]').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    router.navigate(link.dataset.route);
-                });
+            NexusApp.init({
+                defaultModule: 'dashboard',
+                defaultTheme: 'luxury',
+                rosBridgeUrl: 'ws://localhost:9090',
+                mqttBrokerUrl: 'ws://localhost:9001',
+                language: 'pt-BR',
             });
-
-            // Tema
-            document.getElementById('btn-theme')?.addEventListener('click', () => {
-                const themes = ['luxury', 'dark', 'high-contrast'];
-                const current = app.state.theme;
-                const next = themes[(themes.indexOf(current) + 1) % themes.length];
-                app.setTheme(next);
-            });
-
-            // Busca
-            document.getElementById('btn-search')?.addEventListener('click', () => {
-                app.openGlobalSearch();
-            });
-
-            console.log('🏆 Nexus Robotics Academy v6.0 pronto.');
         });
     </script>
+
 </body>
 </html>
