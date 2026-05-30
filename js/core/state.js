@@ -1,433 +1,576 @@
-/* ============================================================
-   NEXUS ROBOTICS ACADEMY v6.0
-   ARQUIVO: js/core/state.js
-   DESCRIÇÃO: Gerenciamento de estado global reativo —
-              Proxy-based, persistência, undo/redo, watchers
-   ============================================================ */
+/**
+ * ============================================================
+ * IDENZA ROBOTICS ACADEMY — GERENCIADOR DE ESTADO
+ * ============================================================
+ * 
+ * Sistema reativo de gerenciamento de estado global.
+ * Implementa um pattern similar a Redux/Zustand simplificado.
+ * 
+ * Features:
+ * - Estado centralizado e imutável
+ * - Sistema de subscribers (observers)
+ * - Middleware para logging e debug
+ * - Persistência seletiva em localStorage
+ * - Undo/Redo (histórico de estados)
+ * 
+ * @namespace IdenzaState
+ * @version 6.0.0
+ * @license Proprietária — Idenza Robotics Intelligence S.A.
+ * ============================================================
+ */
 
-class NexusStateManager {
-  constructor(app) {
-    this.app = app;
-    this.state = {};
-    this.watchers = new Map();
-    this.history = [];
-    this.historyIndex = -1;
-    this.maxHistory = 50;
-    this.persistKey = 'nexus-state';
-    this.debounceTimers = new Map();
-  }
-
-  /**
-   * Inicializa o state manager
-   */
-  init() {
-    // Estado inicial
-    const initialState = {
-      system: {
-        online: navigator.onLine,
-        rosConnected: false,
-        mqttConnected: false,
-        cpuUsage: 0,
-        memoryUsage: 0,
-        uptime: 0,
-        lastUpdate: Date.now(),
-      },
-      user: {
-        name: '',
-        role: 'operator',
-        preferences: {
-          theme: 'luxury',
-          language: 'pt-BR',
-          sidebarCollapsed: false,
-          fontSize: 'medium',
-          notifications: true,
-          soundAlerts: true,
+const IdenzaState = {
+    // ============================================================
+    // ESTADO INICIAL
+    // ============================================================
+    _state: {
+        // Sistema
+        app: {
+            name: 'Idenza Robotics Academy',
+            version: '6.0.0',
+            isLoaded: false,
+            isInitialized: false,
+            currentModule: 'dashboard',
+            currentTheme: 'luxury',
+            language: 'pt-BR',
+            sidebarOpen: false,
+            menuOpen: false,
+            searchOpen: false,
+            modalOpen: false,
+            modalData: null,
         },
-        progress: {
-          coursesCompleted: 0,
-          projectsBuilt: 0,
-          certifications: [],
-          totalHours: 0,
-          level: 'iniciante',
-          xp: 0,
-          streak: 0,
+
+        // Conexões
+        connections: {
+            ros: {
+                connected: false,
+                url: 'ws://localhost:9090',
+                nodes: [],
+                topics: [],
+                lastMessage: null,
+                latency: 0,
+            },
+            mqtt: {
+                connected: false,
+                url: 'ws://localhost:9001',
+                broker: 'localhost',
+                subscriptions: [],
+                lastMessage: null,
+                latency: 0,
+            },
+            serial: {
+                connected: false,
+                port: null,
+                baudRate: 115200,
+            },
         },
-      },
-      navigation: {
-        currentRoute: 'dashboard',
-        previousRoute: null,
-        breadcrumbs: [],
-        tabs: [],
-        activeTab: null,
-      },
-      diagnostics: {
-        nodes: [],
-        sensors: [],
-        errors: [],
-        warnings: [],
-        protectiveStop: false,
-        conveyorSpeed: 0,
-        gpuTemp: 0,
-        lastDiagnostic: null,
-      },
-      products: {
-        catalog: null,
-        filters: {
-          level: 'all',
-          maxPrice: Infinity,
-          category: 'all',
-          search: '',
+
+        // Sistema robótico (dados de diagnóstico)
+        diagnostic: {
+            robotStatus: 'unknown', // operational, degraded, critical, stopped
+            robotType: null,
+            robotName: null,
+            activeNodes: [],
+            failedNodes: [],
+            sensorData: {},
+            conveyorSpeed: 0,
+            gpuTemperature: 0,
+            activeAlerts: [],
+            protectiveStopActive: false,
+            lastUpdate: null,
         },
-        sortBy: 'name',
-        sortOrder: 'asc',
-        view: 'grid',
-      },
-      projects: {
-        list: null,
-        filters: {
-          level: 'all',
-          maxCost: Infinity,
-          tag: 'all',
-          search: '',
+
+        // Academy
+        academy: {
+            currentCourse: null,
+            currentLesson: null,
+            completedLessons: [],
+            completedCourses: [],
+            certificates: [],
+            progress: {}, // { courseId: percentage }
+            bookmarks: [],
+            notes: {},
         },
-        activeProject: null,
-      },
-      academy: {
-        tracks: [],
-        activeTrack: null,
-        activeModule: null,
-        activeLesson: null,
-        completedLessons: [],
-        quizResults: [],
-      },
-      ui: {
-        sidebarOpen: false,
-        modalOpen: null,
-        toastQueue: [],
-        theme: 'luxury',
-        loading: false,
-        globalSearchOpen: false,
-      },
-    };
 
-    // Carrega estado persistido
-    const saved = this._loadState();
+        // Portfólio
+        portfolio: {
+            activeProjects: [],
+            completedProjects: [],
+            favoriteProjects: [],
+            currentProject: null,
+        },
 
-    // Cria proxy reativo
-    this.state = this._createReactiveProxy(
-      this._deepMerge(initialState, saved),
-      '',
-      []
-    );
+        // Usuário (local)
+        user: {
+            name: '',
+            email: '',
+            role: 'guest', // guest, student, engineer, instructor, admin
+            preferences: {
+                animationsEnabled: true,
+                particlesEnabled: true,
+                soundEnabled: false,
+                autoConnect: false,
+                fontSize: 'normal', // small, normal, large
+            },
+        },
 
-    // Inicia timer de persistência automática
-    setInterval(() => this._autoSave(), 5000);
+        // UI
+        ui: {
+            toasts: [],
+            activeTab: null,
+            scrollPosition: 0,
+            searchQuery: '',
+            searchResults: [],
+            isLoading: false,
+            loadingMessage: '',
+        },
 
-    // Inicia timer de uptime
-    setInterval(() => {
-      this.state.system.uptime++;
-      this.state.system.lastUpdate = Date.now();
-    }, 1000);
+        // Métricas e Analytics (local)
+        metrics: {
+            sessionStart: null,
+            modulesVisited: [],
+            timeSpent: {},
+            errorsEncountered: 0,
+        },
+    },
 
-    // Monitora conexão
-    window.addEventListener('online', () => { this.state.system.online = true; });
-    window.addEventListener('offline', () => { this.state.system.online = false; });
+    // ============================================================
+    // HISTÓRICO (UNDO/REDO)
+    // ============================================================
+    _history: {
+        past: [],
+        future: [],
+        maxHistory: 50,
+    },
 
-    // Disponibiliza globalmente
-    window.nexusState = this.state;
-    window.nexusStateManager = this;
+    // ============================================================
+    // SUBSCRIBERS
+    // ============================================================
+    _subscribers: {},
+    _subscriberId: 0,
 
-    console.log('%c📊 State Manager inicializado', 'color: #2e7d32;');
-  }
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    init() {
+        // Carrega estado persistido
+        this._loadPersistedState();
+        
+        // Marca hora de início da sessão
+        this._state.metrics.sessionStart = Date.now();
+        
+        this._state.app.isInitialized = true;
+        
+        if (window.IdenzaApp && IdenzaApp.config.debug) {
+            console.log('[IdenzaState] Estado inicializado', this._state);
+        }
+    },
 
-  /**
-   * Cria proxy reativo profundo
-   */
-  _createReactiveProxy(target, path, watchedPaths) {
-    const self = this;
+    // ============================================================
+    // LEITURA DE ESTADO (GETTERS)
+    // ============================================================
+    getState(path = null) {
+        if (!path) return this._deepClone(this._state);
+        return this._deepClone(this._getNestedValue(this._state, path));
+    },
 
-    return new Proxy(target, {
-      get(obj, prop) {
-        const value = obj[prop];
+    get(path) {
+        return this._deepClone(this._getNestedValue(this._state, path));
+    },
 
-        // Registra watchers de caminho
-        const fullPath = path ? `${path}.${prop}` : prop;
+    // ============================================================
+    // ESCRITA DE ESTADO (SETTERS)
+    // ============================================================
+    setState(path, value) {
+        // Salva no histórico antes de alterar
+        this._saveToHistory();
 
-        // Se for objeto/array, cria proxy aninhado
-        if (value && typeof value === 'object' && !Array.isArray(value) && !value.__isProxy) {
-          const nestedProxy = self._createReactiveProxy(value, fullPath, watchedPaths);
-          nestedProxy.__isProxy = true;
-          return nestedProxy;
+        // Atualiza o estado
+        if (typeof path === 'string') {
+            this._setNestedValue(this._state, path, value);
+        } else if (typeof path === 'object') {
+            // Atualização em lote (merge profundo)
+            this._deepMerge(this._state, path);
         }
 
-        return value;
-      },
+        // Limpa futuro (nova ação invalida redo)
+        this._history.future = [];
 
-      set(obj, prop, newValue) {
-        const oldValue = obj[prop];
-        const fullPath = path ? `${path}.${prop}` : prop;
+        // Notifica subscribers
+        this._notifySubscribers(path, value);
 
-        // Não faz nada se o valor não mudou
-        if (oldValue === newValue) return true;
+        // Persiste se necessário
+        this._persistState();
 
-        // Atualiza o valor
-        obj[prop] = newValue;
+        if (window.IdenzaApp && IdenzaApp.config.debug) {
+            console.log('[IdenzaState] Estado atualizado:', path, value);
+        }
+    },
 
-        // Adiciona ao histórico (undo/redo)
-        self._addToHistory(fullPath, oldValue, newValue);
-
-        // Notifica watchers
-        self._notifyWatchers(fullPath, newValue, oldValue);
-
-        // Notifica watchers globais (wildcard)
-        self._notifyWatchers('*', { path: fullPath, newValue, oldValue });
-
-        return true;
-      },
-
-      deleteProperty(obj, prop) {
-        const oldValue = obj[prop];
-        const fullPath = path ? `${path}.${prop}` : prop;
-
-        delete obj[prop];
-
-        self._notifyWatchers(fullPath, undefined, oldValue);
-
-        return true;
-      },
-    });
-  }
-
-  /**
-   * Watch — observa mudanças em um caminho
-   */
-  watch(path, callback) {
-    if (!this.watchers.has(path)) {
-      this.watchers.set(path, new Set());
-    }
-    this.watchers.get(path).add(callback);
-
-    // Retorna função para parar de observar
-    return () => {
-      this.watchers.get(path)?.delete(callback);
-    };
-  }
-
-  /**
-   * Watch com debounce
-   */
-  watchDebounced(path, callback, delay = 300) {
-    return this.watch(path, (newValue, oldValue) => {
-      const key = `${path}-debounce`;
-      if (this.debounceTimers.has(key)) {
-        clearTimeout(this.debounceTimers.get(key));
-      }
-      this.debounceTimers.set(key, setTimeout(() => {
-        callback(newValue, oldValue);
-      }, delay));
-    });
-  }
-
-  /**
-   * Notifica watchers de um caminho
-   */
-  _notifyWatchers(path, newValue, oldValue) {
-    // Watchers exatos
-    this.watchers.get(path)?.forEach(cb => {
-      try { cb(newValue, oldValue); } catch (e) { console.error(`Watcher ${path}:`, e); }
-    });
-
-    // Watchers de caminho parcial (ex: 'user' dispara para 'user.name')
-    for (const [watchPath, callbacks] of this.watchers) {
-      if (watchPath !== path && path.startsWith(watchPath + '.')) {
-        callbacks.forEach(cb => {
-          try { cb(newValue, oldValue); } catch (e) { console.error(`Watcher ${watchPath}:`, e); }
+    // Atalho para múltiplas atualizações
+    batch(updates) {
+        this._saveToHistory();
+        
+        Object.entries(updates).forEach(([path, value]) => {
+            this._setNestedValue(this._state, path, value);
+            this._notifySubscribers(path, value);
         });
-      }
-    }
 
-    // Emite no event bus
-    this.app?.eventBus?.emit(`state:${path}`, { newValue, oldValue });
-  }
+        this._history.future = [];
+        this._persistState();
+    },
 
-  /**
-   * Adiciona ao histórico para undo/redo
-   */
-  _addToHistory(path, oldValue, newValue) {
-    // Evita histórico para campos de alta frequência
-    const skipPaths = ['system.lastUpdate', 'system.cpuUsage', 'system.memoryUsage'];
-    if (skipPaths.some(p => path.includes(p))) return;
+    // ============================================================
+    // UNDO / REDO
+    // ============================================================
+    undo() {
+        if (this._history.past.length === 0) return false;
 
-    // Remove histórico futuro se estiver no meio da pilha
-    if (this.historyIndex < this.history.length - 1) {
-      this.history = this.history.slice(0, this.historyIndex + 1);
-    }
+        const current = this._deepClone(this._state);
+        this._history.future.push(current);
+        const previous = this._history.past.pop();
+        this._state = previous;
 
-    this.history.push({
-      path,
-      oldValue: JSON.parse(JSON.stringify(oldValue)),
-      newValue: JSON.parse(JSON.stringify(newValue)),
-      timestamp: Date.now(),
-    });
+        this._notifySubscribers('*', this._state);
+        this._persistState();
+        return true;
+    },
 
-    // Limita o tamanho do histórico
-    if (this.history.length > this.maxHistory) {
-      this.history.shift();
-    }
+    redo() {
+        if (this._history.future.length === 0) return false;
 
-    this.historyIndex = this.history.length - 1;
-  }
+        const current = this._deepClone(this._state);
+        this._history.past.push(current);
+        const next = this._history.future.pop();
+        this._state = next;
 
-  /**
-   * Undo — desfaz última alteração
-   */
-  undo() {
-    if (this.historyIndex < 0) {
-      this.app?.showToast('Nada para desfazer', 'info', 'fa-undo');
-      return;
-    }
+        this._notifySubscribers('*', this._state);
+        this._persistState();
+        return true;
+    },
 
-    const entry = this.history[this.historyIndex];
-    this._setNestedValue(this.state, entry.path, entry.oldValue);
-    this.historyIndex--;
+    canUndo() {
+        return this._history.past.length > 0;
+    },
 
-    this.app?.showToast('Desfeito', 'info', 'fa-undo');
-    this.app?.eventBus?.emit('state:undo', entry);
-  }
+    canRedo() {
+        return this._history.future.length > 0;
+    },
 
-  /**
-   * Redo — refaz alteração desfeita
-   */
-  redo() {
-    if (this.historyIndex >= this.history.length - 1) {
-      this.app?.showToast('Nada para refazer', 'info', 'fa-redo');
-      return;
-    }
+    // ============================================================
+    // SUBSCRIBERS (SISTEMA REATIVO)
+    // ============================================================
+    subscribe(path, callback) {
+        const id = ++this._subscriberId;
+        
+        if (!this._subscribers[path]) {
+            this._subscribers[path] = [];
+        }
+        
+        this._subscribers[path].push({ id, callback });
 
-    this.historyIndex++;
-    const entry = this.history[this.historyIndex];
-    this._setNestedValue(this.state, entry.path, entry.newValue);
+        // Retorna função de unsubscribe
+        return () => {
+            this._subscribers[path] = this._subscribers[path].filter(sub => sub.id !== id);
+        };
+    },
 
-    this.app?.showToast('Refeito', 'info', 'fa-redo');
-    this.app?.eventBus?.emit('state:redo', entry);
-  }
+    subscribeToAll(callback) {
+        return this.subscribe('*', callback);
+    },
 
-  /**
-   * Define valor em caminho aninhado (ex: 'user.preferences.theme')
-   */
-  _setNestedValue(obj, path, value) {
-    const parts = path.split('.');
-    let current = obj;
-    for (let i = 0; i < parts.length - 1; i++) {
-      if (!current[parts[i]]) current[parts[i]] = {};
-      current = current[parts[i]];
-    }
-    current[parts[parts.length - 1]] = value;
-  }
+    // ============================================================
+    // PERSISTÊNCIA
+    // ============================================================
+    _persistState() {
+        try {
+            const toPersist = {
+                app: {
+                    currentTheme: this._state.app.currentTheme,
+                    language: this._state.app.language,
+                },
+                user: this._state.user,
+                academy: this._state.academy,
+                portfolio: this._state.portfolio,
+            };
+            localStorage.setItem('idenza_state', JSON.stringify(toPersist));
+        } catch (e) {
+            // localStorage cheio ou indisponível
+        }
+    },
 
-  /**
-   * Obtém valor em caminho aninhado
-   */
-  getNestedValue(path) {
-    const parts = path.split('.');
-    let current = this.state;
-    for (const part of parts) {
-      if (current === undefined || current === null) return undefined;
-      current = current[part];
-    }
-    return current;
-  }
+    _loadPersistedState() {
+        try {
+            const saved = localStorage.getItem('idenza_state');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                this._deepMerge(this._state, parsed);
+            }
+        } catch (e) {
+            // Dados corrompidos, usa estado inicial
+        }
+    },
 
-  /**
-   * Persiste estado no localStorage
-   */
-  _autoSave() {
-    const toSave = {
-      user: this.state.user,
-      ui: { theme: this.state.ui.theme },
-    };
-    try {
-      localStorage.setItem(this.persistKey, JSON.stringify(toSave));
-    } catch (e) {
-      console.warn('Falha ao persistir estado:', e);
-    }
-  }
+    // ============================================================
+    // RESET
+    // ============================================================
+    reset(path = null) {
+        if (path) {
+            // Reseta apenas um caminho específico
+            const initialState = this._getInitialState(path);
+            this.setState(path, initialState);
+        } else {
+            // Reset completo
+            this._saveToHistory();
+            this._state = this._getInitialState();
+            this._history.future = [];
+            this._notifySubscribers('*', this._state);
+            this._persistState();
+        }
+    },
 
-  /**
-   * Carrega estado do localStorage
-   */
-  _loadState() {
-    try {
-      const saved = localStorage.getItem(this.persistKey);
-      return saved ? JSON.parse(saved) : {};
-    } catch (e) {
-      console.warn('Falha ao carregar estado:', e);
-      return {};
-    }
-  }
+    // ============================================================
+    // DIAGNÓSTICO (MÉTODOS ESPECÍFICOS)
+    // ============================================================
+    updateRobotStatus(status) {
+        this.setState('diagnostic.robotStatus', status);
+        this.setState('diagnostic.lastUpdate', new Date().toISOString());
+    },
 
-  /**
-   * Deep merge de objetos
-   */
-  _deepMerge(target, source) {
-    const output = { ...target };
-    for (const key of Object.keys(source)) {
-      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        output[key] = this._deepMerge(target[key] || {}, source[key]);
-      } else {
-        output[key] = source[key];
-      }
-    }
-    return output;
-  }
+    addAlert(alert) {
+        const alerts = this.get('diagnostic.activeAlerts') || [];
+        alerts.push({
+            id: Date.now(),
+            timestamp: new Date().toISOString(),
+            ...alert,
+        });
+        this.setState('diagnostic.activeAlerts', alerts);
+    },
 
-  /**
-   * Reseta o estado para valores iniciais
-   */
-  resetState(path = null) {
-    if (path) {
-      const initial = {
-        'user.preferences': { theme: 'luxury', language: 'pt-BR', sidebarCollapsed: false, fontSize: 'medium', notifications: true, soundAlerts: true },
-        'diagnostics': { nodes: [], sensors: [], errors: [], warnings: [], protectiveStop: false, conveyorSpeed: 0, gpuTemp: 0, lastDiagnostic: null },
-        'ui': { sidebarOpen: false, modalOpen: null, toastQueue: [], theme: 'luxury', loading: false, globalSearchOpen: false },
-      };
-      if (initial[path]) {
-        this._setNestedValue(this.state, path, initial[path]);
-      }
-    } else {
-      // Full reset — recarrega a página
-      localStorage.removeItem(this.persistKey);
-      window.location.reload();
-    }
-  }
+    clearAlert(alertId) {
+        const alerts = this.get('diagnostic.activeAlerts') || [];
+        this.setState('diagnostic.activeAlerts', alerts.filter(a => a.id !== alertId));
+    },
 
-  /**
-   * Exporta estado completo (para debug)
-   */
-  exportState() {
-    return JSON.parse(JSON.stringify(this.state));
-  }
+    // ============================================================
+    // ACADEMY (MÉTODOS ESPECÍFICOS)
+    // ============================================================
+    completeLesson(courseId, lessonId) {
+        const completed = this.get('academy.completedLessons') || [];
+        if (!completed.includes(`${courseId}:${lessonId}`)) {
+            completed.push(`${courseId}:${lessonId}`);
+            this.setState('academy.completedLessons', completed);
+            
+            // Atualiza progresso do curso
+            this._updateCourseProgress(courseId);
+        }
+    },
 
-  /**
-   * Importa estado (para restore)
-   */
-  importState(jsonState) {
-    try {
-      const parsed = typeof jsonState === 'string' ? JSON.parse(jsonState) : jsonState;
-      Object.assign(this.state, parsed);
-      this.app?.showToast('Estado importado com sucesso', 'success', 'fa-check-circle');
-      return true;
-    } catch (e) {
-      console.error('Erro ao importar estado:', e);
-      return false;
-    }
-  }
+    addBookmark(courseId, lessonId, title) {
+        const bookmarks = this.get('academy.bookmarks') || [];
+        if (!bookmarks.find(b => b.courseId === courseId && b.lessonId === lessonId)) {
+            bookmarks.push({ courseId, lessonId, title, timestamp: Date.now() });
+            this.setState('academy.bookmarks', bookmarks);
+        }
+    },
+
+    saveNote(courseId, lessonId, note) {
+        const notes = this.get('academy.notes') || {};
+        const key = `${courseId}:${lessonId}`;
+        notes[key] = {
+            text: note,
+            timestamp: Date.now(),
+        };
+        this.setState('academy.notes', notes);
+    },
+
+    // ============================================================
+    // MÉTRICAS
+    // ============================================================
+    trackModuleVisit(moduleName) {
+        const visited = this.get('metrics.modulesVisited') || [];
+        visited.push({
+            module: moduleName,
+            timestamp: Date.now(),
+        });
+        this.setState('metrics.modulesVisited', visited);
+    },
+
+    trackTime(moduleName, seconds) {
+        const timeSpent = this.get('metrics.timeSpent') || {};
+        timeSpent[moduleName] = (timeSpent[moduleName] || 0) + seconds;
+        this.setState('metrics.timeSpent', timeSpent);
+    },
+
+    // ============================================================
+    // MÉTODOS PRIVADOS
+    // ============================================================
+    _notifySubscribers(path, value) {
+        // Notifica subscribers do caminho específico
+        Object.entries(this._subscribers).forEach(([subPath, subs]) => {
+            if (subPath === '*' || subPath === path || path.startsWith(subPath)) {
+                subs.forEach(sub => {
+                    try {
+                        sub.callback(value, this._state);
+                    } catch (e) {
+                        console.error('[IdenzaState] Erro em subscriber:', e);
+                    }
+                });
+            }
+        });
+    },
+
+    _saveToHistory() {
+        const snapshot = this._deepClone(this._state);
+        this._history.past.push(snapshot);
+        
+        // Limita tamanho do histórico
+        if (this._history.past.length > this._history.maxHistory) {
+            this._history.past.shift();
+        }
+    },
+
+    _getNestedValue(obj, path) {
+        return path.split('.').reduce((current, key) => {
+            return current && current[key] !== undefined ? current[key] : undefined;
+        }, obj);
+    },
+
+    _setNestedValue(obj, path, value) {
+        const keys = path.split('.');
+        const lastKey = keys.pop();
+        const target = keys.reduce((current, key) => {
+            if (!current[key] || typeof current[key] !== 'object') {
+                current[key] = {};
+            }
+            return current[key];
+        }, obj);
+        target[lastKey] = value;
+    },
+
+    _deepClone(obj) {
+        if (obj === null || typeof obj !== 'object') return obj;
+        if (obj instanceof Date) return new Date(obj);
+        if (obj instanceof Array) return obj.map(item => this._deepClone(item));
+        
+        const cloned = {};
+        Object.keys(obj).forEach(key => {
+            cloned[key] = this._deepClone(obj[key]);
+        });
+        return cloned;
+    },
+
+    _deepMerge(target, source) {
+        Object.keys(source).forEach(key => {
+            if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                if (!target[key]) target[key] = {};
+                this._deepMerge(target[key], source[key]);
+            } else {
+                target[key] = source[key];
+            }
+        });
+        return target;
+    },
+
+    _getInitialState(path = null) {
+        const initialState = {
+            app: {
+                name: 'Idenza Robotics Academy',
+                version: '6.0.0',
+                isLoaded: false,
+                isInitialized: true,
+                currentModule: 'dashboard',
+                currentTheme: 'luxury',
+                language: 'pt-BR',
+                sidebarOpen: false,
+                menuOpen: false,
+                searchOpen: false,
+                modalOpen: false,
+                modalData: null,
+            },
+            connections: {
+                ros: { connected: false, url: 'ws://localhost:9090', nodes: [], topics: [], lastMessage: null, latency: 0 },
+                mqtt: { connected: false, url: 'ws://localhost:9001', broker: 'localhost', subscriptions: [], lastMessage: null, latency: 0 },
+                serial: { connected: false, port: null, baudRate: 115200 },
+            },
+            diagnostic: {
+                robotStatus: 'unknown', robotType: null, robotName: null,
+                activeNodes: [], failedNodes: [], sensorData: {},
+                conveyorSpeed: 0, gpuTemperature: 0, activeAlerts: [],
+                protectiveStopActive: false, lastUpdate: null,
+            },
+            academy: {
+                currentCourse: null, currentLesson: null,
+                completedLessons: [], completedCourses: [], certificates: [],
+                progress: {}, bookmarks: [], notes: {},
+            },
+            portfolio: {
+                activeProjects: [], completedProjects: [], favoriteProjects: [], currentProject: null,
+            },
+            user: {
+                name: '', email: '', role: 'guest',
+                preferences: { animationsEnabled: true, particlesEnabled: true, soundEnabled: false, autoConnect: false, fontSize: 'normal' },
+            },
+            ui: {
+                toasts: [], activeTab: null, scrollPosition: 0,
+                searchQuery: '', searchResults: [], isLoading: false, loadingMessage: '',
+            },
+            metrics: {
+                sessionStart: Date.now(), modulesVisited: [], timeSpent: {}, errorsEncountered: 0,
+            },
+        };
+
+        if (path) {
+            return this._deepClone(this._getNestedValue(initialState, path));
+        }
+        return this._deepClone(initialState);
+    },
+
+    _updateCourseProgress(courseId) {
+        // Calcula progresso baseado nas lições completadas
+        const allLessons = this._getTotalLessonsForCourse(courseId);
+        const completedLessons = this.get('academy.completedLessons') || [];
+        const courseCompleted = completedLessons.filter(l => l.startsWith(`${courseId}:`)).length;
+        const progress = allLessons > 0 ? Math.round((courseCompleted / allLessons) * 100) : 0;
+        
+        const currentProgress = this.get('academy.progress') || {};
+        currentProgress[courseId] = progress;
+        this.setState('academy.progress', currentProgress);
+
+        // Verifica se completou o curso
+        if (progress >= 100) {
+            const completedCourses = this.get('academy.completedCourses') || [];
+            if (!completedCourses.includes(courseId)) {
+                completedCourses.push(courseId);
+                this.setState('academy.completedCourses', completedCourses);
+            }
+        }
+    },
+
+    _getTotalLessonsForCourse(courseId) {
+        // Placeholder — será preenchido quando courses-curriculum.js estiver pronto
+        const courseLessons = {
+            'trilha-iot': 12,
+            'trilha-ros': 15,
+            'trilha-ai': 10,
+            'trilha-fabricacao': 8,
+            'trilha-frotas': 6,
+        };
+        return courseLessons[courseId] || 10;
+    },
+};
+
+// ============================================================
+// INICIALIZAÇÃO AUTOMÁTICA
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    IdenzaState.init();
+    window.IdenzaState = IdenzaState;
+});
+
+// ============================================================
+// EXPORTAÇÃO
+// ============================================================
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = IdenzaState;
 }
-
-// Exportação
-export default NexusStateManager;
-
-/* ============================================================
-   FIM DO ARQUIVO: js/core/state.js
-   PRÓXIMO: js/modules/diagnostics.js
-   ============================================================ */
