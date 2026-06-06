@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDEnza Intelligence Platform — Painel do Cliente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Indicador de modelo ativo (brilho sutil na bolinha) */
+        .model-dot.active-model {
+            box-shadow: 0 0 12px 2px rgba(200, 122, 79, 0.6);
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 8px 1px rgba(200, 122, 79, 0.4); }
+            50% { box-shadow: 0 0 16px 4px rgba(200, 122, 79, 0.7); }
+            100% { box-shadow: 0 0 8px 1px rgba(200, 122, 79, 0.4); }
+        }
+        /* Bolinhas inativas ficam mais apagadas */
+        .model-dot:not(.active) {
+            opacity: 0.3;
+            transition: opacity 0.3s;
+        }
+        .model-dot:not(.active):hover {
+            opacity: 0.6;
+        }
+        /* Carteira Polygon discreta na sidebar */
+        #sidebar-wallet-polygon {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        #sidebar-wallet-polygon:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login overlay -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-box">
+            <h2>IDEnza</h2>
+            <p class="subtle">Acesse seu ambiente inteligente</p>
+            <div class="login-tabs">
+                <button class="login-tab active" data-method="email">E‑mail</button>
+                <button class="login-tab" data-method="apikey">Chave de Acesso</button>
+            </div>
+            <div id="login-panel-email" class="login-panel active">
+                <form id="login-form-email">
+                    <div class="form-group"><label>E‑mail</label><input type="email" id="login-email" required></div>
+                    <div class="form-group"><label>Senha</label><input type="password" id="login-password" required></div>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </form>
+            </div>
+            <div id="login-panel-apikey" class="login-panel">
+                <form id="login-form-apikey">
+                    <div class="form-group"><label>Chave de Acesso</label><input type="text" id="apikey-input" required></div>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </form>
+            </div>
+            <div class="login-error" id="login-error"></div>
+            <p style="color:var(--text-muted); font-size:0.7rem; margin-top:1rem;">Ao acessar, você concorda com os Termos de Uso e Licença.</p>
+        </div>
+    </div>
+
+    <!-- Modais da Carteira Polygon (mantidos) -->
+    <div class="modal-overlay" id="modal-nova-wallet-polygon">
+        <div class="modal"><h3>Criar Nova Carteira Polygon</h3>
+            <form id="form-nova-wallet-polygon">
+                <div class="form-group"><label>Nome</label><input type="text" id="new-wallet-polygon-name" required></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="new-wallet-polygon-password" required></div>
+                <p style="color:var(--warning); font-size:0.8rem;">⚠️ Anote esta senha e a chave. Sem elas, perda total.</p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="btn-cancelar-nova-polygon">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Criar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-overlay" id="modal-unlock-polygon">
+        <div class="modal"><h3>Desbloquear Carteira Polygon</h3>
+            <form id="form-unlock-polygon">
+                <div class="form-group"><label>Senha</label><input type="password" id="unlock-polygon-password" required></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="btn-cancelar-unlock-polygon">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Desbloquear</button>
+                </div>
+            </form>
+            <p id="unlock-polygon-error" style="color:var(--danger); display:none;">Senha incorreta.</p>
+        </div>
+    </div>
+    <div class="modal-overlay" id="modal-custom-api">
+        <div class="modal"><h3>Configurar API Personalizada</h3>
+            <form id="form-custom-api">
+                <div class="form-group"><label>Provedor</label><input type="text" id="custom-api-provider" placeholder="Ex: OpenAI, Claude..." required></div>
+                <div class="form-group"><label>API Key</label><input type="password" id="custom-api-key" required></div>
+                <div class="form-group"><label>Endpoint (opcional)</label><input type="text" id="custom-api-endpoint" placeholder="https://api..."></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="btn-cancelar-custom">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="app-container" style="display:none; width:100%;">
+        <aside class="sidebar">
+            <div class="sidebar-logo">IDEnza<span>Plataforma</span></div>
+            <ul class="sidebar-nav">
+                <li><a class="active" data-tab="tab-playground">Playground</a></li>
+                <li><a data-tab="tab-notas">Notas</a></li>
+                <li><a data-tab="tab-conta">Minha Conta</a></li>
+                <li><a data-tab="tab-historico">Histórico</a></li>
+                <!-- Apenas Carteira Polygon na lateral -->
+                <li><a data-tab="tab-carteira-polygon" id="sidebar-wallet-polygon" style="border-top:1px solid rgba(200,122,79,0.15); margin-top:0.5rem; padding-top:1rem;">◈ Polygon</a></li>
+                <li><a href="index.html" style="margin-top:2rem;">← Voltar ao site</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user" id="sidebar-user">Cliente</div>
+                <div>IDEnza © 2026</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Painel do Cliente</h1>
+                <div class="badge-status" id="status-badge">● Ativo</div>
+            </div>
+            <div class="tab-nav">
+                <a class="active" data-tab="tab-playground">Playground</a>
+                <a data-tab="tab-notas">Notas</a>
+                <a data-tab="tab-conta">Minha Conta</a>
+                <a data-tab="tab-historico">Histórico</a>
+                <!-- Removida aba "Carteira" (BTC) e "Polygon" (agora só na sidebar) -->
+            </div>
+
+            <!-- Playground com IDEnza Intelligence ativo -->
+            <div id="tab-playground" class="tab-content active">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2>Console Inteligente</h2>
+                        <button class="btn-export" id="export-conversation">Exportar Conversa</button>
+                    </div>
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <span></span><span></span><span></span>
+                            <div class="model-selector" id="model-selector">
+                                <!-- NOVA BOLINHA IDENZA (única ativa) -->
+                                <span class="model-dot active active-model" data-model="idenza" title="IDEnza Intelligence (ativo)"></span>
+                                <!-- Bolinhas de terceiros (apagadas) -->
+                                <span class="model-dot" data-model="gemini" title="Gemini (indisponível)"></span>
+                                <span class="model-dot" data-model="openai" title="OpenAI (indisponível)"></span>
+                                <span class="model-dot" data-model="claude" title="Claude (indisponível)"></span>
+                                <span class="model-dot" data-model="mistral" title="Mistral (indisponível)"></span>
+                                <span class="model-dot" data-model="deepseek" title="DeepSeek (indisponível)"></span>
+                                <span class="model-dot" data-model="custom" title="API Personalizada"></span>
+                                <button class="gear-btn" id="btn-open-custom-api" title="Configurar API">⚙️</button>
+                            </div>
+                        </div>
+                        <div class="conversation" id="playground-conversation">
+                            <div class="ai-msg">> Olá! Como posso ajudar sua empresa hoje? O modelo IDEnza Intelligence está ativo e pronto.</div>
+                        </div>
+                        <div class="input-line">
+                            <span class="prompt">$</span>
+                            <input type="text" id="playground-input" placeholder="Digite sua solicitação..." autofocus>
+                        </div>
+                        <div class="latency" id="playground-latency"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demais abas (inalteradas) -->
+            <div id="tab-notas" class="tab-content">
+                <div class="panel">
+                    <div class="panel-header"><h2>Bloco de Notas</h2>
+                        <div class="notepad-actions">
+                            <button class="btn-export" id="save-notes">Salvar</button>
+                            <button class="btn-export" id="export-notes">Exportar</button>
+                        </div>
+                    </div>
+                    <div class="notepad"><textarea id="notepad-text" placeholder="Escreva suas anotações aqui..."></textarea></div>
+                </div>
+            </div>
+            <div id="tab-conta" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="label">Créditos</div><div class="value" id="creditos-value">--</div></div>
+                    <div class="stat-card"><div class="label">Plano</div><div class="value" id="plano-value">--</div></div>
+                    <div class="stat-card"><div class="label">Licença</div><div class="value" id="license-status-main">--</div></div>
+                    <div class="stat-card"><div class="label">Membro desde</div><div class="value" id="created-value">--</div></div>
+                </div>
+            </div>
+            <div id="tab-historico" class="tab-content">
+                <div class="panel">
+                    <div class="panel-header"><h2>Últimas Interações</h2><button class="btn-export" id="export-history">Exportar CSV</button></div>
+                    <div class="table-container"><table><thead><tr><th>Data</th><th>Prompt</th><th>Tokens</th><th>Modelo</th></tr></thead><tbody id="historico-tbody"></tbody></table></div>
+                </div>
+            </div>
+
+            <!-- Carteira Polygon (única, acessada pela sidebar) -->
+            <div id="tab-carteira-polygon" class="tab-content">
+                <div id="wallet-locked-polygon" class="lock-overlay">
+                    <div class="lock-icon">🔒</div>
+                    <h3>Carteira Polygon Bloqueada</h3>
+                    <p>A Carteira Polygon é exclusiva para titulares da Licença Vitalícia (3 anos). Adquira agora para desbloquear.</p>
+                    <button class="btn btn-primary" id="btn-pay-license-polygon">Pagar Licença (500.000 sats)</button>
+                    <p style="color:var(--text-muted); font-size:0.8rem; margin-top:1rem;">Endereço MATIC: <span id="matic-address-display"></span></p>
+                </div>
+                <div id="wallet-unlocked-polygon" style="display:none;">
+                    <div class="panel">
+                        <div class="panel-header"><h2>Carteiras Polygon</h2><button class="btn btn-primary btn-sm" id="btn-add-wallet-polygon">+ Nova Carteira</button></div>
+                        <div class="table-container"><table><thead><tr><th>Nome</th><th>Saldo (MATIC)</th><th>Ações</th></tr></thead><tbody id="wallet-polygon-tbody"></tbody></table></div>
+                    </div>
+                    <div id="active-wallet-panel-polygon" style="display:none;">
+                        <div class="panel">
+                            <div class="panel-header"><h2>Carteira: <span id="active-wallet-polygon-name"></span></h2><button class="btn btn-outline btn-sm" id="btn-lock-wallet-polygon">🔒 Bloquear</button></div>
+                            <div class="stats-grid">
+                                <div class="stat-card"><div class="label">Saldo</div><div class="value" id="active-wallet-polygon-balance">0 MATIC</div></div>
+                                <div class="stat-card"><div class="label">Equivalente R$</div><div class="value" id="active-wallet-polygon-brl">R$ 0,00</div></div>
+                            </div>
+                            <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+                                <button class="btn btn-outline" id="btn-receive-polygon">Gerar Invoice</button>
+                                <button class="btn btn-outline" id="btn-send-polygon">Enviar MATIC</button>
+                            </div>
+                            <div class="fee-selector" id="fee-selector-polygon">
+                                <span style="color:var(--text-muted); font-size:0.8rem;">Taxa:</span>
+                                <span class="fee-option active" data-fee="1">Econômica (1 gwei)</span>
+                                <span class="fee-option" data-fee="5">Normal (5 gwei)</span>
+                                <span class="fee-option" data-fee="10">Rápida (10 gwei)</span>
+                            </div>
+                            <div id="invoice-display-polygon" style="display:none; margin-top:1rem;">
+                                <p>Invoice:</p><code id="invoice-polygon-text" style="background:var(--navy-deep); padding:0.5rem; display:block; word-break:break-all;"></code>
+                            </div>
+                            <div class="panel" style="margin-top:1rem;"><h3>Transações</h3><table><thead><tr><th>Data</th><th>Descrição</th><th>Valor</th></tr></thead><tbody id="tx-polygon-tbody"></tbody></table></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <div id="trial-banner" class="trial-banner" style="display:none;"></div>
+                <div class="footer-links">
+                    <a id="link-manual-cliente">Manual</a>
+                    <a id="link-termos-cliente">Termos</a>
+                    <a id="link-privacidade-cliente">Privacidade</a>
+                    <a id="link-lgpd-cliente">LGPD</a>
+                    <a id="link-licenca-cliente">Licença Vitalícia</a>
+                </div>
+                <div class="footer-btc-address" id="footer-btc-address" style="display:none;"></div>
+                <div style="color:var(--compliance-color); font-size:0.7rem; margin-top:0.5rem;">IDEnza © 2026 — Conformidade SOC 2 e LGPD. Responsabilidade limitada conforme Termos.</div>
+                <div id="legal-manual-cliente" class="legal-container"><h3>Manual</h3><p>Bem‑vindo à IDEnza...</p></div>
+                <div id="legal-termos-cliente" class="legal-container">
+                    <h3>Termos de Uso</h3>
+                    <p>Uso responsável da plataforma. Não é permitido gerar conteúdo ilegal...</p>
+                    <h4>Isenção de Responsabilidade</h4>
+                    <p>A IDEnza atua como plataforma de intermediação. Não nos responsabilizamos por alterações, descontinuação ou falhas de APIs de terceiros (OpenAI, Claude, Gemini, Mistral, DeepSeek ou quaisquer outras integradas). A disponibilidade dos modelos está sujeita aos termos de cada provedor.</p>
+                </div>
+                <div id="legal-privacidade-cliente" class="legal-container"><h3>Privacidade</h3><p>Coletamos apenas dados necessários...</p></div>
+                <div id="legal-lgpd-cliente" class="legal-container"><h3>LGPD</h3><p>Direitos do titular...</p></div>
+                <div id="legal-licenca-cliente" class="legal-container">
+                    <h3>Licença Vitalícia IDEnza</h3>
+                    <p><strong>1. Definição:</strong> garantia mínima de 3 anos a partir da compra.</p>
+                    <p><strong>2. Autocustódia:</strong> a IDEnza não custodiam chaves.</p>
+                    <p><strong>3. Isenção:</strong> a desenvolvedora não se responsabiliza por perdas decorrentes de mau uso, perda de senhas, ou alterações em serviços de terceiros.</p>
+                    <p><strong>4. Reembolso:</strong> proporcional se a plataforma encerrar antes de 3 anos.</p>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        (() => {
+            const API_BASE = 'https://idenza-api.avizaecosystem.workers.dev';
+            const MATIC_ADDRESS = '0x...seu_endereco_polygon...';
+            const LICENSE_COST_SATS = 500000;
+            const MAX_WALLETS = 3;
+            const TRIAL_DAYS = 7;
+
+            let polygonWallets = [], activePolygonWalletIndex = null, activePolygonInkey = null;
+            let currentModel = 'idenza', customApiKeys = {};
+            let licensePaid = false;
+            let trialEndDate = null;
+            let companyData = null;
+
+            // Exibir endereço MATIC
+            const maticDisplay = document.getElementById('matic-address-display');
+            if (maticDisplay) maticDisplay.textContent = MATIC_ADDRESS;
+
+            async function hashPassword(pw) {
+                const d = new TextEncoder().encode(pw);
+                const h = await crypto.subtle.digest('SHA-256', d);
+                return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2,'0')).join('');
+            }
+            async function encryptInkey(inkey, pw) {
+                const h = await hashPassword(pw);
+                const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(h).slice(0,32), { name: 'AES-GCM' }, false, ['encrypt']);
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const e = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, k, new TextEncoder().encode(inkey));
+                return JSON.stringify({ iv: Array.from(iv), data: Array.from(new Uint8Array(e)) });
+            }
+            async function decryptInkey(enc, pw) {
+                try {
+                    const h = await hashPassword(pw);
+                    const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(h).slice(0,32), { name: 'AES-GCM' }, false, ['decrypt']);
+                    const { iv, data } = JSON.parse(enc);
+                    const d = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: new Uint8Array(iv) }, k, new Uint8Array(data));
+                    return new TextDecoder().decode(d);
+                } catch { return null; }
+            }
+
+            function savePolygonWallets() { localStorage.setItem('idenza_polygon_wallets', JSON.stringify(polygonWallets)); }
+            function loadPolygonWallets() { const r = localStorage.getItem('idenza_polygon_wallets'); polygonWallets = r ? JSON.parse(r) : []; }
+
+            function getTrialEnd() {
+                const stored = localStorage.getItem('idenza_trial_end');
+                if (stored) return new Date(stored);
+                return null;
+            }
+            function setTrialEnd() {
+                const now = new Date();
+                now.setDate(now.getDate() + TRIAL_DAYS);
+                localStorage.setItem('idenza_trial_end', now.toISOString());
+                return now;
+            }
+
+            function checkLicenseStatus() {
+                licensePaid = localStorage.getItem('idenza_license') === 'lifetime';
+                trialEndDate = getTrialEnd();
+                if (!licensePaid && !trialEndDate) {
+                    trialEndDate = setTrialEnd();
+                }
+                updateLicenseUI();
+            }
+
+            function updateLicenseUI() {
+                const swPoly = document.getElementById('sidebar-wallet-polygon');
+                const wlPoly = document.getElementById('wallet-locked-polygon');
+                const wuPoly = document.getElementById('wallet-unlocked-polygon');
+                const licStatus = document.getElementById('license-status-main');
+                const banner = document.getElementById('trial-banner');
+                const now = new Date();
+
+                if (licensePaid) {
+                    swPoly.classList.remove('locked'); swPoly.innerHTML = '◈ Polygon';
+                    if (wlPoly) wlPoly.style.display = 'none';
+                    if (wuPoly) wuPoly.style.display = 'block';
+                    if (licStatus) licStatus.textContent = 'Vitalícia';
+                    if (banner) banner.style.display = 'none';
+                    loadPolygonWallets(); renderPolygonWalletList();
+                } else if (trialEndDate && now < trialEndDate) {
+                    const diasRestantes = Math.ceil((trialEndDate - now) / 86400000);
+                    swPoly.classList.remove('locked'); swPoly.innerHTML = '◈ Polygon';
+                    if (wlPoly) wlPoly.style.display = 'none';
+                    if (wuPoly) wuPoly.style.display = 'block';
+                    if (licStatus) licStatus.textContent = 'Trial (' + diasRestantes + ' dias)';
+                    if (banner) {
+                        banner.style.display = 'block';
+                        banner.innerHTML = `⏳ Período de avaliação: você tem até <strong>${trialEndDate.toLocaleDateString('pt-BR')}</strong> para adquirir a Licença Vitalícia. Após essa data, as carteiras serão bloqueadas. <button class="btn btn-sm btn-primary" id="btn-pay-trial">Pagar Agora</button>`;
+                        document.getElementById('btn-pay-trial')?.addEventListener('click', () => {
+                            if (confirm(`Pagar ${LICENSE_COST_SATS} sats?`)) {
+                                localStorage.setItem('idenza_license', 'lifetime');
+                                checkLicenseStatus();
+                            }
+                        });
+                    }
+                    loadPolygonWallets(); renderPolygonWalletList();
+                } else {
+                    swPoly.classList.add('locked'); swPoly.innerHTML = '🔒 Polygon';
+                    if (wlPoly) wlPoly.style.display = 'block';
+                    if (wuPoly) wuPoly.style.display = 'none';
+                    if (licStatus) licStatus.textContent = 'Bloqueada';
+                    if (banner) {
+                        banner.style.display = 'block';
+                        banner.innerHTML = '🔒 Suas carteiras foram bloqueadas. Adquira a Licença Vitalícia para continuar usando.';
+                    }
+                }
+            }
+
+            // IA
+            async function sendToAI(prompt) {
+                const apiKey = localStorage.getItem('idenza_api_key');
+                if (!apiKey) return { text: 'Erro: chave de acesso não encontrada.' };
+                try {
+                    const res = await fetch(`${API_BASE}/api/generate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+                        body: JSON.stringify({ prompt, taskType: 'text_generation' })
+                    });
+                    return await res.json();
+                } catch (err) {
+                    return { text: 'Erro de conexão.' };
+                }
+            }
+
+            document.getElementById('model-selector').addEventListener('click', (e) => {
+                const dot = e.target.closest('.model-dot');
+                if (dot) {
+                    document.querySelectorAll('.model-dot').forEach(d => d.classList.remove('active', 'active-model'));
+                    dot.classList.add('active');
+                    if (dot.dataset.model === 'idenza') dot.classList.add('active-model');
+                    currentModel = dot.dataset.model;
+                    if (currentModel === 'custom' && !localStorage.getItem('idenza_custom_apis')) {
+                        document.getElementById('modal-custom-api').classList.add('active');
+                    }
+                }
+            });
+
+            document.getElementById('btn-open-custom-api').addEventListener('click', () => {
+                document.getElementById('modal-custom-api').classList.add('active');
+            });
+            document.getElementById('btn-cancelar-custom').onclick = () => document.getElementById('modal-custom-api').classList.remove('active');
+            document.getElementById('form-custom-api').onsubmit = (e) => {
+                e.preventDefault();
+                const provider = document.getElementById('custom-api-provider').value.trim();
+                const key = document.getElementById('custom-api-key').value.trim();
+                const endpoint = document.getElementById('custom-api-endpoint').value.trim();
+                customApiKeys[provider] = { key, endpoint };
+                localStorage.setItem('idenza_custom_apis', JSON.stringify(customApiKeys));
+                document.getElementById('modal-custom-api').classList.remove('active');
+                document.querySelector('.model-dot[data-model="custom"]').title = provider;
+                alert('API personalizada salva com sucesso.');
+            };
+
+            const conv = document.getElementById('playground-conversation');
+            const inp = document.getElementById('playground-input');
+            const lat = document.getElementById('playground-latency');
+
+            inp.addEventListener('keypress', async (e) => {
+                if (e.key !== 'Enter' || !inp.value.trim()) return;
+                const msg = inp.value.trim(); inp.value = '';
+                conv.innerHTML += `<div class="user-msg">> ${msg.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>`;
+                const ai = document.createElement('div');
+                ai.className = 'ai-msg';
+                ai.innerHTML = '<span class="cursor"></span> Gerando...';
+                conv.appendChild(ai);
+                const st = Date.now();
+                const data = await sendToAI(msg);
+                ai.innerHTML = data.text || data.error || 'Sem resposta';
+                lat.textContent = `< ${Date.now() - st} ms — Modelo: ${data.model || 'IDEnza Intelligence'}`;
+            });
+
+            document.getElementById('export-conversation').onclick = () => {
+                const blob = new Blob([conv.innerText], { type: 'text/plain' });
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'conversa.txt'; a.click();
+            };
+
+            const nt = document.getElementById('notepad-text');
+            nt.value = localStorage.getItem('idenza_notepad') || '';
+            nt.oninput = () => localStorage.setItem('idenza_notepad', nt.value);
+            document.getElementById('save-notes').onclick = () => { localStorage.setItem('idenza_notepad', nt.value); alert('Salvo.'); };
+            document.getElementById('export-notes').onclick = () => {
+                const b = new Blob([nt.value], { type: 'text/plain' });
+                const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'notas.txt'; a.click();
+            };
+
+            document.getElementById('btn-pay-license-polygon')?.addEventListener('click', () => {
+                if (confirm(`Pagar Licença Vitalícia (3 anos) — ${LICENSE_COST_SATS} sats?`)) {
+                    localStorage.setItem('idenza_license', 'lifetime');
+                    checkLicenseStatus();
+                    alert('Licença Vitalícia ativada!');
+                }
+            });
+
+            // ========== CARTEIRA POLYGON (COMPLETA) ==========
+            function renderPolygonWalletList() {
+                const tb = document.getElementById('wallet-polygon-tbody');
+                if (!tb) return;
+                if (!polygonWallets.length) {
+                    tb.innerHTML = '<tr><td colspan="3">Nenhuma carteira.</td></tr>';
+                    document.getElementById('active-wallet-panel-polygon').style.display = 'none';
+                } else {
+                    tb.innerHTML = polygonWallets.map((w, i) => `<tr><td>${w.name}</td><td>${(w.balance / 1e18).toFixed(6)} MATIC</td><td><button class="btn-sm" data-action="select" data-index="${i}">Acessar</button><button class="btn-sm btn-danger" data-action="delete" data-index="${i}">Excluir</button></td></tr>`).join('');
+                }
+            }
+
+            function renderActivePolygonWallet() {
+                if (activePolygonWalletIndex === null || !polygonWallets[activePolygonWalletIndex]) return;
+                const w = polygonWallets[activePolygonWalletIndex];
+                document.getElementById('active-wallet-polygon-name').textContent = w.name;
+                document.getElementById('active-wallet-polygon-balance').textContent = (w.balance / 1e18).toFixed(6) + ' MATIC';
+                document.getElementById('active-wallet-polygon-brl').textContent = 'R$ ' + ((w.balance / 1e18) * 3.75).toFixed(2);
+                const txs = JSON.parse(localStorage.getItem(`tx_polygon_${w.id}`) || '[]');
+                document.getElementById('tx-polygon-tbody').innerHTML = txs.length ? txs.map(t => `<tr><td>${t.date}</td><td>${t.desc}</td><td>${t.amount > 0 ? '+' : ''}${(t.amount / 1e18).toFixed(6)}</td></tr>`).join('') : '<tr><td colspan="3">Nenhuma.</td></tr>';
+            }
+
+            function addPolygonTx(w, desc, amt) {
+                const txs = JSON.parse(localStorage.getItem(`tx_polygon_${w.id}`) || '[]');
+                txs.unshift({ date: new Date().toLocaleString(), desc, amount: amt });
+                localStorage.setItem(`tx_polygon_${w.id}`, JSON.stringify(txs));
+            }
+
+            document.getElementById('btn-add-wallet-polygon')?.addEventListener('click', () => {
+                if (!licensePaid && (!trialEndDate || new Date() > trialEndDate)) {
+                    alert('Carteira bloqueada. Adquira a licença.');
+                    return;
+                }
+                if (polygonWallets.length >= MAX_WALLETS) { alert('Limite de 3 carteiras.'); return; }
+                document.getElementById('modal-nova-wallet-polygon').classList.add('active');
+            });
+            document.getElementById('btn-cancelar-nova-polygon').onclick = () => document.getElementById('modal-nova-wallet-polygon').classList.remove('active');
+            document.getElementById('form-nova-wallet-polygon').onsubmit = async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('new-wallet-polygon-name').value.trim();
+                const pw = document.getElementById('new-wallet-polygon-password').value;
+                const inkey = 'poly_inkey_' + Math.random().toString(36).substr(2, 10);
+                const enc = await encryptInkey(inkey, pw);
+                polygonWallets.push({ id: Date.now().toString(36) + 'p', name, passwordHash: await hashPassword(pw), balance: 0, inkeyCrypted: enc });
+                savePolygonWallets(); renderPolygonWalletList();
+                document.getElementById('modal-nova-wallet-polygon').classList.remove('active');
+                alert('Chave: ' + inkey + ' — Anote!');
+            };
+            document.getElementById('wallet-polygon-tbody')?.addEventListener('click', async (e) => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const i = parseInt(btn.dataset.index);
+                if (btn.dataset.action === 'select') {
+                    document.getElementById('modal-unlock-polygon').classList.add('active');
+                    document.getElementById('form-unlock-polygon').onsubmit = async (ev) => {
+                        ev.preventDefault();
+                        const pw = document.getElementById('unlock-polygon-password').value;
+                        const inkey = await decryptInkey(polygonWallets[i].inkeyCrypted, pw);
+                        if (inkey) {
+                            activePolygonInkey = inkey; activePolygonWalletIndex = i;
+                            document.getElementById('modal-unlock-polygon').classList.remove('active');
+                            document.getElementById('active-wallet-panel-polygon').style.display = 'block';
+                            renderActivePolygonWallet();
+                        } else document.getElementById('unlock-polygon-error').style.display = 'block';
+                    };
+                } else if (btn.dataset.action === 'delete') {
+                    if (confirm('Excluir?')) {
+                        polygonWallets.splice(i, 1); savePolygonWallets(); renderPolygonWalletList();
+                        document.getElementById('active-wallet-panel-polygon').style.display = 'none';
+                    }
+                }
+            });
+            document.getElementById('btn-cancelar-unlock-polygon').onclick = () => document.getElementById('modal-unlock-polygon').classList.remove('active');
+            document.getElementById('btn-lock-wallet-polygon').onclick = () => { activePolygonInkey = null; document.getElementById('active-wallet-panel-polygon').style.display = 'none'; };
+            document.getElementById('btn-receive-polygon')?.addEventListener('click', () => {
+                document.getElementById('invoice-polygon-text').textContent = 'matic_invoice_' + Date.now();
+                document.getElementById('invoice-display-polygon').style.display = 'block';
+            });
+            document.getElementById('btn-send-polygon')?.addEventListener('click', () => {
+                const inv = prompt('Invoice:');
+                if (!inv) return;
+                const amt = parseFloat(prompt('Valor (MATIC):'));
+                if (isNaN(amt) || amt <= 0) return;
+                const weiAmount = Math.floor(amt * 1e18);
+                if (weiAmount > polygonWallets[activePolygonWalletIndex].balance) { alert('Saldo insuficiente.'); return; }
+                polygonWallets[activePolygonWalletIndex].balance -= weiAmount;
+                addPolygonTx(polygonWallets[activePolygonWalletIndex], 'Envio', -weiAmount);
+                savePolygonWallets(); renderActivePolygonWallet(); renderPolygonWalletList();
+            });
+            document.querySelectorAll('#fee-selector-polygon .fee-option').forEach(o => {
+                o.addEventListener('click', () => {
+                    document.querySelectorAll('#fee-selector-polygon .fee-option').forEach(x => x.classList.remove('active'));
+                    o.classList.add('active');
+                });
+            });
+
+            // Navegação por abas (ajustada para apenas uma carteira)
+            document.querySelectorAll('.tab-nav a, .sidebar-nav a[data-tab]').forEach(l => {
+                l.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const id = l.dataset.tab;
+                    if (id === 'tab-carteira-polygon' && !licensePaid && (!trialEndDate || new Date() > trialEndDate)) {
+                        alert('Carteira Polygon bloqueada. Adquira a Licença Vitalícia.');
+                        return;
+                    }
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-nav a, .sidebar-nav a[data-tab]').forEach(x => x.classList.remove('active'));
+                    document.getElementById(id).classList.add('active');
+                    l.classList.add('active');
+                });
+            });
+
+            function setupLegal(a, b) { document.getElementById(a)?.addEventListener('click', (e) => { e.preventDefault(); const c = document.getElementById(b); c.classList.toggle('active'); if (c.classList.contains('active')) c.scrollIntoView({ behavior:'smooth' }); }); }
+            ['manual','termos','privacidade','lgpd','licenca'].forEach(k => setupLegal(`link-${k}-cliente`, `legal-${k}-cliente`));
+
+            document.querySelectorAll('.login-tab').forEach(t => {
+                t.addEventListener('click', () => {
+                    document.querySelectorAll('.login-tab').forEach(x => x.classList.remove('active'));
+                    document.querySelectorAll('.login-panel').forEach(x => x.classList.remove('active'));
+                    t.classList.add('active');
+                    document.getElementById(`login-panel-${t.dataset.method}`).classList.add('active');
+                    document.getElementById('login-error').textContent = '';
+                });
+            });
+
+            async function handleLoginEmail(email, password) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+                    if (data.token && data.company) {
+                        companyData = data.company;
+                        localStorage.setItem('idenza_api_key', data.company.api_key);
+                        mostrarPainel(data.company);
+                    } else {
+                        document.getElementById('login-error').textContent = data.error || 'Credenciais inválidas';
+                    }
+                } catch (err) {
+                    document.getElementById('login-error').textContent = 'Erro de conexão';
+                }
+            }
+
+            async function handleLoginApiKey(apiKey) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/me`, {
+                        headers: { 'x-api-key': apiKey }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        companyData = data;
+                        localStorage.setItem('idenza_api_key', apiKey);
+                        mostrarPainel(data);
+                    } else {
+                        document.getElementById('login-error').textContent = 'Chave inválida ou conta inativa.';
+                    }
+                } catch (err) {
+                    document.getElementById('login-error').textContent = 'Erro de conexão';
+                }
+            }
+
+            function mostrarPainel(company) {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('app-container').style.display = 'flex';
+                document.getElementById('sidebar-user').textContent = company.name;
+                document.getElementById('creditos-value').textContent = company.balance ?? '--';
+                document.getElementById('plano-value').textContent = company.plan ?? '--';
+                document.getElementById('created-value').textContent = company.created_at ? new Date(company.created_at).toLocaleDateString('pt-BR') : '--';
+                if (company.status !== 'active') {
+                    document.getElementById('status-badge').textContent = '● Inativo';
+                    document.getElementById('status-badge').style.color = 'var(--danger)';
+                }
+                checkLicenseStatus();
+            }
+
+            document.getElementById('login-form-email').onsubmit = e => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value.trim();
+                handleLoginEmail(email, password);
+            };
+            document.getElementById('login-form-apikey').onsubmit = e => {
+                e.preventDefault();
+                const apiKey = document.getElementById('apikey-input').value.trim();
+                handleLoginApiKey(apiKey);
+            };
+
+            const savedApiKey = localStorage.getItem('idenza_api_key');
+            if (savedApiKey) {
+                handleLoginApiKey(savedApiKey);
+            }
+
+            const savedApis = localStorage.getItem('idenza_custom_apis');
+            if (savedApis) {
+                customApiKeys = JSON.parse(savedApis);
+                if (Object.keys(customApiKeys).length > 0) {
+                    document.querySelector('.model-dot[data-model="custom"]').title = Object.keys(customApiKeys)[0];
+                }
+            }
+            loadPolygonWallets();
+        })();
+    </script>
+</body>
+</html>

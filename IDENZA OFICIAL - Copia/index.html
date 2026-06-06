@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDEnza — Intelligence Platform com Wallet Polygon Descentralizada</title>
+  <meta name="description" content="A plataforma de inteligência artificial que potencializa qualquer negócio. Orquestração automática de modelos, BYOM e pagamento em Polygon. Ao adquirir sua licença, tenha sua wallet Polygon descentralizada.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0B1A2F;
+      --navy-card: #102A43;
+      --copper: #C87A4F;
+      --copper-dim: #a05a3a;
+      --cream: #F5F0E8;
+      --white-soft: #EAE4D9;
+      --text-muted: #8A9CAF;
+      --shadow-copper: 0 8px 32px rgba(200, 122, 79, 0.08);
+      --compliance-color: #5A6A7A;
+      --legal-bg: #0A1625;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--navy-deep);
+      color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .serif {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Brilho descendente global */
+    body::after {
+      content: "";
+      position: fixed;
+      top: -10%;
+      left: 0;
+      width: 100%;
+      height: 120%;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(200, 122, 79, 0.02) 45%,
+        rgba(200, 122, 79, 0.04) 50%,
+        rgba(200, 122, 79, 0.02) 55%,
+        transparent 100%
+      );
+      z-index: 0;
+      pointer-events: none;
+      animation: descerBrilho 8s linear infinite;
+    }
+
+    @keyframes descerBrilho {
+      0% { transform: translateY(-10%); }
+      100% { transform: translateY(10%); }
+    }
+
+    /* Linha fina descendente */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -2px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(200, 122, 79, 0.15) 20%,
+        rgba(200, 122, 79, 0.15) 80%,
+        transparent 100%
+      );
+      box-shadow: 0 0 4px 1px rgba(200, 122, 79, 0.08);
+      z-index: 9999;
+      pointer-events: none;
+      animation: descerLinha 8s linear infinite;
+    }
+
+    @keyframes descerLinha {
+      0%   { top: -2px; }
+      100% { top: 100vh; }
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: radial-gradient(circle at 50% 40%, rgba(200,122,79,0.05) 0%, transparent 70%);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+      color: var(--cream);
+      text-shadow: 0 0 20px rgba(200,122,79,0.2);
+    }
+
+    .hero .subtitle {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 1.35rem;
+      color: var(--copper);
+      margin-bottom: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero .pioneer-note {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      border-top: 1px solid rgba(200,122,79,0.2);
+      border-bottom: 1px solid rgba(200,122,79,0.2);
+      display: inline-block;
+      padding: 0.5rem 1.2rem;
+    }
+
+    /* Botões do Hero – alinhamento em 3 colunas iguais */
+    .cta-group {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .cta-group .btn {
+      flex: 1 1 0px;
+      min-width: 200px;
+      max-width: 280px;
+      text-align: center;
+      white-space: nowrap;
+      padding: 1.1rem 1.5rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    .btn-primary {
+      background: var(--copper);
+      color: white;
+      border: 1px solid var(--copper);
+    }
+
+    .btn-primary:hover {
+      background: var(--copper-dim);
+      border-color: var(--copper-dim);
+      box-shadow: 0 8px 24px rgba(200, 122, 79, 0.25);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--copper);
+      border: 1px solid var(--copper);
+    }
+
+    .btn-outline:hover {
+      background: rgba(200,122,79,0.08);
+      box-shadow: 0 8px 24px rgba(200, 122, 79, 0.15);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--copper);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    }
+
+    .scroll-indicator::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--copper);
+      border-radius: 50%;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 1; transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* Seções */
+    .section {
+      padding: 6rem 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-title {
+      font-size: 2.8rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: var(--cream);
+      position: relative;
+    }
+
+    .section-title::after {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 2px;
+      background: var(--copper);
+      margin: 1.5rem auto 0;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+      font-size: 1.1rem;
+    }
+
+    /* Cards de valor */
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+      margin-top: 4rem;
+    }
+
+    .value-card {
+      background: var(--navy-card);
+      padding: 2.5rem 2rem;
+      border-radius: 2px;
+      border-top: 1px solid var(--copper);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .value-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-copper);
+    }
+
+    .value-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .value-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--copper);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    .value-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--white-soft);
+    }
+
+    .value-card p {
+      color: var(--text-muted);
+      font-weight: 300;
+    }
+
+    /* Playground */
+    .playground-section {
+      background: var(--navy-card);
+      padding: 5rem 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .terminal {
+      max-width: 720px;
+      margin: 3rem auto 0;
+      background: #0A1522;
+      border: 1px solid rgba(200,122,79,0.2);
+      border-radius: 6px;
+      padding: 2rem;
+      text-align: left;
+      font-family: 'Courier New', monospace;
+    }
+
+    .terminal-header {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      opacity: 0.5;
+    }
+
+    .terminal-header span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--copper);
+    }
+
+    .conversation {
+      min-height: 120px;
+      margin-bottom: 1.5rem;
+      color: var(--cream);
+    }
+
+    .user-msg {
+      color: var(--copper);
+      margin-bottom: 0.5rem;
+    }
+
+    .ai-msg {
+      color: var(--cream);
+      margin-bottom: 0.5rem;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.2em;
+      background: var(--copper);
+      margin-left: 2px;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .input-line {
+      display: flex;
+      align-items: center;
+      color: var(--copper);
+    }
+
+    .input-line .prompt {
+      margin-right: 0.5rem;
+    }
+
+    #playground-input {
+      background: transparent;
+      border: none;
+      color: var(--cream);
+      font-family: inherit;
+      font-size: 1rem;
+      flex: 1;
+      outline: none;
+      caret-color: var(--copper);
+    }
+
+    .latency {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+    }
+
+    /* Preços */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .price-card {
+      background: var(--navy-card);
+      padding: 3rem 2rem;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      text-align: center;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .price-card.featured {
+      border-color: var(--copper);
+      box-shadow: var(--shadow-copper);
+      transform: scale(1.02);
+    }
+
+    .price-card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      color: var(--white-soft);
+    }
+
+    .price {
+      font-size: 3rem;
+      font-weight: 400;
+      margin: 1.5rem 0;
+      color: var(--copper);
+      font-family: 'Playfair Display', serif;
+    }
+
+    .price span {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .features {
+      list-style: none;
+      margin: 2rem 0;
+      color: var(--text-muted);
+      text-align: left;
+    }
+
+    .features li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(200,122,79,0.1);
+    }
+
+    .feature-highlight {
+      color: var(--copper);
+      font-weight: 400;
+    }
+
+    .badge {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: var(--copper);
+      color: white;
+      padding: 0.2rem 1.2rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-bitcoin {
+      background: transparent;
+      border: 1px solid var(--copper);
+      color: var(--copper);
+      margin-top: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      padding: 0.9rem;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .btn-bitcoin:hover {
+      background: rgba(200,122,79,0.08);
+    }
+
+    .bitcoin-pioneer-tag {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.5rem;
+    }
+
+    .invoice-box {
+      margin-top: 1.2rem;
+      text-align: center;
+      padding: 1rem;
+      border: 1px dashed var(--copper);
+      display: none;
+    }
+
+    .invoice-qr img {
+      width: 160px;
+      height: 160px;
+      filter: grayscale(100%) contrast(1.2);
+    }
+
+    .invoice-value {
+      font-family: 'Courier New', monospace;
+      color: var(--copper);
+      margin: 0.5rem 0;
+    }
+
+    .invoice-status {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: var(--navy-card);
+      padding: 2.5rem;
+      border-radius: 2px;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid var(--copper);
+    }
+    .modal h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--copper);
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    .form-group label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem;
+      background: var(--navy-deep);
+      border: 1px solid rgba(200,122,79,0.2);
+      color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+    }
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #060F1C;
+      padding: 3rem 0 0;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      transition: color 0.3s;
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+    }
+    .footer-links a:hover {
+      color: var(--copper);
+      border-bottom: 1px solid var(--copper);
+    }
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .footer-copy strong {
+      color: var(--copper);
+      font-weight: 400;
+    }
+    .compliance {
+      font-size: 0.75rem;
+      color: var(--compliance-color);
+      letter-spacing: 0.02em;
+      padding-bottom: 1.5rem;
+    }
+
+    /* Legal expandable */
+    .legal-container {
+      background: var(--legal-bg);
+      border-top: 1px solid rgba(200,122,79,0.15);
+      padding: 2rem 2rem 3rem;
+      text-align: left;
+      max-width: 900px;
+      margin: 0 auto;
+      color: var(--text-muted);
+      font-weight: 300;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      display: none;
+    }
+    .legal-container.active {
+      display: block;
+    }
+    .legal-container h3 {
+      color: var(--copper);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+    .legal-container h4 {
+      color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.02em;
+    }
+    .legal-container p,
+    .legal-container li {
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+    }
+    .legal-container ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    .legal-container ul li::before {
+      content: "— ";
+      color: var(--copper);
+    }
+    .legal-container a {
+      color: var(--copper);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--copper);
+    }
+    .legal-container a:hover {
+      color: var(--cream);
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+      .section-title {
+        font-size: 2rem;
+      }
+      .price-card.featured {
+        transform: none;
+      }
+      .footer-links {
+        gap: 1.5rem;
+      }
+      .cta-group .btn {
+        flex: 1 1 auto;
+        min-width: auto;
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>IDEnza</h1>
+      <p class="subtitle">Intelligence Platform<br>Orquestração inteligente de modelos generativos, do playground ao código.</p>
+      <div class="pioneer-note">★ Primeira plataforma de IA com pagamento em Polygon e orquestração multi‑modelo</div>
+      <div class="cta-group">
+        <a href="#" class="btn btn-primary" id="btn-registrar">Criar conta gratuita</a>
+        <a href="#playground" class="btn btn-outline">Experimente agora</a>
+        <a href="#" class="btn btn-outline" id="btn-acessar-conta">Já tenho acesso</a>
+      </div>
+    </div>
+    <div class="scroll-indicator"></div>
+  </section>
+
+  <!-- Diferenciais da plataforma -->
+  <section class="section container" id="diferenciais">
+    <h2 class="section-title">Por que a IDEnza é diferente</h2>
+    <p class="section-subtitle">Não é apenas mais uma ferramenta de IA. É uma plataforma completa que se adapta ao seu nível técnico.</p>
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3>Orquestração Inteligente</h3>
+        <p>Conectamos automaticamente OpenAI, Claude, Gemini, Mistral e DeepSeek. Você envia o prompt, nós escolhemos o modelo ideal.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h3>Segurança Corporativa</h3>
+        <p>Criptografia ponta a ponta. Seus dados nunca treinam modelos públicos. Conformidade SOC 2 e LGPD.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </div>
+        <h3>Traga seus modelos</h3>
+        <p>Use nossas chaves ou as suas (BYOM). Controle total, sem depender de um único provedor.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <h3>Infraestrutura Global</h3>
+        <p>Respostas em menos de 300ms, em mais de 330 pontos de presença. Latência de borda com Cloudflare.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24">
+            <line x1="12" y1="2" x2="12" y2="22"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <h3>Pagamento em Polygon</h3>
+        <p>Licenças pagas com Polygon Network. Soberania financeira, sem intermediários.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <h3>Auditoria Imutável</h3>
+        <p>Cada interação registrada: prompt, modelo, resultado e custo. Conformidade total e transparência.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Playground -->
+  <section class="playground-section" id="playground">
+    <div class="container">
+      <h2 class="section-title">Experimente a plataforma</h2>
+      <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Teste agora, mesmo sem conhecimento técnico. Se precisar integrar, sua chave estará pronta.</p>
+      <div class="terminal">
+        <div class="terminal-header">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="conversation" id="conversation">
+          <div class="ai-msg">> IDEnza pronta. Digite um comando para testar a geração de texto.</div>
+        </div>
+        <div class="input-line">
+          <span class="prompt">$</span>
+          <input type="text" id="playground-input" placeholder="Ex: Explique o que é aprendizado de máquina em um parágrafo." autofocus>
+        </div>
+        <div class="latency" id="latency-display"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preços / Licenças de 3 anos -->
+  <section class="section container" id="precos">
+    <h2 class="section-title">Licenças de 3 anos com wallet Polygon descentralizada</h2>
+    <p class="section-subtitle">Todas as licenças incluem acesso à <strong style="color: var(--copper);">Wallet Polygon IDEnza</strong> — sua carteira descentralizada empresarial, inclusa em todas as licenças.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Starter</h3>
+        <div class="price">R$2.497<span> licença 3 anos</span></div>
+        <ul class="features">
+          <li>100 mil tokens/mês</li>
+          <li>Orquestração básica</li>
+          <li>Modelos OpenAI e Mistral</li>
+          <li>Suporte por e-mail</li>
+          <li class="feature-highlight">✦ Wallet Polygon IDEnza</li>
+        </ul>
+        <button class="btn-bitcoin" data-plan="starter">
+          <span>◈</span> Pagar com Polygon
+        </button>
+        <div class="bitcoin-pioneer-tag">Polygon Network</div>
+        <div class="invoice-box" id="invoice-starter">
+          <div class="invoice-qr"></div>
+          <div class="invoice-value"></div>
+          <div class="invoice-status">Aguardando pagamento...</div>
+        </div>
+      </div>
+
+      <div class="price-card featured">
+        <div class="badge">Recomendado</div>
+        <h3>Professional</h3>
+        <div class="price">R$7.497<span> licença 3 anos</span></div>
+        <ul class="features">
+          <li>1 milhão de tokens/mês</li>
+          <li>Orquestração completa + BYOM</li>
+          <li>Todos os modelos (OpenAI, Claude, Gemini, Mistral, DeepSeek)</li>
+          <li>Suporte prioritário</li>
+          <li class="feature-highlight">✦ Wallet Polygon IDEnza</li>
+        </ul>
+        <button class="btn-bitcoin" data-plan="professional">
+          <span>◈</span> Pagar com Polygon
+        </button>
+        <div class="bitcoin-pioneer-tag">Polygon Network</div>
+        <div class="invoice-box" id="invoice-professional">
+          <div class="invoice-qr"></div>
+          <div class="invoice-value"></div>
+          <div class="invoice-status">Aguardando pagamento...</div>
+        </div>
+      </div>
+
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price">Sob consulta</div>
+        <ul class="features">
+          <li>Tokens ilimitados (fair use)</li>
+          <li>Orquestração dedicada</li>
+          <li>Gerente de conta</li>
+          <li>SLA 99.99%</li>
+          <li class="feature-highlight">✦ Wallet Polygon IDEnza</li>
+        </ul>
+        <button class="btn-bitcoin" data-plan="enterprise">
+          <span>◈</span> Pagar com Polygon
+        </button>
+        <div class="bitcoin-pioneer-tag">Polygon Network</div>
+        <div class="invoice-box" id="invoice-enterprise">
+          <div class="invoice-qr"></div>
+          <div class="invoice-value"></div>
+          <div class="invoice-status">Aguardando pagamento...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal de Registro -->
+  <div class="modal-overlay" id="modal-registro">
+    <div class="modal">
+      <h3>Criar conta na IDEnza</h3>
+      <form id="form-registro">
+        <div class="form-group">
+          <label>Nome da empresa</label>
+          <input type="text" id="reg-name" required>
+        </div>
+        <div class="form-group">
+          <label>E‑mail</label>
+          <input type="email" id="reg-email" required>
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="reg-password" required>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn" id="btn-cancelar-registro">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Registrar</button>
+        </div>
+      </form>
+      <!-- Área de resultado (inicialmente oculta) -->
+      <div id="reg-resultado" style="display:none; text-align: center;">
+        <p style="color: var(--copper); margin-bottom: 1rem;">✅ Conta criada com sucesso!</p>
+        <p style="margin-bottom: 0.5rem;"><strong>Código do cliente:</strong><br>
+          <code id="reg-customer-code" style="background:var(--navy-deep); padding:0.3rem 0.8rem; font-size:1rem;">---</code>
+        </p>
+        <p style="margin-bottom: 1.5rem;"><strong>Sua chave de acesso:</strong><br>
+          <code id="reg-apikey" style="background:var(--navy-deep); padding:0.3rem 0.8rem; font-size:1rem; word-break: break-all;">---</code>
+        </p>
+        <p style="font-size:0.8rem; color: var(--text-muted); margin-bottom: 1.8rem;">Guarde estes dados. Eles serão usados para acesso ao playground e dashboard.</p>
+        <button type="button" class="btn btn-primary" id="btn-ir-dashboard">Acessar Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Acesso (Já tenho acesso) -->
+  <div class="modal-overlay" id="modal-acesso">
+    <div class="modal">
+      <h3>Acessar sua conta</h3>
+      <form id="form-acesso">
+        <div class="form-group">
+          <label>Chave de acesso</label>
+          <input type="text" id="acesso-apikey" placeholder="Cole sua chave aqui" required>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn" id="btn-cancelar-acesso">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Entrar</button>
+        </div>
+      </form>
+      <p id="acesso-erro" style="color: var(--danger); font-size: 0.85rem; margin-top: 0.8rem; display: none;">Chave inválida ou conta inativa.</p>
+    </div>
+  </div>
+
+  <!-- Footer com legal expansível -->
+  <footer>
+    <div class="footer-links">
+      <a id="link-status">Status</a>
+      <a id="link-privacidade">Privacidade</a>
+      <a id="link-termos">Termos de Uso</a>
+      <a id="link-lgpd">LGPD</a>
+      <a id="link-contato">Contato</a>
+      <a id="link-manual">Manual da Plataforma</a>
+      <a href="admin.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; letter-spacing: 0.02em; transition: color 0.3s; cursor: pointer; border-bottom: 1px solid transparent;">Área Restrita</a>
+    </div>
+    <div class="footer-copy">
+      &copy; 2026 <strong>IDEnza</strong>.
+    </div>
+    <div class="compliance">
+      CNPJ 00.000.000/0001-00 &nbsp;|&nbsp; São Paulo, Brasil &nbsp;|&nbsp; Plataforma em conformidade com SOC 2 e LGPD. &nbsp;|&nbsp; Primeira plataforma de IA com pagamento em Polygon. Não custodiamos suas chaves privadas.
+    </div>
+
+    <!-- Containers de conteúdo legal -->
+    <div id="legal-status" class="legal-container">
+      <h3>Status da Plataforma</h3>
+      <p>Infraestrutura monitorada 24/7:</p>
+      <ul>
+        <li>Orquestração: <span style="color: #4caf50;">Operacional</span></li>
+        <li>Endpoints: <span style="color: #4caf50;">Operacional</span></li>
+        <li>Plataforma Polygon: <span style="color: #4caf50;">Operacional</span></li>
+        <li>Painéis de controle: <span style="color: #4caf50;">Operacional</span></li>
+      </ul>
+      <p>Uptime 30 dias: 99.99%. Detalhes em <a href="#">status.idenza.com</a>.</p>
+    </div>
+
+    <div id="legal-privacidade" class="legal-container">
+      <h3>Política de Privacidade</h3>
+      <p>A IDEnza coleta apenas dados essenciais para operação da plataforma e da Wallet Polygon. Não utilizamos seus dados para treinar modelos públicos. Seus prompts, resultados e transações são isolados por empresa e protegidos por criptografia.</p>
+      <h4>1. Dados coletados</h4>
+      <ul><li>Cadastro da empresa e usuários</li><li>Requisições à plataforma</li><li>Registros de transações Polygon (não custodiamos chaves privadas)</li><li>Métricas de uso e auditoria</li></ul>
+      <h4>2. Seus direitos</h4>
+      <p>Acesso, correção, exclusão e portabilidade conforme LGPD. Contate <a href="mailto:dpo@idenza.com">dpo@idenza.com</a>.</p>
+      <p><em>Última atualização: 01 de junho de 2026.</em></p>
+    </div>
+
+    <div id="legal-termos" class="legal-container">
+      <h3>Termos de Uso</h3>
+      <p>Ao utilizar a plataforma IDEnza e a Wallet Polygon, você concorda com estes termos.</p>
+      <h4>1. Uso aceitável</h4>
+      <p>Não é permitido usar a plataforma para gerar conteúdo ilegal, discriminatório ou que viole direitos de terceiros. A Wallet Polygon deve ser usada em conformidade com as leis locais.</p>
+      <h4>2. Licenciamento e Pagamentos</h4>
+      <p>Licenças pré‑pagas com validade de 3 (três) anos a partir da data de ativação. Pagamentos em Polygon são irreversíveis; em caso de falha na ativação, creditamos tokens equivalentes ou reembolsamos o valor pago.</p>
+      <h4>3. Wallet Polygon Descentralizada</h4>
+      <p>A wallet Polygon é fornecida como parte integrante da plataforma para titulares de licença ativos durante toda a vigência da licença. A IDEnza não se responsabiliza por perdas decorrentes do uso da carteira. Mantenha suas chaves privadas em segurança.</p>
+      <h4>4. Renovação</h4>
+      <p>Ao término do período de 3 anos, a licença poderá ser renovada nas condições comerciais vigentes à época. O titular será notificado com 90 dias de antecedência.</p>
+      <p><em>Última atualização: 01 de junho de 2026.</em></p>
+    </div>
+
+    <div id="legal-lgpd" class="legal-container">
+      <h3>Seus Direitos sob a LGPD</h3>
+      <p>A IDEnza é Controladora e Operadora de dados, conforme a Lei 13.709/2018.</p>
+      <h4>Direitos do titular</h4>
+      <ul>
+        <li>Confirmação, acesso, correção, anonimização, portabilidade, revogação e oposição.</li>
+      </ul>
+      <p>Encarregado: Dr. Henrique Almeida — <a href="mailto:dpo@idenza.com">dpo@idenza.com</a>.</p>
+    </div>
+
+    <div id="legal-contato" class="legal-container">
+      <h3>Contato</h3>
+      <ul>
+        <li>Geral: <a href="mailto:contato@idenza.com">contato@idenza.com</a></li>
+        <li>Suporte: <a href="mailto:suporte@idenza.com">suporte@idenza.com</a></li>
+        <li>DPO: <a href="mailto:dpo@idenza.com">dpo@idenza.com</a></li>
+        <li>Telegram: @IDEnzaOficial</li>
+        <li>Endereço: Av. Paulista, 1000 – 18º andar, São Paulo, SP.</li>
+      </ul>
+    </div>
+
+    <div id="legal-manual" class="legal-container">
+      <h3>Manual da Plataforma IDEnza</h3>
+      <h4>Visão Geral</h4>
+      <p>A IDEnza oferece acesso unificado aos principais modelos de IA generativa do mercado por meio de uma interface amigável ou integração direta. O mecanismo de orquestração seleciona automaticamente o melhor modelo para cada solicitação, ou você pode usar o modo BYOM com suas próprias chaves.</p>
+      <h4>Wallet Polygon Descentralizada</h4>
+      <p>Ao adquirir qualquer licença de 3 anos, você recebe acesso à Wallet Polygon IDEnza — uma interface completa para gerenciar pagamentos na Polygon Network, emitir invoices e monitorar transações. A plataforma é não custodial: você mantém o controle total das suas chaves privadas.</p>
+      <h4>Como começar</h4>
+      <ol>
+        <li>Crie uma conta corporativa.</li>
+        <li>Obtenha sua chave de acesso e Wallet ID.</li>
+        <li>Use o playground integrado ou faça requisições diretas para nossos endpoints.</li>
+        <li>Os tokens são debitados automaticamente da sua wallet.</li>
+        <li>Acesse a Wallet Polygon em <code>https://polygon.idenza.com</code> com suas credenciais.</li>
+      </ol>
+      <h4>Segurança e Auditoria</h4>
+      <p>Todas as interações e transações Polygon são registradas com logs imutáveis para conformidade.</p>
+      <p><em>Para mais detalhes, consulte <a href="#">ajuda.idenza.com</a>.</em></p>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      // ───────── Modal de Registro ─────────
+      const modalRegistro = document.getElementById('modal-registro');
+      const btnRegistrar = document.getElementById('btn-registrar');
+      const btnCancelarRegistro = document.getElementById('btn-cancelar-registro');
+      const formRegistro = document.getElementById('form-registro');
+      const regResultado = document.getElementById('reg-resultado');
+      const regApiKeySpan = document.getElementById('reg-apikey');
+      const regCustomerCodeSpan = document.getElementById('reg-customer-code');
+
+      btnRegistrar.addEventListener('click', (e) => {
+        e.preventDefault();
+        formRegistro.style.display = 'block';
+        regResultado.style.display = 'none';
+        modalRegistro.classList.add('active');
+      });
+
+      btnCancelarRegistro.addEventListener('click', () => {
+        modalRegistro.classList.remove('active');
+      });
+
+      formRegistro.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-password').value;
+
+        try {
+          const response = await fetch('https://idenza-api.avizaecosystem.workers.dev/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+          });
+          const data = await response.json();
+          if (data.apiKey) {
+            localStorage.setItem('idenza_api_key', data.apiKey);
+            // Exibe código do cliente, se disponível
+            regCustomerCodeSpan.textContent = data.customerCode || 'AVZ-0001';
+            regApiKeySpan.textContent = data.apiKey;
+            formRegistro.style.display = 'none';
+            regResultado.style.display = 'block';
+          } else {
+            alert('Erro: ' + (data.error || 'Resposta inesperada'));
+          }
+        } catch (err) {
+          alert('Erro de conexão com o servidor.');
+        }
+      });
+
+      document.getElementById('btn-ir-dashboard').addEventListener('click', function() {
+        window.location.href = 'dashboard.html';
+      });
+
+      // ───────── Modal de Acesso ─────────
+      const modalAcesso = document.getElementById('modal-acesso');
+      const btnAcessarConta = document.getElementById('btn-acessar-conta');
+      const btnCancelarAcesso = document.getElementById('btn-cancelar-acesso');
+      const formAcesso = document.getElementById('form-acesso');
+      const acessoErro = document.getElementById('acesso-erro');
+
+      btnAcessarConta.addEventListener('click', (e) => {
+        e.preventDefault();
+        modalAcesso.classList.add('active');
+      });
+
+      btnCancelarAcesso.addEventListener('click', () => {
+        modalAcesso.classList.remove('active');
+        acessoErro.style.display = 'none';
+      });
+
+      formAcesso.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const apiKey = document.getElementById('acesso-apikey').value.trim();
+        if (!apiKey) return;
+
+        try {
+          const response = await fetch('https://idenza-api.avizaecosystem.workers.dev/api/me', {
+            headers: { 'x-api-key': apiKey }
+          });
+          if (response.ok) {
+            localStorage.setItem('idenza_api_key', apiKey);
+            window.location.href = 'dashboard.html';
+          } else {
+            acessoErro.style.display = 'block';
+          }
+        } catch (err) {
+          acessoErro.style.display = 'block';
+        }
+      });
+
+      // ───────── Playground ─────────
+      const conversationDiv = document.getElementById('conversation');
+      const input = document.getElementById('playground-input');
+      const latencyDisplay = document.getElementById('latency-display');
+
+      async function sendMessage(message) {
+        conversationDiv.innerHTML += `<div class="user-msg">> ${escapeHtml(message)}</div>`;
+        const aiMsgDiv = document.createElement('div');
+        aiMsgDiv.className = 'ai-msg';
+        aiMsgDiv.innerHTML = '<span class="cursor"></span> Gerando...';
+        conversationDiv.appendChild(aiMsgDiv);
+        const startTime = Date.now();
+
+        const apiKey = localStorage.getItem('idenza_api_key');
+        if (!apiKey) {
+          aiMsgDiv.innerHTML = '⚠️ Você precisa criar uma conta primeiro. Clique em "Criar conta gratuita".';
+          return;
+        }
+
+        try {
+          const response = await fetch('https://idenza-api.avizaecosystem.workers.dev/api/generate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey
+            },
+            body: JSON.stringify({ prompt: message, taskType: 'text_generation' })
+          });
+          const data = await response.json();
+          const elapsed = Date.now() - startTime;
+          aiMsgDiv.innerHTML = escapeHtml(data.text || data.error || 'Sem resposta');
+          latencyDisplay.textContent = `< ${elapsed} ms — Orquestração IDEnza`;
+        } catch (err) {
+          aiMsgDiv.innerHTML = 'Erro na requisição.';
+          latencyDisplay.textContent = '';
+        }
+        conversationDiv.scrollTop = conversationDiv.scrollHeight;
+      }
+
+      function escapeHtml(text) {
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && input.value.trim() !== '') {
+          const message = input.value.trim();
+          input.value = '';
+          sendMessage(message);
+        }
+      });
+      input.focus();
+
+      // ───────── Polygon (simulado) ─────────
+      async function generateInvoice(plan) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            const amountPol = plan === 'professional' ? 7497 : plan === 'starter' ? 2497 : 10000;
+            const paymentRequest = 'polygon:...' + plan + '...';
+            const paymentHash = 'hash_' + plan + '_' + Date.now();
+            resolve({
+              payment_hash: paymentHash,
+              payment_request: paymentRequest,
+              amount_pol: amountPol,
+              qr_code: `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(paymentRequest)}`
+            });
+          }, 600);
+        });
+      }
+
+      async function checkPayment(paymentHash) {
+        return new Promise(resolve => setTimeout(() => resolve(true), 3000));
+      }
+
+      document.querySelectorAll('.btn-bitcoin').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const plan = btn.dataset.plan;
+          const invoiceBox = document.getElementById(`invoice-${plan}`);
+          invoiceBox.style.display = 'block';
+          invoiceBox.querySelector('.invoice-status').textContent = 'Gerando cobrança na Polygon...';
+          try {
+            const invoiceData = await generateInvoice(plan);
+            invoiceBox.querySelector('.invoice-qr').innerHTML = 
+              `<img src="${invoiceData.qr_code}" alt="QR Code de pagamento Polygon">`;
+            invoiceBox.querySelector('.invoice-value').textContent = 
+              `${invoiceData.amount_pol.toLocaleString()} POL`;
+            invoiceBox.querySelector('.invoice-status').textContent = 'Aguardando pagamento na Polygon Network...';
+            const paid = await checkPayment(invoiceData.payment_hash);
+            if (paid) {
+              invoiceBox.querySelector('.invoice-status').textContent = '✅ Pagamento confirmado! Licença de 3 anos ativada.';
+              invoiceBox.querySelector('.invoice-status').style.color = 'var(--copper)';
+            }
+          } catch (err) {
+            invoiceBox.querySelector('.invoice-status').textContent = 'Erro ao gerar cobrança.';
+          }
+        });
+      });
+
+      // ───────── Rodapé expansível ─────────
+      const links = {
+        status: document.getElementById('link-status'),
+        privacidade: document.getElementById('link-privacidade'),
+        termos: document.getElementById('link-termos'),
+        lgpd: document.getElementById('link-lgpd'),
+        contato: document.getElementById('link-contato'),
+        manual: document.getElementById('link-manual')
+      };
+      const containers = {
+        status: document.getElementById('legal-status'),
+        privacidade: document.getElementById('legal-privacidade'),
+        termos: document.getElementById('legal-termos'),
+        lgpd: document.getElementById('legal-lgpd'),
+        contato: document.getElementById('legal-contato'),
+        manual: document.getElementById('legal-manual')
+      };
+      let currentlyOpen = null;
+      function closeAll() {
+        Object.values(containers).forEach(c => c.classList.remove('active'));
+        currentlyOpen = null;
+      }
+      Object.keys(links).forEach(key => {
+        links[key].addEventListener('click', (e) => {
+          e.preventDefault();
+          const container = containers[key];
+          if (currentlyOpen === container) {
+            container.classList.remove('active');
+            currentlyOpen = null;
+          } else {
+            closeAll();
+            container.classList.add('active');
+            currentlyOpen = container;
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      });
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('footer')) {
+          closeAll();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
