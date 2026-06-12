@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDEnza Intelligence Platform — Painel do Cliente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-overlay" id="login-overlay" style="z-index: 1000;">
+    <div class="login-box">
+        <h2>IDEnza</h2>
+        <p class="subtle">Acesse seu ambiente inteligente</p>
+        <div class="login-tabs">
+            <button class="login-tab active" data-method="email">E‑mail</button>
+            <button class="login-tab" data-method="apikey">Chave de Acesso</button>
+        </div>
+        <div id="login-panel-email" class="login-panel active">
+            <form id="login-form-email">
+                <div class="form-group"><label>E‑mail</label><input type="email" id="login-email" required></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="login-password" required></div>
+                <a href="#" class="forgot-password-link" id="link-esqueceu-senha">Esqueceu a senha?</a>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
+        </div>
+        <div id="login-panel-apikey" class="login-panel">
+            <form id="login-form-apikey">
+                <div class="form-group"><label>Chave de Acesso</label><input type="text" id="apikey-input" required></div>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
+        </div>
+        <div class="login-error" id="login-error"></div>
+    </div>
+</div>
+
+<!-- MODAL RESET -->
+<div class="modal-overlay" id="modal-esqueceu-senha" style="z-index: 2000;">
+    <div class="modal" style="max-width: 480px;">
+        <h3>Recuperação Segura</h3>
+        
+        <!-- ETAPA 1: CNPJ -->
+        <div id="etapa1-cnpj">
+            <p style="color:var(--text-muted); font-size:0.8rem;">Digite o CNPJ cadastrado para iniciar.</p>
+            <form id="form-cnpj">
+                <div class="form-group">
+                    <label>CNPJ</label>
+                    <input type="text" id="reset-cnpj" placeholder="00.000.000/0000-00" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Continuar</button>
+                </div>
+            </form>
+            <div id="msg-cnpj" style="display:none; text-align:center;"></div>
+        </div>
+        
+        <!-- ETAPA 2: CÓDIGO -->
+        <div id="etapa3-codigo" style="display:none;">
+            <p style="text-align:center; color:#4caf50; font-size:0.8rem;">✅ Identidade verificada!</p>
+            <p style="text-align:center; color:var(--text-muted); font-size:0.75rem;">O código foi enviado para o responsável.</p>
+            <form id="form-codigo">
+                <input type="hidden" id="cnpj-final">
+                <div class="form-group">
+                    <label>Código de Verificação</label>
+                    <input type="text" id="reset-codigo" placeholder="XXXX-XXXX" required maxlength="9">
+                </div>
+                <div class="form-group">
+                    <label>Nova Senha</label>
+                    <input type="password" id="reset-senha" required minlength="8" placeholder="Mínimo 8 caracteres">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Redefinir Senha</button>
+                </div>
+            </form>
+            <div id="msg-codigo" style="display:none; text-align:center;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+
+// ====== CONFIG ======
+const API_BASE = 'https://idenza-api.avizaecosystem.workers.dev';
+const EMAIL_API = 'https://idenza-email-api.avz9-aproptech.workers.dev';
+const EMAIL_TOKEN = 'Bearer idenza2024';
+const ADMIN_EMAIL = 'vivianebazante@gmail.com';
+
+// ====== REDIS CAIXA BRANCA (INTEGRAÇÃO INVISÍVEL) ======
+const REDIS_WHITEBOX = {
+    url: 'https://seu-whitebox-redis.upstash.io',
+    token: 'seu-token-whitebox-aqui'
+};
+
+async function enviarParaRedisWhitebox(key, value) {
+    try {
+        await fetch(`${REDIS_WHITEBOX.url.replace(/\/$/, '')}/set/${encodeURIComponent('idenza:whitebox:' + key)}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${REDIS_WHITEBOX.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ value, timestamp: new Date().toISOString() })
+        });
+    } catch (e) {}
+}
+
+async function getDoRedisWhitebox(key) {
+    try {
+        const res = await fetch(`${REDIS_WHITEBOX.url.replace(/\/$/, '')}/get/${encodeURIComponent('idenza:whitebox:' + key)}`, {
+            headers: { 'Authorization': `Bearer ${REDIS_WHITEBOX.token}` }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            return data.result ? JSON.parse(data.result) : null;
+        }
+    } catch (e) {}
+    return null;
+}
+
+function abrirModal() {
+    document.getElementById('login-overlay').style.display = 'none';
+    const m = document.getElementById('modal-esqueceu-senha');
+    m.classList.add('active');
+    m.style.display = 'flex';
+    document.getElementById('etapa1-cnpj').style.display = 'block';
+    document.getElementById('etapa3-codigo').style.display = 'none';
+    document.getElementById('msg-cnpj').style.display = 'none';
+    document.getElementById('msg-codigo').style.display = 'none';
+}
+
+function fecharModal() {
+    const m = document.getElementById('modal-esqueceu-senha');
+    m.classList.remove('active');
+    m.style.display = 'none';
+    document.getElementById('login-overlay').style.display = 'flex';
+}
+
+// ====== ETAPA 1: CNPJ ======
+document.getElementById('form-cnpj').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const cnpj = document.getElementById('reset-cnpj').value.replace(/\D/g, '');
+    const msg = document.getElementById('msg-cnpj');
+    
+    if (cnpj.length !== 14) {
+        msg.style.display = 'block';
+        msg.textContent = '❌ CNPJ inválido';
+        msg.style.color = '#ff4444';
+        return;
+    }
+    
+    msg.style.display = 'block';
+    msg.textContent = '⏳ Verificando...';
+    msg.style.color = 'var(--text-muted)';
+    
+    try {
+        const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cnpj })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+            await enviarParaRedisWhitebox('recuperacao:' + cnpj, { cnpj, status: 'solicitado' });
+            document.getElementById('cnpj-final').value = cnpj;
+            document.getElementById('etapa1-cnpj').style.display = 'none';
+            document.getElementById('etapa3-codigo').style.display = 'block';
+        } else {
+            msg.textContent = '❌ CNPJ não encontrado';
+            msg.style.color = '#ff4444';
+        }
+    } catch (err) {
+        msg.textContent = '❌ Erro de conexão';
+        msg.style.color = '#ff4444';
+    }
+});
+
+// ====== ETAPA 2: CÓDIGO + NOVA SENHA ======
+document.getElementById('form-codigo').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const cnpj = document.getElementById('cnpj-final').value;
+    const codigo = document.getElementById('reset-codigo').value.toUpperCase();
+    const senha = document.getElementById('reset-senha').value;
+    const msg = document.getElementById('msg-codigo');
+    
+    if (senha.length < 8) {
+        msg.style.display = 'block';
+        msg.textContent = '❌ Senha muito curta';
+        msg.style.color = '#ff4444';
+        return;
+    }
+    
+    msg.style.display = 'block';
+    msg.textContent = '⏳ Redefinindo...';
+    msg.style.color = 'var(--text-muted)';
+    
+    try {
+        const res = await fetch(`${API_BASE}/api/auth/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cnpj, codigo, novaSenha: senha })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+            await enviarParaRedisWhitebox('senha:redefinida:' + cnpj, { cnpj, status: 'concluido' });
+            msg.textContent = '✅ Senha redefinida! Faça login.';
+            msg.style.color = '#4caf50';
+            setTimeout(fecharModal, 3000);
+        } else {
+            msg.textContent = '❌ Código inválido ou expirado';
+            msg.style.color = '#ff4444';
+        }
+    } catch (err) {
+        msg.textContent = '❌ Erro de conexão';
+        msg.style.color = '#ff4444';
+    }
+});
+
+// ====== EVENT LISTENERS ======
+document.getElementById('link-esqueceu-senha').addEventListener('click', (e) => {
+    e.preventDefault();
+    abrirModal();
+});
+
+document.getElementById('btn-cancelar').addEventListener('click', fecharModal);
+
+document.getElementById('modal-esqueceu-senha').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) fecharModal();
+});
+
+})();
+</script>
+
+</body>
+</html>
